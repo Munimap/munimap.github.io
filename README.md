@@ -7,8 +7,8 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-red?style=for-the-badge)](LICENSE)
 [![Privacy](https://img.shields.io/badge/Privacy-Local%20Only-green?style=for-the-badge&logo=privacy&logoColor=white)](https://github.com/munimap)
 
-**Die ultimative Offline-Trail-Karte für das GMTW Event in Hohensyburg/Herdecke.**
-*Kein Server. Kein Tracking. Keine Datenverbindung nötig.*
+**Offline-Trail-Karte für das GMTW Event in Hohensyburg/Herdecke.**
+*Kein Server. Kein Tracking. Keine Datenverbindung nötig. Jaman!*
 
 [Live Demo ansehen](https://munimap.github.io/) · [Fehler melden](https://github.com/munimap/issues) · [Feature anfragen](https://github.com/munimap/issues)
 
