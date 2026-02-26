@@ -22,7 +22,7 @@ const MAX_TILE_CACHE = 2000;
 
 // App-Shell Assets: werden beim Install vorab gecacht (alle offline verfügbar)
 const SHELL_ASSETS = [
-  './GMTW_Map.html',
+  './index.html',
   './manifest.json',
   // Leaflet (Karten-Engine)
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
