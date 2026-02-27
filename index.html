@@ -3329,18 +3329,21 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         .tdd-lb-export{margin-top:7px;width:100%;padding:7px;border-radius:6px;background:var(--s3);border:1px solid var(--bd);color:var(--td);font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;cursor:pointer}
 
         /* Checkpoint markers on map */
-        .chk-div{width:16px;height:16px;border-radius:50%;background:rgba(196,255,0,.3);border:2.5px solid var(--ac);box-shadow:0 0 6px rgba(196,255,0,.4)}
+        /* Checkpoint-Größe wird per inline style aus JS gesetzt (skalierbar) */
+        .chk-div{border-radius:50%;background:rgba(196,255,0,.3);border:2.5px solid var(--ac);box-shadow:0 0 6px rgba(196,255,0,.4)}
         .chk-div.finish{background:rgba(239,68,68,.3);border-color:var(--exp);box-shadow:0 0 6px rgba(239,68,68,.4)}
 
         /* ── START MARKER ────────────────────────────────────────── */
-        .start-pin{width:26px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.5px solid rgba(255,255,255,.9);box-shadow:0 2px 12px rgba(0,0,0,.65);cursor:pointer;transition:transform .15s,box-shadow .15s}
+        /* Breite/Höhe werden dynamisch per JS (inline style) gesetzt */
+        .start-pin{display:flex;align-items:center;justify-content:center;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.5px solid rgba(255,255,255,.9);box-shadow:0 2px 12px rgba(0,0,0,.65);cursor:pointer;transition:transform .15s,box-shadow .15s}
         .start-pin:hover,.start-pin:active{transform:rotate(-45deg) scale(1.15);box-shadow:0 4px 18px rgba(0,0,0,.8)}
-        .start-pin-flag{transform:rotate(45deg);font-size:13px;line-height:1;user-select:none;pointer-events:none}
+        .start-pin-flag{transform:rotate(45deg);line-height:1;user-select:none;pointer-events:none}
 
         /* ── FINISH MARKER ───────────────────────────────────────── */
-        .finish-pin{width:26px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.5px solid rgba(255,255,255,.9);box-shadow:0 2px 12px rgba(0,0,0,.65);cursor:pointer;background:#1a1a2e;transition:transform .15s,box-shadow .15s}
+        /* Breite/Höhe werden dynamisch per JS (inline style) gesetzt */
+        .finish-pin{display:flex;align-items:center;justify-content:center;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.5px solid rgba(255,255,255,.9);box-shadow:0 2px 12px rgba(0,0,0,.65);cursor:pointer;background:#1a1a2e;transition:transform .15s,box-shadow .15s}
         .finish-pin:hover,.finish-pin:active{transform:rotate(-45deg) scale(1.15);box-shadow:0 4px 18px rgba(0,0,0,.8)}
-        .finish-pin-flag{transform:rotate(45deg);font-size:13px;line-height:1;user-select:none;pointer-events:none}
+        .finish-pin-flag{transform:rotate(45deg);line-height:1;user-select:none;pointer-events:none}
 
         /* ── TRACK POPUP (Start / Finish Leaflet popup) ──────────── */
         .trk-popup-wrap .leaflet-popup-content-wrapper{background:var(--s1,#141620);border:1px solid var(--bd2,#2a2d3a);border-radius:14px;padding:0;box-shadow:0 8px 32px rgba(0,0,0,.7);min-width:230px;max-width:272px}
@@ -3380,6 +3383,68 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         /* ── RACE RESULTS QR ─────────────────────────────────────── */
         .rres-qr-wrap{background:#fff;border-radius:10px;padding:8px;width:136px;height:136px;margin:12px auto;display:flex;align-items:center;justify-content:center}
         .rres-qr-wrap canvas{border-radius:4px;image-rendering:pixelated;image-rendering:crisp-edges}
+
+        /* ── PROFIL TAB ──────────────────────────────────────────── */
+        .profile-avatar{width:56px;height:56px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 0 16px rgba(200,255,0,.3)}
+        .profile-name-display{font-family:var(--fh);font-size:18px;font-weight:900;letter-spacing:.4px;color:var(--tx)}
+        .profile-muni-display{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--ac);margin-top:1px}
+        .profile-muni-card{background:linear-gradient(135deg,var(--s2),var(--s3));border-radius:12px;padding:14px;border:1px solid var(--bd2);margin-bottom:10px}
+        .profile-detail-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+        .profile-detail-chip{flex:1;min-width:calc(50% - 3px);background:var(--s3);border-radius:8px;padding:7px 9px;box-sizing:border-box}
+        .profile-detail-chip-lbl{font-family:var(--fh);font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--td);margin-bottom:2px}
+        .profile-detail-chip-val{font-family:var(--fh);font-size:13px;font-weight:800;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .profile-quick-btns{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+        .profile-quick-btn{padding:5px 10px;border-radius:6px;background:var(--s3);border:1px solid var(--bd2);color:var(--td);font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.4px;cursor:pointer;transition:background .12s,color .12s}
+        .profile-quick-btn:hover{background:rgba(200,255,0,.12);color:var(--ac);border-color:rgba(200,255,0,.3)}
+        /* ── RUN DETAIL MODAL ─────────────────────────────────────── */
+        #run-detail-modal{position:fixed;inset:0;z-index:3000;background:var(--bg);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);overflow:hidden}
+        #run-detail-modal.show{transform:translateY(0)}
+        .rdm-header{display:flex;align-items:center;gap:10px;padding:max(14px,env(safe-area-inset-top,14px)) 16px 12px;border-bottom:1px solid var(--bd2);flex-shrink:0}
+        .rdm-header-title{font-family:var(--fh);font-size:15px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--tx);flex:1}
+        .rdm-body{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch}
+        .rdm-rider-card{background:var(--s2);border-radius:12px;padding:13px 14px;border:1px solid var(--bd2);margin-bottom:12px;display:flex;align-items:center;gap:12px}
+        .rdm-rider-info{flex:1;min-width:0}
+        .rdm-rider-name{font-family:var(--fh);font-size:19px;font-weight:900;letter-spacing:.4px;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .rdm-muni-name{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--ac);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .rdm-muni-chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+        .rdm-chip{font-family:var(--fh);font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:20px;background:var(--s3);color:var(--td);border:1px solid var(--bd2);white-space:nowrap}
+        .rdm-chip.accent{color:var(--ac);border-color:rgba(200,255,0,.3);background:rgba(200,255,0,.07)}
+        .rdm-time-section{text-align:center;margin:12px 0 4px}
+        .rdm-time-big{font-family:var(--fh);font-size:62px;font-weight:900;color:var(--ac);line-height:1;font-variant-numeric:tabular-nums}
+        .rdm-time-lbl{font-size:11px;color:var(--td);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+        .rdm-track-meta{font-size:12px;color:var(--td);text-align:center;margin-bottom:14px}
+        .rdm-section-lbl{font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--td);margin:12px 0 7px}
+        .rdm-splits-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:2px}
+        .rdm-split-card{background:var(--s2);border-radius:9px;padding:9px 10px;text-align:center;border:1px solid var(--bd2)}
+        .rdm-split-lbl{font-family:var(--fh);font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--td);margin-bottom:3px}
+        .rdm-split-val{font-family:var(--fh);font-size:21px;font-weight:800;color:var(--tx);font-variant-numeric:tabular-nums}
+        .rdm-falls-row{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0}
+        .rdm-fall-badge{font-family:var(--fh);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25)}
+        .rdm-sig-box{background:var(--s2);border-radius:8px;padding:9px 11px;margin-top:10px;border:1px solid rgba(200,255,0,.18)}
+        .rdm-sig-lbl{font-family:var(--fh);font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--td);margin-bottom:3px}
+        .rdm-sig-val{font-family:monospace;font-size:10px;color:var(--ac);word-break:break-all;line-height:1.5}
+        .rdm-actions{display:flex;gap:8px;margin-top:16px;padding-bottom:max(16px,env(safe-area-inset-bottom,16px))}
+        .rdm-btn{flex:1;padding:12px;border-radius:10px;border:none;font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;cursor:pointer;transition:opacity .12s}
+        .rdm-btn:active{opacity:.75}
+        .rdm-btn.prim{background:var(--ac);color:#0b0e14}
+        .rdm-btn.sec{background:var(--s2);color:var(--td);border:1px solid var(--bd2)}
+        /* Clickable leaderboard row helpers */
+        .cursor-ptr{cursor:pointer}
+        .tdd-lb-name{font-family:var(--fh);font-size:12px;font-weight:800;color:var(--tx);flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .rres-lb-name{font-family:var(--fh);font-size:11px;font-weight:800;color:var(--tx);flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        /* ── RACE SENSOR BADGES ──────────────────────────────────── */
+        .ra-sensors-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+        .ra-sensor-badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.4px;padding:3px 8px;border-radius:20px;background:var(--s3);color:var(--td);border:1px solid var(--bd2)}
+        .ra-sensor-badge.ok{color:#4ade80;border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.08)}
+        .ra-sensor-badge.warn{color:#f59e0b;border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.08)}
+        .ra-bt-btn{margin-top:10px;padding:8px;width:100%;background:rgba(56,189,248,.08);color:var(--log);border:1px solid rgba(56,189,248,.25);border-radius:8px;font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.5px;cursor:pointer;text-align:center}
+        /* Fall badge in running page */
+        .rr-fall-row{min-height:18px;margin-bottom:4px;display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+        .rr-fall-badge{font-family:var(--fh);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3)}
+        /* Signature box in results */
+        .rres-sig-box{background:var(--s2);border-radius:8px;padding:8px 10px;margin:8px 0;border:1px solid rgba(196,255,0,.2);text-align:left}
+        .rres-sig-lbl{font-family:var(--fh);font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--td);margin-bottom:3px}
+        .rres-sig-val{font-family:monospace;font-size:10px;color:var(--ac);word-break:break-all;line-height:1.5}
 
 
         /* ── SETTINGS PANEL ─────────────────────────────────────── */
@@ -3439,17 +3504,39 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         .cust-pin-tip{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent}
 
         /* ── PWA INSTALL PROMPT ─────────────────────────────────── */
-        #pwa-install{position:fixed;bottom:0;left:0;right:0;z-index:1400;background:var(--s1);border-top:1px solid var(--bd2);border-radius:20px 20px 0 0;padding:18px;box-shadow:0 -8px 40px rgba(0,0,0,.6);transform:translateY(110%);transition:transform .4s cubic-bezier(.32,.72,0,1);max-width:520px;margin:0 auto}
+        #pwa-install{position:fixed;bottom:0;left:0;right:0;z-index:1400;background:var(--s1);border-top:2px solid var(--ac);border-radius:22px 22px 0 0;padding:20px 18px 22px;box-shadow:0 -16px 60px rgba(0,0,0,.75);transform:translateY(115%);transition:transform .45s cubic-bezier(.32,.72,0,1);max-width:500px;margin:0 auto}
         #pwa-install.show{transform:translateY(0)}
-        .pi-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-        .pi-icon{width:52px;height:52px;border-radius:14px;background:var(--s2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:28px}
-        .pi-title{font-family:var(--fh);font-size:16px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--tx)}
-        .pi-sub{font-size:12px;color:var(--td);margin-top:2px;line-height:1.4}
-        .pi-ios-steps{font-size:12px;color:var(--td);background:var(--s2);border-radius:10px;padding:10px 12px;line-height:1.8;margin-bottom:12px}
-        .pi-acts{display:flex;gap:8px}
-        .pi-btn{flex:1;padding:11px;border:none;border-radius:10px;cursor:pointer;font-family:var(--fh);font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+        .pi-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+        .pi-icon{width:56px;height:56px;border-radius:16px;background:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:30px}
+        .pi-title{font-family:var(--fh);font-size:17px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--tx)}
+        .pi-sub{font-size:12px;color:var(--td);margin-top:3px;line-height:1.4}
+        .pi-badge{display:inline-flex;align-items:center;gap:4px;background:var(--s3);border:1px solid var(--bd2);border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;color:var(--td);letter-spacing:.4px;text-transform:uppercase;margin-top:6px}
+        .pi-steps{font-size:12.5px;color:var(--tx);background:var(--s2);border:1px solid var(--bd2);border-radius:12px;padding:13px 14px;line-height:2;margin:12px 0}
+        .pi-steps strong{color:var(--ac)}
+        .pi-acts{display:flex;gap:8px;margin-top:4px}
+        .pi-btn{flex:1;padding:13px;border:none;border-radius:12px;cursor:pointer;font-family:var(--fh);font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;transition:opacity .15s}
         .pi-btn.inst{background:var(--ac);color:#0b0e14}
+        .pi-btn.inst:active{opacity:.8}
         .pi-btn.later{background:var(--s3);color:var(--td);border:1px solid var(--bd2)}
+        .pi-dismiss{text-align:center;margin-top:8px}
+        .pi-dismiss button{background:none;border:none;color:var(--td);font-size:11px;cursor:pointer;padding:6px;opacity:.7}
+        /* ── APP INSTALL SETTINGS TAB ───────────────────────────── */
+        #sp-tab-app .sp-section{background:var(--s2);border-radius:12px;padding:14px;border:1px solid var(--bd2);margin-bottom:6px}
+        .ai-status-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1px solid var(--bd2);margin-bottom:6px}
+        .ai-status-card.installed{background:rgba(200,255,0,.08);border-color:rgba(200,255,0,.3)}
+        .ai-status-card.not-installed{background:var(--s2);border-color:var(--bd2)}
+        .ai-status-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;background:var(--s3)}
+        .ai-status-card.installed .ai-status-icon{background:rgba(200,255,0,.15)}
+        .ai-status-label{font-family:var(--fh);font-size:13px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--tx)}
+        .ai-status-sub{font-size:11px;color:var(--td);margin-top:2px;line-height:1.4}
+        .ai-device-info{background:var(--s3);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--td);line-height:1.9;border:1px solid var(--bd2);margin-bottom:6px}
+        .ai-device-info strong{color:var(--tx)}
+        .ai-cache-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--td);margin:3px 0}
+        .ai-cache-row strong{color:var(--tx);font-weight:700}
+        .ai-bar-wrap{background:var(--s3);border-radius:6px;height:5px;overflow:hidden;margin:6px 0 2px}
+        .ai-bar-fill{background:var(--ac);height:100%;border-radius:6px;transition:width .5s ease;width:0%}
+        .ai-steps-box{font-size:12.5px;color:var(--tx);background:var(--s3);border:1px solid var(--bd2);border-radius:10px;padding:12px 13px;line-height:2;margin-top:6px}
+        .ai-steps-box strong{color:var(--ac)}
 
         /* ── SETTINGS PANEL CONTENT ────────────────────────────── */
         .sp-content{display:none;flex:1;overflow-y:auto;padding:14px 16px;flex-direction:column;gap:14px}
@@ -3774,7 +3861,7 @@ function escXml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt
 const LS = {
   K: { TRACKS:'gmtw_tracks_v2', RUNS:'gmtw_runs_v1', REC:'gmtw_rec_v2', VIEW:'gmtw_view_v1', THEME:'gmtw_theme',
        GPS_EMOJI:'gmtw_gps_emoji', HOME_REGION:'gmtw_home_region', INSTALL_DECLINE:'gmtw_install_decline',
-       CUSTOM_MARKERS:'gmtw_custom_markers_v1' },
+       CUSTOM_MARKERS:'gmtw_custom_markers_v1', PROFILE:'gmtw_profile_v1' },
   _ok: null,
 
   // Prüft ob localStorage verfügbar ist (Private Mode, iOS-Restrictions etc.)
@@ -3994,14 +4081,26 @@ let _pendingLocsEditId = null; // gesetzt wenn LOCS-Marker im Modal bearbeitet w
 const _origSaveMdMarker = null; // wird nach Definition gepatcht
 
 function mkIcon(loc){
-  const scale = _markerScale;
-  const base  = loc.large ? 36 : 30;
-  const s     = Math.round(base * scale);
-  const is    = Math.round((loc.large ? 16 : 13) * scale);
+  const sc   = _markerScale;
+  const base = loc.large ? 36 : 30;
+  const s    = Math.round(base * sc);                          // Pin-Kopf Breite = Höhe
+  const is   = Math.round((loc.large ? 16 : 13) * sc);        // Emoji-Größe
+  const dot  = Math.max(3, Math.round(4 * sc));               // Nadelpunkt-Durchmesser
+  const mt   = Math.max(1, Math.round(2 * sc));               // margin-top Nadelpunkt
+  const brd  = Math.max(1, +(1.5 * sc).toFixed(1));          // Border-Breite
+  const totalH = s + mt + dot;
+  const html = `<div class="pm">` +
+    `<div class="pm-h" style="width:${s}px;height:${s}px;background:${loc.color};border-width:${brd}px">` +
+      `<span class="pm-i" style="font-size:${is}px">${loc.emoji}</span>` +
+    `</div>` +
+    `<div class="pm-d" style="background:${loc.color};width:${dot}px;height:${dot}px;margin-top:${mt}px"></div>` +
+  `</div>`;
   return L.divIcon({
-    className:'',
-    html:`<div class="pm${loc.large?' lg':''}"><div class="pm-h" style="background:${loc.color}"><span class="pm-i" style="font-size:${is}px">${loc.emoji}</span></div><div class="pm-d" style="background:${loc.color}"></div></div>`,
-    iconSize:[s,s+8],iconAnchor:[s/2,s+8],popupAnchor:[0,-(s+12)]
+    className:   '',
+    html,
+    iconSize:    [s, totalH],
+    iconAnchor:  [s / 2, totalH],
+    popupAnchor: [0, -(totalH + 4)]
   });
 }
 
@@ -4062,7 +4161,7 @@ function onMkScaleInput(val) {
   const sliderVal = document.getElementById('mk-scale-val');
   if (sliderVal) sliderVal.textContent = val + '%';
 }
-// Beim Loslassen: Skalierung speichern + alle Marker neu rendern
+// Beim Loslassen: Skalierung speichern + ALLE Marker neu rendern
 function onMkScaleChange(val) {
   const pct = parseInt(val, 10);
   _markerScale = Math.max(0.5, Math.min(2.0, pct / 100));
@@ -4071,6 +4170,15 @@ function onMkScaleChange(val) {
   reloadLocsMarkers();
   // Custom-Marker neu rendern
   _cmMarkers.forEach(cm => _renderOneCmMarker(cm));
+  // Start/Ziel-Marker aller Tracks skalieren
+  _updateAllStartFinishMarkerIcons();
+  // GPS-Positions-Marker skalieren (zoom-basiert, aber jetzt mit _markerScale)
+  if (userMkr && gpsOn) {
+    const emoji = LS.get(LS.K.GPS_EMOJI, '🦄');
+    userMkr.setIcon(_buildGpsEmojiIcon(emoji, map.getZoom()));
+  }
+  // Rennen-Checkpoint-Marker skalieren (falls Rennen aktiv)
+  _updateCpMarkerIcons();
   toast('📐 Marker-Größe: ' + pct + '%');
 }
 
@@ -4850,11 +4958,19 @@ function loadGpxFromString(gpxStr, name, cat) {
 function toggleTrack(id) {
   const t = trackStore.tracks.find(t => t.id===id); if(!t) return;
   if (t.visible) {
-    map.removeLayer(t.gpxLayer); t.visible=false;
+    // Track + Start/Ziel-Marker ausblenden
+    if (map.hasLayer(t.gpxLayer))                               map.removeLayer(t.gpxLayer);
+    if (t._startMkr  && map.hasLayer(t._startMkr))             map.removeLayer(t._startMkr);
+    if (t._finishMkr && map.hasLayer(t._finishMkr))            map.removeLayer(t._finishMkr);
+    t.visible = false;
   } else {
-    t.visible=true;
-    // Only add to map if the current category filter allows this track
-    if (gpxFilter === 'all' || t.cat === gpxFilter) t.gpxLayer.addTo(map);
+    t.visible = true;
+    // Nur einblenden wenn Kategoriefilter passt
+    if (gpxFilter === 'all' || t.cat === gpxFilter) {
+      if (!map.hasLayer(t.gpxLayer))                            t.gpxLayer.addTo(map);
+      if (t._startMkr  && !map.hasLayer(t._startMkr))          t._startMkr.addTo(map);
+      if (t._finishMkr && !map.hasLayer(t._finishMkr))         t._finishMkr.addTo(map);
+    }
   }
   renderTrackList();
 }
@@ -5599,15 +5715,48 @@ function _buildTrackPopup(track, isFinish) {
   return L.popup({ className:'trk-popup-wrap', maxWidth:272, minWidth:230, offset:[0,-28] }).setContent(popHtml);
 }
 
+// ── Start/Finish Pin Icons mit Skalierung ─────────────────────
+// Baut ein skalierbares Leaflet-divIcon für Start-Marker
+function _buildStartPinIcon(track) {
+  const sc  = _markerScale;
+  const w   = Math.round(26 * sc);
+  const h   = Math.round(32 * sc);
+  const fs  = Math.round(13 * sc);
+  const brd = Math.max(1.5, Math.round(25 * sc) / 10); // 2.5px bei 100%
+  const html = `<div class="start-pin" style="width:${w}px;height:${h}px;background:${track.color};border-width:${brd}px" title="Start: ${esc(track.name)}">` +
+               `<span class="start-pin-flag" style="font-size:${fs}px">🚩</span></div>`;
+  return L.divIcon({ className:'', html, iconSize:[w, h], iconAnchor:[Math.round(w/2), h] });
+}
+
+// Baut ein skalierbares Leaflet-divIcon für Ziel-Marker
+function _buildFinishPinIcon(track) {
+  const sc  = _markerScale;
+  const w   = Math.round(26 * sc);
+  const h   = Math.round(32 * sc);
+  const fs  = Math.round(13 * sc);
+  const brd = Math.max(1.5, Math.round(25 * sc) / 10);
+  const html = `<div class="finish-pin" style="width:${w}px;height:${h}px;border-color:${track.color};border-width:${brd}px" title="Ziel: ${esc(track.name)}">` +
+               `<span class="finish-pin-flag" style="font-size:${fs}px">🏁</span></div>`;
+  return L.divIcon({ className:'', html, iconSize:[w, h], iconAnchor:[Math.round(w/2), h] });
+}
+
+// Aktualisiert Icons aller vorhandenen Start/Ziel-Marker (bei Skalierungsänderung)
+function _updateAllStartFinishMarkerIcons() {
+  trackStore.tracks.forEach(track => {
+    if (!track.gpxLayer) return;
+    if (track._startMkr)  track._startMkr.setIcon(_buildStartPinIcon(track));
+    if (track._finishMkr) track._finishMkr.setIcon(_buildFinishPinIcon(track));
+  });
+}
+
 function _addStartMarker(track) {
   try {
     const pts = _getGpxPoints(track.gpxLayer, track.gpxString);
     if (!pts.length) return;
-    const sp = pts[0];
-    const pinHtml = `<div class="start-pin" style="background:${track.color}" title="Start: ${esc(track.name)}"><span class="start-pin-flag">🚩</span></div>`;
-    const icon = L.divIcon({ className:'', html:pinHtml, iconSize:[26,32], iconAnchor:[13,32] });
+    const sp    = pts[0];
+    const icon  = _buildStartPinIcon(track);
     const popup = _buildTrackPopup(track, false);
-    const mkr = L.marker([sp.lat, sp.lng], { icon, zIndexOffset:800, title:`Start: ${track.name}` })
+    const mkr   = L.marker([sp.lat, sp.lng], { icon, zIndexOffset:800, title:`Start: ${track.name}` })
       .addTo(map);
     if (popup) mkr.bindPopup(popup);
     track._startMkr = mkr;
@@ -5617,16 +5766,15 @@ function _addStartMarker(track) {
 function _addFinishMarker(track) {
   try {
     const pts = _getGpxPoints(track.gpxLayer, track.gpxString);
-    if (pts.length < 2) return; // Kein Ziel wenn Track zu kurz
+    if (pts.length < 2) return;
     const fp = pts[pts.length - 1];
-    // Prüfen ob Start und Ziel zu nah beieinander (Rundkurs — Ziel-Marker unterdrücken)
+    // Rundkurs: kein separater Ziel-Marker wenn Start und Ziel zu nah
     const distSF = _distM(pts[0].lat, pts[0].lng, fp.lat, fp.lng);
-    if (distSF < 30) return; // Rundkurs: kein separater Ziel-Marker
+    if (distSF < 30) return;
 
-    const pinHtml = `<div class="finish-pin" style="border-color:${track.color}" title="Ziel: ${esc(track.name)}"><span class="finish-pin-flag">🏁</span></div>`;
-    const icon = L.divIcon({ className:'', html:pinHtml, iconSize:[26,32], iconAnchor:[13,32] });
+    const icon  = _buildFinishPinIcon(track);
     const popup = _buildTrackPopup(track, true);
-    const mkr = L.marker([fp.lat, fp.lng], { icon, zIndexOffset:799, title:`Ziel: ${track.name}` })
+    const mkr   = L.marker([fp.lat, fp.lng], { icon, zIndexOffset:799, title:`Ziel: ${track.name}` })
       .addTo(map);
     if (popup) mkr.bindPopup(popup);
     track._finishMkr = mkr;
@@ -5826,6 +5974,230 @@ function _onNavGpsUpdate(lat, lng, acc) {
 }
 
 // ══════════════════════════════════════════════════════════════
+// ── RACE SENSOR FUSION & HELPERS ───────────────────────────────
+// ══════════════════════════════════════════════════════════════
+
+// Motion sensor state shared across all race functions
+const SENSORS = {
+  motionActive: false,
+  _handler: null,
+  ax: 0, ay: 0, az: 0,       // accelerometer (m/s²) incl. gravity
+  gx: 0, gy: 0, gz: 0,       // gyroscope (deg/s)
+  accelMag: 9.81,             // current total acceleration magnitude
+  _lastImpactTs: 0,           // performance.now() of last impact spike
+  _checkFallTimer: null       // timer to confirm fall ~400ms after impact
+};
+
+function _startMotionSensors() {
+  if (SENSORS.motionActive || !window.DeviceMotionEvent) return;
+  SENSORS._handler = _onDeviceMotion;
+  window.addEventListener('devicemotion', SENSORS._handler, {passive:true});
+  SENSORS.motionActive = true;
+  // iOS 13+ requires explicit permission prompt
+  if (typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission().catch(() => {});
+  }
+  _updateRaceSensorBadges();
+}
+
+function _stopMotionSensors() {
+  if (!SENSORS.motionActive) return;
+  if (SENSORS._handler) { window.removeEventListener('devicemotion', SENSORS._handler); SENSORS._handler = null; }
+  if (SENSORS._checkFallTimer) { clearTimeout(SENSORS._checkFallTimer); SENSORS._checkFallTimer = null; }
+  SENSORS.motionActive = false;
+}
+
+function _onDeviceMotion(e) {
+  if (RACE.state !== 'racing') return;
+  const a = e.accelerationIncludingGravity;
+  if (!a) return;
+  SENSORS.ax = a.x || 0; SENSORS.ay = a.y || 0; SENSORS.az = a.z || 0;
+  if (e.rotationRate) {
+    SENSORS.gx = e.rotationRate.alpha || 0;
+    SENSORS.gy = e.rotationRate.beta  || 0;
+    SENSORS.gz = e.rotationRate.gamma || 0;
+  }
+  const mag = Math.sqrt(SENSORS.ax**2 + SENSORS.ay**2 + SENSORS.az**2);
+  SENSORS.accelMag = mag;
+  // Impact detection: spike > 35 m/s² (≈ 3.5G) — likely crash/hard landing
+  const now = performance.now();
+  if (mag > 35 && now - SENSORS._lastImpactTs > 2500) {
+    SENSORS._lastImpactTs = now;
+    if (SENSORS._checkFallTimer) clearTimeout(SENSORS._checkFallTimer);
+    // Confirm 400ms later: if still low-G → lying still → fall confirmed
+    SENSORS._checkFallTimer = setTimeout(() => {
+      SENSORS._checkFallTimer = null;
+      if (SENSORS.accelMag < 4 && RACE.state === 'racing') _recordFallEvent('fall');
+    }, 400);
+  }
+}
+
+function _recordFallEvent(type) {
+  const now = performance.now();
+  if (now - RACE._lastFallTs < 3000) return; // throttle: max 1 event per 3 s
+  RACE._lastFallTs = now;
+  const evt = {
+    type,
+    ts:  RACE.startTs ? Math.round(now - RACE.startTs) : 0,
+    lat: RACE._lastLat,
+    lng: RACE._lastLng
+  };
+  RACE.fallEvents.push(evt);
+  if (navigator.vibrate) navigator.vibrate([60, 60, 60]);
+  // Show badge in running page
+  const row = document.getElementById('rr-fall-row');
+  if (row) {
+    const badge = document.createElement('span');
+    badge.className = 'rr-fall-badge';
+    badge.textContent = type === 'fall'
+      ? `💥 Sturz ${_fmtTime(evt.ts)}`
+      : `🚶 Absteigen ${_fmtTime(evt.ts)}`;
+    if (row.children.length >= 2) row.removeChild(row.firstChild);
+    row.appendChild(badge);
+  }
+  if (RACE._backgroundMode) toast(type === 'fall' ? '💥 Sturz erkannt!' : '🚶 Absteigen erkannt!');
+}
+
+function _updateRaceSensorBadges() {
+  const gpsBadge    = document.getElementById('ra-sensor-gps');
+  const motionBadge = document.getElementById('ra-sensor-motion');
+  const btBadge     = document.getElementById('ra-sensor-bt');
+  if (gpsBadge) {
+    const acc = RACE._lastAcc;
+    const ok  = acc != null && acc < 20;
+    gpsBadge.className = 'ra-sensor-badge' + (acc != null ? (ok ? ' ok' : ' warn') : '');
+    gpsBadge.textContent = acc != null ? `📍 GPS ±${Math.round(acc)}m` : '📍 GPS –';
+  }
+  if (motionBadge) {
+    motionBadge.className = 'ra-sensor-badge' + (SENSORS.motionActive ? ' ok' : '');
+    motionBadge.textContent = SENSORS.motionActive ? '📐 Sensor ✓' : '📐 Sensor –';
+  }
+  if (btBadge) {
+    const btGpsFresh = RACE.btGpsLat != null && (performance.now() - RACE.btGpsTs) < 3000;
+    btBadge.className = 'ra-sensor-badge' + (RACE.btDevice ? (btGpsFresh ? ' ok' : ' warn') : '');
+    btBadge.textContent = RACE.btDevice ? (btGpsFresh ? '🔵 BT GPS ✓' : '🔵 BT verbunden') : '🔵 BT –';
+  }
+}
+
+// ── WEB BLUETOOTH SMARTWATCH GPS INTEGRATION ───────────────────
+async function _connectSmartwatch() {
+  if (!navigator.bluetooth) { toast('⚠️ Web Bluetooth nicht unterstützt'); return; }
+  try {
+    toast('🔵 Suche Bluetooth-Gerät…');
+    const device = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: [0x1819, 0x1816, 0x180D, 'location_and_navigation',
+                         'cycling_speed_and_cadence', 'heart_rate']
+    });
+    RACE.btDevice = device;
+    const server = await device.gatt.connect();
+    RACE.btServer = server;
+    toast(`🔵 ${device.name || 'Gerät'} verbunden`);
+    _updateRaceSensorBadges();
+    // Try Location & Navigation service (0x1819) for GPS
+    try {
+      const svc     = await server.getPrimaryService(0x1819);
+      const locChar = await svc.getCharacteristic(0x2A67).catch(() => null);
+      if (locChar) {
+        await locChar.startNotifications();
+        locChar.addEventListener('characteristicvaluechanged', _onBtLocationUpdate);
+        toast('🔵 Smartwatch GPS aktiv 🛰');
+        _updateRaceSensorBadges();
+      }
+    } catch(e) { /* Location service not available on this device */ }
+    device.addEventListener('gattserverdisconnected', () => {
+      RACE.btDevice = null; RACE.btServer = null;
+      RACE.btGpsLat = null; RACE.btGpsLng = null;
+      toast('🔵 Bluetooth getrennt');
+      _updateRaceSensorBadges();
+    });
+  } catch(e) {
+    if (e.name !== 'NotFoundError') toast('🔵 BT Fehler: ' + e.message);
+  }
+}
+
+function _onBtLocationUpdate(e) {
+  const v = e.target.value;
+  if (!v || v.byteLength < 4) return;
+  const flags = v.getUint16(0, true);
+  let off = 2;
+  if (flags & 0x02) off += 2; // Instantaneous Speed present
+  if (flags & 0x04) off += 3; // Total Distance present
+  if ((flags & 0x08) && v.byteLength >= off + 8) {
+    const lat = v.getInt32(off, true) * 1e-7;
+    const lng = v.getInt32(off + 4, true) * 1e-7;
+    if (Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
+      RACE.btGpsLat = lat; RACE.btGpsLng = lng; RACE.btGpsTs = performance.now();
+      _updateRaceSensorBadges();
+    }
+  }
+}
+
+// ── CRYPTOGRAPHIC HMAC-SHA256 RESULT SIGNING ───────────────────
+async function _signRaceResult(run) {
+  if (!window.crypto || !crypto.subtle) return 'unsigned';
+  try {
+    // Day-specific rotating key — makes signature valid only for its creation date
+    const secret = 'GMTW26-RACE-' + run.date.slice(0, 10);
+    const key = await crypto.subtle.importKey(
+      'raw', new TextEncoder().encode(secret),
+      {name:'HMAC', hash:'SHA-256'}, false, ['sign']
+    );
+    const payload = JSON.stringify({
+      trackId: run.trackId,
+      date:    run.date,
+      totalMs: Math.round(run.totalMs),
+      splits:  run.splits.map(s => Math.round(s)),
+      rider:   run.riderName || '',
+      muni:    run.muniName  || ''
+    });
+    const buf = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0, 24);
+  } catch(e) { return 'unsigned'; }
+}
+
+// ── GPX TRACK BUILDER FOR RECORDED RACE ────────────────────────
+function _buildRaceGpx(run) {
+  if (!run.gpsTrack || run.gpsTrack.length < 2) return null;
+  const startWallMs = new Date(run.date).getTime() - run.totalMs;
+  const pts = run.gpsTrack.map(p => {
+    const wt = new Date(startWallMs + (p.ts || 0)).toISOString();
+    let pt = `    <trkpt lat="${p.lat.toFixed(7)}" lon="${p.lng.toFixed(7)}">\n`;
+    if (p.alt != null)   pt += `      <ele>${p.alt.toFixed(1)}</ele>\n`;
+    pt += `      <time>${wt}</time>\n`;
+    if (p.speed != null) pt += `      <extensions><gpxtpx:speed>${p.speed.toFixed(2)}</gpxtpx:speed></extensions>\n`;
+    pt += `    </trkpt>`;
+    return pt;
+  }).join('\n');
+  const safeNm  = (run.trackName || 'Lauf').replace(/[<>&"]/g, '_');
+  const dateStr = new Date(run.date).toLocaleDateString('de');
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="GMTW Trail Map 2026"
+  xmlns="http://www.topografix.com/GPX/1/1"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
+  <trk>
+    <name>${safeNm} — Lauf ${dateStr}</name>
+    <desc>Gesamtzeit: ${_fmtTime(run.totalMs)} | Stuerze: ${(run.fallEvents||[]).length} | Sig: ${run.signature||'?'}</desc>
+    <trkseg>
+${pts}
+    </trkseg>
+  </trk>
+</gpx>`;
+}
+
+function exportRaceGpx() {
+  const run = RACE.lastRunData;
+  if (!run || !run.gpsTrack || run.gpsTrack.length < 2) {
+    toast('⚠️ Kein GPS-Track aufgezeichnet'); return;
+  }
+  const gpx = _buildRaceGpx(run);
+  if (!gpx) { toast('⚠️ GPX-Generierung fehlgeschlagen'); return; }
+  const nm = (run.trackName || 'lauf').replace(/[^a-zA-Z0-9_-]/g, '_');
+  dlFile(`${nm}_lauf_${new Date().toISOString().slice(0,10)}.gpx`, gpx, 'application/gpx+xml');
+  toast('⬇ Lauf-GPX exportiert');
+}
+
+// ══════════════════════════════════════════════════════════════
 // ── RACE STATE MACHINE ─────────────────────────────────────────
 // ══════════════════════════════════════════════════════════════
 const RACE = {
@@ -5837,23 +6209,49 @@ const RACE = {
   checkpoints: [],   // [{lat,lng,isFinish,label}]
   cpMarkers: [],     // Leaflet markers on map
   nextCpIdx: 0,      // which checkpoint to watch next
+  totalKm: 0,        // total track length in km
 
-  // Timing (all in ms, using performance.now())
-  startTs: null,
-  splitTimes: [],    // [ms] per completed split (up to 4)
+  // Timing (all in ms)
+  startTs: null,         // performance.now() at race start
+  startWallTs: null,     // Date.now() at race start (wall clock for signing)
+  splitTimes: [],        // [ms] elapsed per split (up to 4)
+  splitTimestamps: [],   // wall-clock Date.now() at each split crossing
   lastSplitTs: null,
 
-  // Canvas approach state
-  _lastAcc: null,        // last GPS accuracy (for canvas display)
-  _confirmShown: false,  // whether the 2m start confirm was shown
-  _backgroundMode: false,// true → race runs silently in background after user confirms
+  // GPS track recording during race
+  gpsTrack: [],          // [{lat,lng,alt,ts,speed,acc}] recorded during race
+  _lastLat: null,        // last GPS lat (for fall events)
+  _lastLng: null,        // last GPS lng (for fall events)
+
+  // Approach / start-line crossing detection
+  _lastAcc: null,
+  _gpsHistory: [],       // last 5 {lat,lng,ts} positions for velocity calc
+  _minDistToStart: Infinity, // closest approach distance achieved
+  _confirmShown: false,
+  _armed: false,         // user confirmed → auto-crossing will fire
+  _backgroundMode: false,
+
+  // Fall / dismount detection
+  fallEvents: [],        // [{type,ts,lat,lng}]  type='fall'|'dismount'
+  _lastFallTs: 0,        // throttle fall event recording
+  _lastGpsSpeed: 0,      // km/h — used for dismount detection
+
+  // Cryptographic signature of finished result
+  signature: null,
+
+  // Bluetooth smartwatch GPS
+  btDevice: null,
+  btServer: null,
+  btGpsLat: null,
+  btGpsLng: null,
+  btGpsTs: 0,
 
   // Resources to clean up
   gpsWatcher: null,
   wakeLock: null,
   timerInterval: null,
-  _canvasRaf: null,      // requestAnimationFrame handle for canvas
-  lastRunData: null  // for export/QR
+  _canvasRaf: null,
+  lastRunData: null  // for export/QR after finish
 };
 
 function _raceElapsed() {
@@ -5904,22 +6302,23 @@ function _drawApproachCanvas(distM) {
     ctx.fillStyle = '#c8ff00';
     ctx.fillRect(0, lineY - 5, W, 10);
 
-    // "START" lettering
+    // "BEREIT!" or "START" lettering
     const fStart = Math.min(Math.round(W * 0.27), 90);
     ctx.font = `900 ${fStart}px 'Barlow Condensed',sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#c8ff00';
-    ctx.shadowColor = '#c8ff00';
-    ctx.shadowBlur = 18;
-    ctx.fillText('START', W / 2, lineY - fStart * 0.65);
+    const armedColor = RACE._armed ? '#4ade80' : '#c8ff00';
+    ctx.fillStyle   = armedColor;
+    ctx.shadowColor = armedColor;
+    ctx.shadowBlur  = 18;
+    ctx.fillText(RACE._armed ? 'BEREIT!' : 'START', W / 2, lineY - fStart * 0.65);
     ctx.shadowBlur = 0;
 
-    // Distance in cm below line
+    // Sub-label below line
     const cm = Math.round(distM * 100);
     ctx.font = `600 20px 'Barlow Condensed',sans-serif`;
     ctx.fillStyle = 'rgba(255,255,255,0.55)';
-    ctx.fillText(`${cm} cm`, W / 2, lineY + 32);
+    ctx.fillText(RACE._armed ? 'Überquere die Linie!' : `${cm} cm`, W / 2, lineY + 32);
 
   } else {
     // ══ APPROACHING VIEW (5m → 2m) ═══════════════════════
@@ -5948,7 +6347,7 @@ function _drawApproachCanvas(distM) {
     const txtAlpha = 0.3 + progress * 0.7;             // 0.3 → 1.0
     ctx.font = `600 ${txtSize}px 'Barlow',sans-serif`;
     ctx.fillStyle = `rgba(255,255,255,${txtAlpha.toFixed(2)})`;
-    ctx.fillText('Bitte vorwerts laufen', W / 2, H / 2 + numSize * 0.6 + progress * 8);
+    ctx.fillText('Vorwärts zur Startlinie!', W / 2, H / 2 + numSize * 0.6 + progress * 8);
 
     // GPS accuracy info at bottom
     ctx.font = `400 11px sans-serif`;
@@ -5968,26 +6367,30 @@ function _scheduleCanvasUpdate(distM) {
 
 // User confirms / denies race start from the 2m dialog
 function _confirmRaceStart(confirmed) {
-  // Hide confirm buttons regardless
   const conf = document.getElementById('approach-confirm');
   if (conf) conf.classList.remove('show');
 
   if (!confirmed) {
-    // "Nochmal anfahren" — KEIN Abbruch, zurück zur Annäherungsphase.
-    // Startlinie entfernen; Benutzer entfernt sich und fährt neu an.
+    // "Nochmal anfahren" — go back to approaching phase without aborting
     if (RACE.startLine) { map.removeLayer(RACE.startLine); RACE.startLine = null; }
     if (RACE._canvasRaf) { cancelAnimationFrame(RACE._canvasRaf); RACE._canvasRaf = null; }
     RACE.state = 'approaching';
     RACE._confirmShown = false;
+    RACE._armed = false;
+    RACE._minDistToStart = Infinity;
+    RACE._gpsHistory = [];
     _showRacePage('rp-approaching');
     return;
   }
 
-  // YES — run race in background (no fullscreen overlay during race)
+  // YES — arm the auto-cross detection; timer fires when line is actually crossed
+  RACE._armed = true;
   RACE._backgroundMode = true;
-  toast('🏁 Zeitmessung gestartet — Viel Erfolg!');
-  if (navigator.vibrate) navigator.vibrate([200, 80, 200]);
-  _crossStartLine();
+  if (navigator.vibrate) navigator.vibrate([150, 60, 150]);
+  toast('✅ Bereit — überquere die Startlinie!');
+  // Redraw canvas with armed state (shows "BEREIT!" at ~2m)
+  const d = RACE._minDistToStart < Infinity ? RACE._minDistToStart : 2.0;
+  _drawApproachCanvas(d);
 }
 
 async function beginPreRace(trackId) {
@@ -5998,45 +6401,57 @@ async function beginPreRace(trackId) {
   const pts = _getGpxPoints(t.gpxLayer, t.gpxString);
   if (pts.length < 2) { toast('⚠️ Track zu kurz für Zeitnahme'); return; }
 
-  RACE.state = 'approaching';
-  RACE.trackId = trackId;
-  RACE.trackName = t.name;
-  RACE.startPt = pts[0];
-  RACE.checkpoints = _computeCheckpoints(pts)?.checkpoints || [];
-  RACE.nextCpIdx = 0;
-  RACE.splitTimes = [];
-  RACE.startTs = null;
-  RACE.lastSplitTs = null;
-  RACE._lastAcc = null;
-  RACE._confirmShown = false;
-  RACE._backgroundMode = false;
-  if (RACE._canvasRaf) { cancelAnimationFrame(RACE._canvasRaf); RACE._canvasRaf = null; }
+  const cpData = _computeCheckpoints(pts);
 
-  // Show checkpoint markers on map
+  // ── Reset all RACE fields ──────────────────────────────────
+  RACE.state          = 'approaching';
+  RACE.trackId        = trackId;
+  RACE.trackName      = t.name;
+  RACE.startPt        = pts[0];
+  RACE.checkpoints    = cpData?.checkpoints || [];
+  RACE.totalKm        = cpData?.totalKm    || 0;
+  RACE.nextCpIdx      = 0;
+  RACE.splitTimes     = []; RACE.splitTimestamps = [];
+  RACE.startTs        = null; RACE.startWallTs = null; RACE.lastSplitTs = null;
+  RACE.gpsTrack       = []; RACE._lastLat = null; RACE._lastLng = null;
+  RACE._gpsHistory    = []; RACE._minDistToStart = Infinity;
+  RACE._armed         = false; RACE._confirmShown = false; RACE._backgroundMode = false;
+  RACE.fallEvents     = []; RACE._lastFallTs = 0; RACE._lastGpsSpeed = 0;
+  RACE.signature      = null; RACE._lastAcc = null;
+  if (RACE._canvasRaf) { cancelAnimationFrame(RACE._canvasRaf); RACE._canvasRaf = null; }
+  const fallRow = document.getElementById('rr-fall-row');
+  if (fallRow) fallRow.innerHTML = '';
+
+  // ── Checkpoint markers on map ──────────────────────────────
   _clearCpMarkers();
   if (RACE.checkpoints.length) {
-    RACE.checkpoints.forEach((cp, i) => {
+    RACE.checkpoints.forEach(cp => {
+      const s = Math.round(16 * _markerScale), hs = Math.round(s / 2);
       const icon = L.divIcon({
-        className:'',
-        html:`<div class="chk-div${cp.isFinish?' finish':''}"></div>`,
-        iconSize:[16,16], iconAnchor:[8,8]
+        className: '',
+        html: `<div class="chk-div${cp.isFinish?' finish':''}" style="width:${s}px;height:${s}px"></div>`,
+        iconSize:[s,s], iconAnchor:[hs,hs]
       });
       RACE.cpMarkers.push(L.marker([cp.lat,cp.lng],{icon,zIndexOffset:900}).addTo(map)
         .bindTooltip(cp.label,{permanent:true,direction:'top',className:'map-label'}));
     });
   }
 
-  // Show pre-race overlay
+  // ── Show pre-race overlay ──────────────────────────────────
   document.getElementById('race-overlay').classList.add('show');
   _showRacePage('rp-approaching');
   document.getElementById('ra-track-nm').textContent = t.name;
 
-  // Wake Lock
+  // ── Start motion sensors (fall / dismount detection) ──────
+  _startMotionSensors();
+  _updateRaceSensorBadges();
+
+  // ── Wake Lock ──────────────────────────────────────────────
   try {
     if ('wakeLock' in navigator) RACE.wakeLock = await navigator.wakeLock.request('screen');
   } catch(e) { console.info('Wake Lock nicht verfügbar:', e.message); }
 
-  // Ensure GPS
+  // ── Ensure GPS ─────────────────────────────────────────────
   try { await ensureGpsActive(); } catch(e) { /* handled */ }
 
   toast('🏁 Fahre zur Startlinie!');
@@ -6048,48 +6463,86 @@ function _clearCpMarkers() {
   if (RACE.startLine) { map.removeLayer(RACE.startLine); RACE.startLine = null; }
 }
 
+// Checkpoint-Marker-Icons bei Skalierungsänderung aktualisieren
+function _updateCpMarkerIcons() {
+  if (!RACE || !Array.isArray(RACE.cpMarkers) || !Array.isArray(RACE.checkpoints)) return;
+  RACE.cpMarkers.forEach((mkr, i) => {
+    const cp = RACE.checkpoints[i];
+    if (!cp || !mkr) return;
+    const s  = Math.round(16 * _markerScale);
+    const hs = Math.round(s / 2);
+    mkr.setIcon(L.divIcon({
+      className: '',
+      html: `<div class="chk-div${cp.isFinish?' finish':''}" style="width:${s}px;height:${s}px"></div>`,
+      iconSize: [s, s], iconAnchor: [hs, hs]
+    }));
+  });
+}
+
 // GPS callback during pre-race & racing
 function _onRaceGpsUpdate(lat, lng, acc, speed) {
   if (RACE.state === 'idle' || RACE.state === 'finished') return;
 
-  const distToStart = _distM(lat, lng, RACE.startPt.lat, RACE.startPt.lng);
+  // ── BT GPS sensor fusion ───────────────────────────────────
+  // If BT GPS is fresh (< 3 s), average with device GPS for better accuracy
+  let useLat = lat, useLng = lng, useAcc = acc;
+  if (RACE.btGpsLat != null && (performance.now() - RACE.btGpsTs) < 3000) {
+    useLat = (lat + RACE.btGpsLat) / 2;
+    useLng = (lng + RACE.btGpsLng) / 2;
+    useAcc = Math.min(acc, 5); // BT watch assumed higher accuracy
+  }
 
-  // Track GPS accuracy for canvas display
-  RACE._lastAcc = acc;
+  RACE._lastLat = useLat;
+  RACE._lastLng = useLng;
+  RACE._lastAcc = useAcc;
+
+  // ── Maintain GPS position history (last 5 positions) ───────
+  const nowTs = performance.now();
+  RACE._gpsHistory.push({lat:useLat, lng:useLng, ts:nowTs});
+  if (RACE._gpsHistory.length > 5) RACE._gpsHistory.shift();
+
+  const distToStart = _distM(useLat, useLng, RACE.startPt.lat, RACE.startPt.lng);
 
   if (RACE.state === 'approaching') {
-    // Update simple approaching page with big distance number
     document.getElementById('ra-dist-val').textContent = Math.round(distToStart);
-    document.getElementById('ra-gps-acc').textContent = `GPS ±${Math.round(acc)}m`;
-
-    // At 5m (or less) with reasonable accuracy: switch to canvas approach
-    if (distToStart <= 5 && acc <= 20) {
-      _enterStartLine(lat, lng, acc);
-    }
+    document.getElementById('ra-gps-acc').textContent  = `GPS ±${Math.round(useAcc)}m`;
+    _updateRaceSensorBadges();
+    if (distToStart <= 5 && useAcc <= 20) _enterStartLine(useLat, useLng, useAcc);
     return;
   }
 
   if (RACE.state === 'at_line') {
-    // Update canvas with current distance (uses rAF for smoothness)
-    _scheduleCanvasUpdate(distToStart);
+    // Track how close the rider got to the line
+    if (distToStart < RACE._minDistToStart) RACE._minDistToStart = distToStart;
 
-    // At 2m: show confirmation dialog (only once)
-    if (distToStart <= 2.0 && !RACE._confirmShown && acc <= 15) {
+    _scheduleCanvasUpdate(distToStart);
+    _updateRaceSensorBadges();
+
+    // Show confirm dialog at 2m with decent accuracy (only once)
+    if (distToStart <= 2.0 && !RACE._confirmShown && useAcc <= 15) {
       RACE._confirmShown = true;
+      RACE._armed = true; // also auto-arms (rider is clearly at the line)
       const conf = document.getElementById('approach-confirm');
       if (conf) conf.classList.add('show');
-      // Also draw the START view immediately
       _drawApproachCanvas(distToStart);
       if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
     }
 
-    // Auto-start fallback: if user is right on the line without having confirmed
-    // (e.g., they swiped past the dialog) — don't auto-start, keep dialog visible
+    // ── Auto-cross detection ───────────────────────────────
+    // When armed: was within 1.5 m → now clearly moving away → crossed!
+    // Threshold: rider moved ≥1.5 m past the minimum achieved distance.
+    // This handles fast riders who cross before (or instead of) tapping.
+    if (RACE._armed && RACE._minDistToStart < 1.5 &&
+        distToStart > RACE._minDistToStart + 1.5 && !RACE.startTs) {
+      const conf = document.getElementById('approach-confirm');
+      if (conf) conf.classList.remove('show');
+      _crossStartLine();
+    }
     return;
   }
 
   if (RACE.state === 'racing') {
-    _processRacePosition(lat, lng, acc, speed);
+    _processRacePosition(useLat, useLng, useAcc, speed);
     return;
   }
 }
@@ -6097,62 +6550,65 @@ function _onRaceGpsUpdate(lat, lng, acc, speed) {
 function _enterStartLine(lat, lng, acc) {
   RACE.state = 'at_line';
   RACE._confirmShown = false;
+  RACE._armed = false;
+  RACE._minDistToStart = Infinity; // reset so crossing detection starts fresh
+  RACE._gpsHistory = [];
 
   // Pulse vibration — approach warning
   if (navigator.vibrate) navigator.vibrate([150, 80, 150]);
 
   // Draw start line on map (perpendicular to track direction)
-  const _raceTrack = trackStore.tracks.find(t=>t.id===RACE.trackId);
+  const _raceTrack = trackStore.tracks.find(t => t.id === RACE.trackId);
   const pts = _raceTrack ? _getGpxPoints(_raceTrack.gpxLayer, _raceTrack.gpxString) : [];
   if (pts.length >= 2) RACE.startLine = _drawStartLine(pts[0], pts[1]);
 
-  // Show canvas approach page (replaces rp-startline)
+  // Show full-screen canvas approach page
   _showRacePage('rp-approach');
   document.getElementById('race-overlay').classList.add('show');
-  // Immediate draw
   const dist = _distM(lat, lng, RACE.startPt.lat, RACE.startPt.lng);
   _drawApproachCanvas(dist);
 }
 
 function _crossStartLine() {
-  if (RACE.state === 'go' || RACE.state === 'racing') return; // already fired
+  if (RACE.state === 'go' || RACE.state === 'racing') return; // guard against double-fire
   RACE.state = 'go';
-
   if (navigator.vibrate) navigator.vibrate([300]);
 
+  // ── Initialize GPX recording ───────────────────────────────
+  RACE.gpsTrack    = [];
+  RACE.startWallTs = Date.now();
+
   if (RACE._backgroundMode) {
-    // ── BACKGROUND MODE: hide overlay, race runs silently ──────
+    // ── BACKGROUND MODE: hide overlay, race runs silently ─────
     document.getElementById('race-overlay').classList.remove('show');
     if (RACE._canvasRaf) { cancelAnimationFrame(RACE._canvasRaf); RACE._canvasRaf = null; }
-    // Start timer immediately (no GO-page delay in background mode)
-    RACE.state = 'racing';
-    RACE.startTs = performance.now();
+    RACE.state       = 'racing';
+    RACE.startTs     = performance.now();
     RACE.lastSplitTs = RACE.startTs;
     RACE.timerInterval = setInterval(_tickTimer, 100);
     stopNavigation(false);
     toast('▶ Los! Zeitmessung läuft…');
   } else {
-    // ── NORMAL MODE: show GO page → running page ───────────────
+    // ── NORMAL MODE: show GO! page → running page ─────────────
     _showRacePage('rp-go');
     document.getElementById('race-overlay').classList.add('show');
 
-    // Build split boxes for running page
+    // Build split boxes
     const grid = document.getElementById('rr-splits-grid');
     grid.innerHTML = '';
     const labels = ['Split 1','Split 2','Split 3','Ziel'];
-    labels.forEach((lbl,i) => {
+    labels.forEach((lbl, i) => {
       const div = document.createElement('div');
-      div.className = 'rr-split-box' + (i===0?' active':'');
+      div.className = 'rr-split-box' + (i === 0 ? ' active' : '');
       div.id = `rr-split-${i}`;
       div.innerHTML = `<div class="rr-split-lbl">${lbl}</div><div class="rr-split-val empty" id="rr-sv-${i}">—</div>`;
       grid.appendChild(div);
     });
     document.getElementById('rr-track-nm').textContent = RACE.trackName;
 
-    // Start timer after short GO delay
     setTimeout(() => {
-      RACE.state = 'racing';
-      RACE.startTs = performance.now();
+      RACE.state       = 'racing';
+      RACE.startTs     = performance.now();
       RACE.lastSplitTs = RACE.startTs;
       _showRacePage('rp-running');
       RACE.timerInterval = setInterval(_tickTimer, 100);
@@ -6168,37 +6624,58 @@ function _tickTimer() {
 }
 
 function _processRacePosition(lat, lng, acc, speed) {
-  // Zeitmessung läuft IMMER durch — kein Auto-Pause
-  const spd = (speed != null && !isNaN(speed)) ? speed : 0;
-  const kmh = spd * 3.6;
-  document.getElementById('rr-speed-lbl').textContent = `${kmh.toFixed(1)} km/h · ±${Math.round(acc)}m`;
+  const spd  = (speed != null && !isNaN(speed)) ? speed : 0;
+  const kmh  = spd * 3.6;
+  const prev = RACE._lastGpsSpeed;
+  RACE._lastGpsSpeed = kmh;
 
-  // Checkpoint-Check (nur im racing-Zustand)
+  document.getElementById('rr-speed-lbl').textContent =
+    `${kmh.toFixed(1)} km/h · ±${Math.round(acc)}m`;
+
+  // ── Record GPS track point ─────────────────────────────────
+  // Throttle: add point if moved > 5 m or > 2 s since last point
+  if (RACE.startTs) {
+    const ts   = Math.round(performance.now() - RACE.startTs);
+    const last = RACE.gpsTrack[RACE.gpsTrack.length - 1];
+    const movedM  = last ? _distM(lat, lng, last.lat, last.lng) : 999;
+    const elapsedMs = last ? (ts - last.ts) : 9999;
+    if (movedM > 5 || elapsedMs > 2000) {
+      RACE.gpsTrack.push({ lat, lng, alt:null, ts, speed:spd, acc:Math.round(acc) });
+    }
+  }
+
+  // ── Dismount detection: GPS speed drops from > 5 km/h to < 1 km/h ──
+  if (prev > 5 && kmh < 1) {
+    _recordFallEvent('dismount');
+  }
+
   if (RACE.state !== 'racing') return;
   if (RACE.nextCpIdx >= RACE.checkpoints.length) return;
 
-  const cp = RACE.checkpoints[RACE.nextCpIdx];
+  const cp    = RACE.checkpoints[RACE.nextCpIdx];
   const dToCp = _distM(lat, lng, cp.lat, cp.lng);
 
-  if (dToCp < 5) {
-    const now = performance.now();
+  // Adaptive checkpoint radius: 3 m minimum, scales up with GPS accuracy
+  // Formula: max(3, min(8, acc * 0.4)) — e.g. acc=10m → radius=4m
+  const cpRadius = Math.max(3, Math.min(8, acc * 0.4));
+
+  if (dToCp < cpRadius) {
+    const now     = performance.now();
     const splitMs = now - RACE.lastSplitTs;
     RACE.lastSplitTs = now;
     RACE.splitTimes.push(splitMs);
-
+    RACE.splitTimestamps.push(Date.now());
     if (navigator.vibrate) navigator.vibrate([100]);
 
     if (RACE._backgroundMode) {
-      // Toast the split time silently
       const lbl = cp.isFinish ? '🏁 Ziel' : `⏱ ${cp.label}`;
       toast(`${lbl}: ${_fmtTime(splitMs)}`);
     } else {
-      // Update running page split boxes
       const svEl = document.getElementById(`rr-sv-${RACE.nextCpIdx}`);
       const sbEl = document.getElementById(`rr-split-${RACE.nextCpIdx}`);
       if (svEl) { svEl.textContent = _fmtTime(splitMs); svEl.classList.remove('empty'); }
       if (sbEl) { sbEl.classList.remove('active'); sbEl.classList.add('done'); }
-      const nextSb = document.getElementById(`rr-split-${RACE.nextCpIdx+1}`);
+      const nextSb = document.getElementById(`rr-split-${RACE.nextCpIdx + 1}`);
       if (nextSb) nextSb.classList.add('active');
     }
 
@@ -6217,32 +6694,56 @@ async function _finishRace() {
   if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
 
   const totalMs = _raceElapsed();
+  const slabels = ['Split 1','Split 2','Split 3','Ziel'];
+
+  // ── Load profile for run metadata ─────────────────────────
+  const _prof = loadProfile();
+
+  // ── Build run object ───────────────────────────────────────
   const run = {
-    trackId:   RACE.trackId,
-    trackName: RACE.trackName,
-    date:      new Date().toISOString(),
+    trackId:         RACE.trackId,
+    trackName:       RACE.trackName,
+    date:            new Date().toISOString(),
     totalMs,
-    splits:    RACE.splitTimes.slice()
+    splits:          RACE.splitTimes.slice(),
+    splitTimestamps: RACE.splitTimestamps.slice(),
+    fallEvents:      RACE.fallEvents.slice(),
+    gpsTrack:        RACE.gpsTrack.slice(),
+    gpsPoints:       RACE.gpsTrack.length,
+    riderName:       _prof.name       || '',
+    muniName:        _prof.muniName   || '',
+    muniDetails: {
+      wheelSize:      _prof.wheelSize      || '',
+      color:          _prof.color          || '',
+      brake:          _prof.brake          || '',
+      seatClampColor: _prof.seatClampColor || '',
+      special:        _prof.special        || ''
+    },
+    signature: null  // filled after signing
   };
+
+  // ── Cryptographic signing ─────────────────────────────────
+  run.signature  = await _signRaceResult(run);
+  RACE.signature = run.signature;
   RACE.lastRunData = run;
 
-  // Save to IndexedDB
-  await _saveRun(run);
+  // ── Save to IndexedDB (strip gpsTrack from stored record to save space)
+  const runForStore = Object.assign({}, run, {gpsTrack: undefined});
+  await _saveRun(runForStore);
 
-  // Release wake lock
+  // ── Release wake lock ─────────────────────────────────────
   if (RACE.wakeLock) { try { await RACE.wakeLock.release(); } catch(e){} RACE.wakeLock = null; }
 
-  // Load leaderboard for this track
-  const runs = await _getRunsForTrack(RACE.trackId);
-  const rank = runs.sort((a,b)=>a.totalMs-b.totalMs).findIndex(r=>r.date===run.date);
+  // ── Load leaderboard ──────────────────────────────────────
+  const runs   = await _getRunsForTrack(RACE.trackId);
+  const sorted = [...runs].sort((a,b) => a.totalMs - b.totalMs);
 
-  // Build results UI
+  // ── Build results UI ──────────────────────────────────────
   document.getElementById('rres-track-nm').textContent = RACE.trackName;
-  document.getElementById('rres-total').textContent = _fmtTime(totalMs);
+  document.getElementById('rres-total').textContent    = _fmtTime(totalMs);
 
   const splitsGrid = document.getElementById('rres-splits-grid');
   splitsGrid.innerHTML = '';
-  const slabels = ['Split 1','Split 2','Split 3','Ziel'];
   RACE.splitTimes.forEach((ms, i) => {
     const card = document.createElement('div');
     card.className = 'rres-split-card';
@@ -6250,36 +6751,53 @@ async function _finishRace() {
     splitsGrid.appendChild(card);
   });
 
-  // Leaderboard
+  // ── Signature box ─────────────────────────────────────────
+  const sigBox = document.getElementById('rres-sig-box');
+  const sigVal = document.getElementById('rres-sig-val');
+  if (sigBox && sigVal && run.signature && run.signature !== 'unsigned') {
+    sigVal.textContent = run.signature;
+    sigBox.style.display = '';
+  }
+
+  // ── Leaderboard (clickable rows) ──────────────────────────
   const lb = document.getElementById('rres-lb');
   lb.innerHTML = '';
-  const sorted = [...runs].sort((a,b)=>a.totalMs-b.totalMs).slice(0,8);
-  sorted.forEach((r, i) => {
+  sorted.slice(0, 8).forEach((r, i) => {
     const isCur = r.date === run.date;
-    const row = document.createElement('div');
-    row.className = `rres-lb-row${i===0?' gold-row':''}${isCur?' cur-row':''}`;
-    const rankCls = i===0?' gold':'';
-    row.innerHTML = `<span class="rres-lb-rank${rankCls}">${i===0?'🥇':i+1}</span>
-      <span class="rres-lb-date">${new Date(r.date).toLocaleDateString('de')}</span>
+    const row   = document.createElement('div');
+    row.className = `rres-lb-row cursor-ptr${i===0?' gold-row':''}${isCur?' cur-row':''}`;
+    row.title = 'Details anzeigen';
+    const nameLabel = r.riderName
+      ? `<span class="rres-lb-name">${escHtml(r.riderName)}</span>`
+      : `<span class="rres-lb-date">${new Date(r.date).toLocaleDateString('de')}</span>`;
+    row.innerHTML = `<span class="rres-lb-rank${i===0?' gold':''}">${i===0?'🥇':i+1}</span>
+      ${nameLabel}
       <span class="rres-lb-time">${_fmtTime(r.totalMs)}</span>`;
+    row.addEventListener('click', () => openRunDetail(r));
     lb.appendChild(row);
   });
 
-  // Generate QR code with race result data (compact JSON with timestamps)
+  // ── QR code with signed metadata (incl. rider + muni) ────
   try {
     const qrPayload = JSON.stringify({
-      track: run.trackName,
-      date: run.date,
-      total: _fmtTime(totalMs, false),
-      splits: run.splits.map((ms,i) => ({ s: slabels[i]||`S${i+1}`, t: _fmtTime(ms, false) }))
+      app:   'GMTW26',
+      track:  run.trackName,
+      date:   run.date,
+      rider:  run.riderName  || '',
+      muni:   run.muniName   || '',
+      wheel:  (run.muniDetails?.wheelSize) || '',
+      total:  _fmtTime(totalMs, false),
+      splits: run.splits.map((ms,i) => ({s: slabels[i]||`S${i+1}`, t: _fmtTime(ms, false)})),
+      falls:  run.fallEvents.length,
+      pts:    run.gpsPoints,
+      sig:    (run.signature||'unsigned').slice(0, 16)
     });
     const qrCanvas = document.getElementById('rres-qr-canvas');
     if (qrCanvas) drawQR(qrCanvas, qrPayload, 120, '#0b0e14', '#ffffff');
   } catch(e) { console.warn('QR render error:', e); }
 
   _showRacePage('rp-results');
-  // Always show overlay at finish (even if race was in background mode)
-  document.getElementById('race-overlay').classList.add('show');
+  document.getElementById('race-overlay').classList.add('show'); // always show at finish
   _clearCpMarkers();
   renderTrackList(); // refresh run counts in track list
 }
@@ -6298,16 +6816,27 @@ function hideAbortConfirm() {
 function abortRace() {
   clearInterval(RACE.timerInterval); RACE.timerInterval = null;
   if (RACE._canvasRaf) { cancelAnimationFrame(RACE._canvasRaf); RACE._canvasRaf = null; }
-  if (RACE.wakeLock) { try{RACE.wakeLock.release();}catch(e){} RACE.wakeLock = null; }
+  if (RACE.wakeLock)   { try { RACE.wakeLock.release(); } catch(e){} RACE.wakeLock = null; }
   _clearCpMarkers();
   stopNavigation(false);
-  RACE.state = 'idle';
-  RACE.trackId = null;
+  // Stop motion sensors
+  _stopMotionSensors();
+  // Disconnect Bluetooth if connected
+  if (RACE.btDevice) {
+    try { RACE.btDevice.gatt.disconnect(); } catch(e) {}
+    RACE.btDevice = null; RACE.btServer = null;
+    RACE.btGpsLat = null; RACE.btGpsLng = null;
+  }
+  RACE.state           = 'idle';
+  RACE.trackId         = null;
   RACE._backgroundMode = false;
-  RACE._confirmShown = false;
+  RACE._confirmShown   = false;
+  RACE._armed          = false;
   document.getElementById('race-overlay').classList.remove('show');
   const conf = document.getElementById('approach-confirm');
   if (conf) conf.classList.remove('show');
+  const fallRow = document.getElementById('rr-fall-row');
+  if (fallRow) fallRow.innerHTML = '';
   toast('🛑 Rennen abgebrochen');
 }
 function closeRaceOverlay() {
@@ -6345,25 +6874,29 @@ async function _getAllRuns() {
 
 function exportRunJson() {
   if (!RACE.lastRunData) return;
-  const name = (RACE.lastRunData.trackName || 'run').replace(/[^a-zA-Z0-9_-]/g,'_');
-  dlFile(`${name}_${new Date().toISOString().slice(0,10)}.json`,
+  const nm = (RACE.lastRunData.trackName || 'run').replace(/[^a-zA-Z0-9_-]/g, '_');
+  // Include full data (signature, fall events, GPS track)
+  dlFile(`${nm}_lauf_${new Date().toISOString().slice(0,10)}.json`,
     JSON.stringify(RACE.lastRunData, null, 2), 'application/json');
   toast('⬇ JSON exportiert');
 }
 function shareRunQr() {
   if (!RACE.lastRunData) return;
   const d = RACE.lastRunData;
-  // Build compact QR payload with times + timestamps
+  // Build compact signed QR payload
   const payload = {
-    track: d.trackName,
-    date: d.date,
-    total: _fmtTime(d.totalMs, false),
-    splits: d.splits.map((ms,i)=>({s:`S${i+1}`,t:_fmtTime(ms,false)}))
+    app:   'GMTW26',
+    track:  d.trackName,
+    date:   d.date,
+    total:  _fmtTime(d.totalMs, false),
+    splits: d.splits.map((ms,i) => ({s:`S${i+1}`, t:_fmtTime(ms,false)})),
+    falls: (d.fallEvents||[]).length,
+    pts:   d.gpsPoints || 0,
+    sig:   (d.signature||'unsigned').slice(0, 16)
   };
-  const qrStr = JSON.stringify(payload);
   const canvas = document.getElementById('rres-qr-canvas');
-  if (canvas) drawQR(canvas, qrStr, 120, '#0b0e14', '#ffffff');
-  toast('📋 QR-Code generiert!');
+  if (canvas) drawQR(canvas, JSON.stringify(payload), 120, '#0b0e14', '#ffffff');
+  toast('📋 QR mit Signatur generiert!');
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -6408,14 +6941,21 @@ async function _renderTrackDetailPanel(t) {
   const div = document.createElement('div');
   div.className = 'trk-detail';
 
+  window._tddRuns = sorted.slice(0, 5);
   const lbHtml = sorted.length === 0
     ? `<div class="tdd-lb-empty">Noch keine Zeiten — erste Fahrt starten!</div>`
-    : sorted.slice(0,5).map((r,i) => `
-      <div class="tdd-lb-row${i===0?' gold-lb':''}">
+    : window._tddRuns.map((r, i) => {
+        const dateStr = new Date(r.date).toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit', year:'2-digit'});
+        const nameHtml = r.riderName
+          ? `<span class="tdd-lb-name">${escHtml(r.riderName)}</span><span class="tdd-lb-date" style="font-size:9px">${dateStr}</span>`
+          : `<span class="tdd-lb-date">${dateStr}</span>`;
+        return `
+      <div class="tdd-lb-row${i===0?' gold-lb':''} cursor-ptr" onclick="_openTddRun(${i})" title="Lauf-Details anzeigen">
         <span class="tdd-lb-rank${i===0?' gold':''}">${i===0?'🥇':i+1}</span>
-        <span class="tdd-lb-date">${new Date(r.date).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'2-digit'})}</span>
+        ${nameHtml}
         <span class="tdd-lb-time">${_fmtTime(r.totalMs)}</span>
-      </div>`).join('');
+      </div>`;
+      }).join('');
 
   div.innerHTML = `
     <div class="tdd-head">
@@ -6497,10 +7037,12 @@ function switchSpTab(name, btn) {
   const tab = document.getElementById('sp-tab-' + name);
   if (tab) tab.classList.add('on');
   // Tab-spezifische Initialisierung
-  if (name === 'qr')     _initQrTab();
-  if (name === 'tracks') _initTracksTab();
-  if (name === 'backup') updateStorageInfo();
+  if (name === 'qr')      _initQrTab();
+  if (name === 'tracks')  _initTracksTab();
+  if (name === 'backup')  updateStorageInfo();
   if (name === 'markers') renderAllMarkersList();
+  if (name === 'app')     _initAppInstallTab();
+  if (name === 'profile') _loadProfileForm();
 }
 
 // Emoji-Grid befüllen
@@ -6544,6 +7086,146 @@ function _loadSettingsForm() {
     slider.value = pct;
     if (sliderVal) sliderVal.textContent = pct + '%';
   }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ── PROFIL SYSTEM ──────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+
+function loadProfile() {
+  try { return JSON.parse(localStorage.getItem(LS.K.PROFILE) || '{}'); }
+  catch(e) { return {}; }
+}
+
+function saveProfile() {
+  const p = {
+    name:           (document.getElementById('pf-input-name')?.value      || '').trim(),
+    muniName:       (document.getElementById('pf-input-muni')?.value      || '').trim(),
+    wheelSize:      (document.getElementById('pf-input-wheel')?.value     || '').trim(),
+    color:          (document.getElementById('pf-input-color')?.value     || '').trim(),
+    brake:          (document.getElementById('pf-input-brake')?.value     || '').trim(),
+    seatClampColor: (document.getElementById('pf-input-seatclamp')?.value || '').trim(),
+    special:        (document.getElementById('pf-input-special')?.value   || '').trim()
+  };
+  LS.set(LS.K.PROFILE, p);
+  _refreshProfileDisplay(p);
+  toast('✅ Profil gespeichert');
+}
+
+function _refreshProfileDisplay(p) {
+  p = p || loadProfile();
+  const nameEl = document.getElementById('pf-name-display');
+  const muniEl = document.getElementById('pf-muni-display');
+  if (nameEl) nameEl.textContent = p.name || 'Kein Name gesetzt';
+  if (muniEl) muniEl.textContent = p.muniName || 'Kein Muni-Name';
+}
+
+function _loadProfileForm() {
+  const p = loadProfile();
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.value = val||''; };
+  set('pf-input-name',      p.name);
+  set('pf-input-muni',      p.muniName);
+  set('pf-input-wheel',     p.wheelSize);
+  set('pf-input-color',     p.color);
+  set('pf-input-brake',     p.brake);
+  set('pf-input-seatclamp', p.seatClampColor);
+  set('pf-input-special',   p.special);
+  _refreshProfileDisplay(p);
+}
+
+// ── RUN DETAIL MODAL ───────────────────────────────────────────
+let _rdmCurrentRun = null; // run being viewed in the modal
+
+function openRunDetail(run) {
+  if (!run) return;
+  _rdmCurrentRun = run;
+  const body = document.getElementById('rdm-body');
+  if (!body) return;
+
+  const slabels = ['Split 1','Split 2','Split 3','Ziel'];
+  const hasName = run.riderName && run.riderName.trim();
+  const hasGpx  = run.gpsTrack && run.gpsTrack.length >= 2;
+
+  // GPX-Button visibility
+  const gpxBtn = document.getElementById('rdm-gpx-btn');
+  if (gpxBtn) gpxBtn.style.display = hasGpx ? '' : 'none';
+
+  // ── Muni detail chips ──────────────────────────────────────
+  const md = run.muniDetails || {};
+  const chips = [
+    md.wheelSize ? `<span class="rdm-chip accent">${escHtml(md.wheelSize)}</span>` : '',
+    md.color     ? `<span class="rdm-chip">${escHtml(md.color)}</span>`            : '',
+    md.brake     ? `<span class="rdm-chip">${escHtml(md.brake)}</span>`            : '',
+    md.seatClampColor ? `<span class="rdm-chip">${escHtml(md.seatClampColor)} Klemme</span>` : '',
+    md.special   ? `<span class="rdm-chip accent">${escHtml(md.special)}</span>`  : '',
+  ].filter(Boolean).join('');
+
+  // ── Splits grid ────────────────────────────────────────────
+  const splits = (run.splits || []).map((ms, i) =>
+    `<div class="rdm-split-card">
+      <div class="rdm-split-lbl">${slabels[i]||`S${i+1}`}</div>
+      <div class="rdm-split-val">${_fmtTime(ms)}</div>
+    </div>`
+  ).join('');
+
+  // ── Fall events ───────────────────────────────────────────
+  const falls = (run.fallEvents || []);
+  const fallsHtml = falls.length ? `
+    <div class="rdm-section-lbl">💥 Ereignisse (${falls.length})</div>
+    <div class="rdm-falls-row">
+      ${falls.map(f => `<span class="rdm-fall-badge">${f.type==='fall'?'💥 Sturz':'🚶 Absteigen'} ${_fmtTime(f.ts)}</span>`).join('')}
+    </div>` : '';
+
+  // ── Signature ─────────────────────────────────────────────
+  const sigHtml = (run.signature && run.signature !== 'unsigned') ? `
+    <div class="rdm-sig-box">
+      <div class="rdm-sig-lbl">🔐 Signatur (fälschungssicher)</div>
+      <div class="rdm-sig-val">${escHtml(run.signature)}</div>
+    </div>` : '';
+
+  // ── Date ──────────────────────────────────────────────────
+  const dateStr = new Date(run.date).toLocaleDateString('de-DE', {
+    day:'2-digit', month:'2-digit', year:'numeric',
+    hour:'2-digit', minute:'2-digit'
+  });
+
+  body.innerHTML = `
+    <div class="rdm-rider-card">
+      <div class="profile-avatar" style="width:44px;height:44px;font-size:20px;flex-shrink:0">${hasName?'🏆':'🦄'}</div>
+      <div class="rdm-rider-info">
+        <div class="rdm-rider-name">${hasName ? escHtml(run.riderName) : 'Unbekannter Fahrer'}</div>
+        ${run.muniName ? `<div class="rdm-muni-name">🦄 ${escHtml(run.muniName)}</div>` : ''}
+        ${chips ? `<div class="rdm-muni-chips">${chips}</div>` : ''}
+      </div>
+    </div>
+    <div class="rdm-time-section">
+      <div class="rdm-time-big">${_fmtTime(run.totalMs)}</div>
+      <div class="rdm-time-lbl">Gesamtzeit</div>
+    </div>
+    <div class="rdm-track-meta">${escHtml(run.trackName || '—')} · ${dateStr}</div>
+    ${splits ? `<div class="rdm-section-lbl">⏱ Zwischenzeiten</div><div class="rdm-splits-grid">${splits}</div>` : ''}
+    ${fallsHtml}
+    ${sigHtml}
+  `;
+
+  document.getElementById('run-detail-modal').classList.add('show');
+}
+
+function closeRunDetail() {
+  document.getElementById('run-detail-modal').classList.remove('show');
+  _rdmCurrentRun = null;
+}
+
+function exportCurrentRunDetailGpx() {
+  if (!_rdmCurrentRun) return;
+  if (!_rdmCurrentRun.gpsTrack || _rdmCurrentRun.gpsTrack.length < 2) {
+    toast('⚠️ Kein GPS-Track in diesem Lauf'); return;
+  }
+  const gpx = _buildRaceGpx(_rdmCurrentRun);
+  if (!gpx) { toast('⚠️ GPX-Export fehlgeschlagen'); return; }
+  const nm = (_rdmCurrentRun.trackName || 'lauf').replace(/[^a-zA-Z0-9_-]/g, '_');
+  dlFile(`${nm}_lauf_${new Date(_rdmCurrentRun.date).toISOString().slice(0,10)}.gpx`, gpx, 'application/gpx+xml');
+  toast('⬇ Lauf-GPX exportiert');
 }
 
 function saveSettings() {
@@ -6660,6 +7342,8 @@ async function exportFullBackup() {
       markerScale:    parseFloat(localStorage.getItem('gmtw_marker_scale') || '1.0'),
       locsHidden:     JSON.parse(localStorage.getItem('gmtw_locs_hidden')    || '[]'),
       locsOverrides:  JSON.parse(localStorage.getItem('gmtw_locs_overrides') || '{}'),
+      // Fahrerprofil (v5)
+      profile:        LS.get(LS.K.PROFILE, {}),
     };
 
     // Aktuell geladene Tracks mit vollständigen GPX-Daten sichern
@@ -6674,7 +7358,7 @@ async function exportFullBackup() {
     }));
 
     const backup = {
-      _version:  4,
+      _version:  5,
       _app:      'GMTW Trail Map',
       _exported: new Date().toISOString(),
       tracks:    mergedTracks,
@@ -6789,6 +7473,8 @@ async function importFullBackup(input) {
         if (s.locsOverrides && typeof s.locsOverrides === 'object') {
           localStorage.setItem('gmtw_locs_overrides', JSON.stringify(s.locsOverrides));
         }
+        // Fahrerprofil (v5+)
+        if (s.profile && typeof s.profile === 'object') LS.set(LS.K.PROFILE, s.profile);
       }
 
       const imported = `${tracksN} Strecken · ${markersN} Marker`;
@@ -6802,6 +7488,120 @@ async function importFullBackup(input) {
   };
   reader.onerror = () => toast('❌ Datei nicht lesbar');
   reader.readAsText(file, 'utf-8');
+}
+
+// ══════════════════════════════════════════════════════════════
+// ── RUN EXPORTS ─────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+
+// Öffnet Run-Detail aus Track-Detail-Bestenliste (via window._tddRuns Index)
+function _openTddRun(i) {
+  if (window._tddRuns && window._tddRuns[i]) openRunDetail(window._tddRuns[i]);
+}
+
+// Gibt alle Zeiten aller Strecken als flaches Array zurück
+async function _getAllRunsFlat() {
+  const allRuns   = await localforage.getItem(LS.K.RUNS)   || {};
+  const allTracks = await localforage.getItem(LS.K.TRACKS) || [];
+  const trackNames = {};
+  allTracks.forEach(t => { trackNames[t.id] = t.name || t.id; });
+  trackStore.tracks.forEach(t => { trackNames[t.id] = t.name || t.id; });
+
+  const flat = [];
+  for (const [trackId, runs] of Object.entries(allRuns)) {
+    if (!Array.isArray(runs)) continue;
+    for (const r of runs) {
+      flat.push({
+        trackId,
+        trackName:  trackNames[trackId] || trackId,
+        date:       r.date       || '',
+        riderName:  r.riderName  || '',
+        muniName:   r.muniName   || '',
+        wheelSize:  (r.muniDetails && r.muniDetails.wheelSize) || '',
+        totalMs:    r.totalMs    || 0,
+        totalTime:  _fmtTime(r.totalMs || 0),
+        splits:     r.splits     || [],
+        falls:      r.fallEvents ? r.fallEvents.length : 0,
+        signature:  r.signature  || ''
+      });
+    }
+  }
+  flat.sort((a, b) => new Date(b.date) - new Date(a.date));
+  return flat;
+}
+
+// Export aller Zeiten als JSON
+async function exportAllRunsJson() {
+  try {
+    toast('⏳ Erstelle JSON-Export…');
+    const runs = await _getAllRunsFlat();
+    if (!runs.length) { toast('ℹ️ Noch keine Zeiten vorhanden'); return; }
+
+    const data = {
+      _app:      'GMTW Trail Map',
+      _exported: new Date().toISOString(),
+      _total:    runs.length,
+      runs
+    };
+    const json  = JSON.stringify(data, null, 2);
+    const fname = `GMTW_Zeiten_${new Date().toISOString().slice(0,10)}.json`;
+    dlFile(fname, json, 'application/json');
+    toast(`✅ ${runs.length} Zeiten exportiert`);
+  } catch(e) {
+    toast('❌ Export fehlgeschlagen: ' + e.message);
+    console.error('exportAllRunsJson:', e);
+  }
+}
+
+// Export aller Zeiten als CSV (Excel-kompatibel mit BOM)
+async function exportAllRunsCsv() {
+  try {
+    toast('⏳ Erstelle CSV-Export…');
+    const runs = await _getAllRunsFlat();
+    if (!runs.length) { toast('ℹ️ Noch keine Zeiten vorhanden'); return; }
+
+    const maxSplits = Math.max(...runs.map(r => r.splits.length), 0);
+    const splitHeaders = [];
+    for (let i = 0; i < maxSplits; i++) {
+      splitHeaders.push(i < maxSplits - 1 ? `Split ${i+1}` : 'Ziel');
+    }
+    const headers = ['Strecke','Datum','Fahrer','Muni','Rad','Gesamtzeit',
+                     ...splitHeaders, 'Stürze','Signatur'];
+
+    const csvEsc = v => {
+      const s = String(v == null ? '' : v);
+      if (s.includes(',') || s.includes('"') || s.includes('\n')) return `"${s.replace(/"/g,'""')}"`;
+      return s;
+    };
+
+    const rows = [headers.join(',')];
+    for (const r of runs) {
+      const dateStr = r.date ? new Date(r.date).toLocaleDateString('de-DE') : '';
+      const splitVals = [];
+      for (let i = 0; i < maxSplits; i++) {
+        splitVals.push(r.splits[i] != null ? _fmtTime(r.splits[i]) : '');
+      }
+      rows.push([
+        csvEsc(r.trackName),
+        csvEsc(dateStr),
+        csvEsc(r.riderName),
+        csvEsc(r.muniName),
+        csvEsc(r.wheelSize),
+        csvEsc(r.totalTime),
+        ...splitVals.map(csvEsc),
+        csvEsc(r.falls),
+        csvEsc(r.signature)
+      ].join(','));
+    }
+
+    const csv   = '\uFEFF' + rows.join('\r\n'); // BOM für Excel-Kompatibilität
+    const fname = `GMTW_Zeiten_${new Date().toISOString().slice(0,10)}.csv`;
+    dlFile(fname, csv, 'text/csv;charset=utf-8');
+    toast(`✅ ${runs.length} Zeiten als CSV exportiert`);
+  } catch(e) {
+    toast('❌ Export fehlgeschlagen: ' + e.message);
+    console.error('exportAllRunsCsv:', e);
+  }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -7384,12 +8184,12 @@ function openMdModalManual() {
 // ── GPS EMOJI — dynamisches Icon mit Zoom-Skalierung ──────────
 // ══════════════════════════════════════════════════════════════
 
-// Berechne Icon-Größe relativ zum Zoom-Level
-// Bei Zoom 14 → klein (24px), bei Zoom 18 → groß (48px)
+// Berechne Icon-Größe relativ zum Zoom-Level UND Marker-Skalierung
+// Zoom-Basis: 20px (zoom 10) bis 52px (zoom 20), dann mit _markerScale multipliziert
 function _calcGpsIconSize(zoom) {
   const minZ = 10, maxZ = 20, minS = 20, maxS = 52;
-  const size = Math.round(minS + (maxS - minS) * Math.max(0, Math.min(1, (zoom - minZ) / (maxZ - minZ))));
-  return size;
+  const base = Math.round(minS + (maxS - minS) * Math.max(0, Math.min(1, (zoom - minZ) / (maxZ - minZ))));
+  return Math.round(base * _markerScale);
 }
 
 function _buildGpsEmojiIcon(emoji, zoom) {
@@ -7452,74 +8252,145 @@ function _onGpsPos(pos) {
 }
 
 // ══════════════════════════════════════════════════════════════
-// ── PWA INSTALL PROMPT ─────────────────────────────────════════
+// ══════════════════════════════════════════════════════════════
+// ── PWA INSTALL SYSTEM v3 — Aggressiv & Gerätespezifisch ──────
 // ══════════════════════════════════════════════════════════════
 
-const PWA_DECLINE_KEY   = 'gmtw_install_decline_ts';  // Timestamp der letzten Ablehnung
-const PWA_DECLINE_PERM  = 'gmtw_install_decline_perm'; // Permanente Ablehnung
-const PWA_REASK_MS      = 2 * 24 * 60 * 60 * 1000;    // 2 Tage in ms
+const PWA_DECLINE_KEY  = 'gmtw_install_decline_ts';  // Letztes Ablehnen (Timestamp)
+const PWA_DECLINE_PERM = 'gmtw_install_decline_perm'; // Permanent abgelehnt
+const PWA_REASK_MS     = 24 * 60 * 60 * 1000;         // 1 Tag — täglich erneut fragen
 
 let _deferredInstallPrompt = null;
 
-// Prüft ob Install-Banner angezeigt werden soll (2-Tage-Sperre)
-function _canShowInstall() {
-  if (localStorage.getItem(PWA_DECLINE_PERM)) return false;
-  const ts = parseInt(localStorage.getItem(PWA_DECLINE_KEY) || '0', 10);
-  return !ts || (Date.now() - ts) > PWA_REASK_MS;
+// ── Detaillierte Geräteerkennung ────────────────────────────
+function _detectDevice() {
+  const ua  = navigator.userAgent || '';
+  // Plattform
+  const isIOS     = /ipad|iphone|ipod/i.test(ua) && !window.MSStream;
+  const isAndroid = /android/i.test(ua);
+  const isDesktop = !isIOS && !isAndroid;
+  // Browser (Reihenfolge wichtig: spezifischste zuerst)
+  const isSamsung = /samsungbrowser/i.test(ua);
+  const isEdge    = /edg\//i.test(ua);
+  const isOpera   = /opr\/|opera/i.test(ua);
+  const isFirefox = /firefox/i.test(ua);
+  const isBrave   = (typeof navigator.brave !== 'undefined');
+  const isSafari  = /safari/i.test(ua) && !/chrome/i.test(ua) && !isSamsung;
+  const isChrome  = /chrome/i.test(ua) && !isSamsung && !isEdge && !isOpera && !isBrave;
+  // Android-Gerätemarke
+  let brand = 'android', brandLabel = 'Android';
+  if (isAndroid) {
+    if      (/samsung|sm-[a-z]/i.test(ua))          { brand='samsung';  brandLabel='Samsung'; }
+    else if (/huawei|honor|hms/i.test(ua))           { brand='huawei';   brandLabel='Huawei'; }
+    else if (/xiaomi|miui|redmi|poco/i.test(ua))     { brand='xiaomi';   brandLabel='Xiaomi'; }
+    else if (/pixel/i.test(ua))                      { brand='google';   brandLabel='Google Pixel'; }
+    else if (/oneplus/i.test(ua))                    { brand='oneplus';  brandLabel='OnePlus'; }
+    else if (/motorola|moto\s/i.test(ua))            { brand='motorola'; brandLabel='Motorola'; }
+    else if (/sony|xperia/i.test(ua))                { brand='sony';     brandLabel='Sony'; }
+    else if (/oppo/i.test(ua))                       { brand='oppo';     brandLabel='OPPO'; }
+    else if (/realme/i.test(ua))                     { brand='realme';   brandLabel='Realme'; }
+    else if (/vivo/i.test(ua))                       { brand='vivo';     brandLabel='Vivo'; }
+  }
+  // Browser-Name + Icon
+  let browserName='Browser', browserIcon='🌐';
+  if      (isSamsung)  { browserName='Samsung Internet'; browserIcon='🌐'; }
+  else if (isEdge)     { browserName='Edge';    browserIcon='🔵'; }
+  else if (isOpera)    { browserName='Opera';   browserIcon='🔴'; }
+  else if (isFirefox)  { browserName='Firefox'; browserIcon='🦊'; }
+  else if (isBrave)    { browserName='Brave';   browserIcon='🦁'; }
+  else if (isChrome)   { browserName='Chrome';  browserIcon='🟢'; }
+  else if (isSafari)   { browserName='Safari';  browserIcon='🔵'; }
+  // Bereits installiert?
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || (typeof navigator.standalone !== 'undefined' && navigator.standalone === true)
+    || document.referrer.startsWith('android-app://');
+  return {
+    isIOS, isAndroid, isDesktop,
+    isSamsung, isEdge, isOpera, isFirefox, isBrave, isChrome, isSafari,
+    brand, brandLabel, browserName, browserIcon,
+    isStandalone, canDirectInstall: !!_deferredInstallPrompt,
+  };
 }
 
-// Chrome/Android/Samsung: beforeinstallprompt abfangen
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  _deferredInstallPrompt = e;
-  if (_canShowInstall()) {
-    setTimeout(() => _showPwaInstall('android'), 2500);
-  }
-});
+// ── Gerätespezifische Schritt-Anleitung ──────────────────────
+function _getInstallSteps(dev) {
+  const { isIOS, isAndroid, isDesktop, isSamsung, isFirefox, isEdge, isChrome, isSafari } = dev;
+  if (isIOS && isSafari) return `<strong>Safari auf iPhone / iPad:</strong><br>
+    1️⃣ Tippe das <strong>Teilen-Symbol ⎙</strong> unten in der Leiste<br>
+    2️⃣ Scrolle → wähle <strong>„Zum Home-Bildschirm"</strong><br>
+    3️⃣ Tippe <strong>„Hinzufügen"</strong> — fertig! 🎉`;
+  if (isIOS) return `<strong>iOS Browser:</strong><br>
+    1️⃣ Öffne diese Seite in <strong>Safari</strong><br>
+    2️⃣ Tippe Teilen <strong>⎙</strong> → <strong>„Zum Home-Bildschirm"</strong><br>
+    3️⃣ Tippe <strong>„Hinzufügen"</strong> — fertig! 🎉`;
+  if (isSamsung) return `<strong>Samsung Internet:</strong><br>
+    1️⃣ Tippe das <strong>Menü ≡</strong> unten rechts<br>
+    2️⃣ Wähle <strong>„Seite hinzufügen zu"</strong><br>
+    3️⃣ Wähle <strong>„Startseite"</strong> — fertig! 🎉`;
+  if (isFirefox && isAndroid) return `<strong>Firefox auf Android:</strong><br>
+    1️⃣ Tippe das <strong>Menü ⋮</strong> oben rechts<br>
+    2️⃣ Wähle <strong>„Zum Startbildschirm hinzufügen"</strong><br>
+    3️⃣ Tippe <strong>„Hinzufügen"</strong> — fertig! 🎉`;
+  if (isFirefox && isDesktop) return `<strong>Firefox Desktop:</strong><br>
+    Für beste PWA-Erfahrung öffne diese Seite in <strong>Chrome</strong> oder <strong>Edge</strong>.<br>
+    Dort erscheint ein Install-Symbol in der Adressleiste.`;
+  if (isEdge && isDesktop) return `<strong>Microsoft Edge:</strong><br>
+    1️⃣ Klicke das <strong>Install-Symbol ⊕</strong> in der Adressleiste<br>
+    2️⃣ Oder: Menü <strong>···</strong> → <strong>Apps</strong> → <strong>„Diese Seite als App installieren"</strong><br>
+    3️⃣ Klicke <strong>„Installieren"</strong> — fertig! 🎉`;
+  if (isChrome && isDesktop) return `<strong>Chrome auf Desktop:</strong><br>
+    1️⃣ Klicke das <strong>Install-Symbol ⊕</strong> rechts in der Adressleiste<br>
+    2️⃣ Oder: Menü <strong>⋮</strong> → <strong>„GMTW Map installieren"</strong><br>
+    3️⃣ Klicke <strong>„Installieren"</strong> — fertig! 🎉`;
+  if (isChrome && isAndroid) return `<strong>Chrome auf Android:</strong><br>
+    1️⃣ Tippe das <strong>Menü ⋮</strong> oben rechts<br>
+    2️⃣ Wähle <strong>„App installieren"</strong> oder <strong>„Zum Startbildschirm"</strong><br>
+    3️⃣ Tippe <strong>„Installieren"</strong> — fertig! 🎉`;
+  // Fallback
+  return `<strong>Browser-Menü öffnen:</strong><br>
+    Tippe <strong>⋮</strong> oder <strong>≡</strong> und suche nach<br>
+    <strong>„App installieren"</strong> oder <strong>„Zum Startbildschirm"</strong>`;
+}
 
-// App wurde erfolgreich installiert → permanent kein Banner mehr
-window.addEventListener('appinstalled', () => {
-  _hidePwaInstall();
-  toast('🎉 App installiert! Genieße die Trails.');
-  _deferredInstallPrompt = null;
-  localStorage.setItem(PWA_DECLINE_PERM, '1');
-});
-
-function _showPwaInstall(mode) {
-  // mode: 'android' | 'ios' | 'manual'
+// ── Banner-Anzeige (gerätespezifisch) ──────────────────────
+function _showPwaInstall() {
   const panel = document.getElementById('pwa-install');
   if (!panel) return;
-
-  const iosSteps    = document.getElementById('pi-ios-steps');
-  const manualSteps = document.getElementById('pi-manual-steps');
-  const installBtn  = document.getElementById('pi-install-btn');
-  const laterBtn    = document.getElementById('pi-later-btn');
-
-  // Alle ausblenden
-  if (iosSteps)    iosSteps.style.display    = 'none';
-  if (manualSteps) manualSteps.style.display = 'none';
-
-  if (mode === 'ios') {
-    if (iosSteps) iosSteps.style.display = 'block';
-    if (installBtn) { installBtn.textContent = 'Verstanden'; installBtn.onclick = () => dismissPwaInstall(true); }
-  } else if (mode === 'manual') {
-    if (manualSteps) manualSteps.style.display = 'block';
-    if (installBtn) { installBtn.textContent = 'Verstanden'; installBtn.onclick = () => dismissPwaInstall(true); }
-  } else {
-    // Android / Chrome / Samsung — direkter Install möglich
-    if (installBtn) { installBtn.textContent = 'Jetzt installieren'; installBtn.onclick = triggerPwaInstall; }
+  const dev = _detectDevice();
+  if (dev.isStandalone) return; // Bereits installiert
+  // Badge befüllen
+  const badge = document.getElementById('pi-device-badge');
+  if (badge) {
+    const platform = dev.isIOS ? '🍎 iOS' : dev.isAndroid ? '🤖 ' + dev.brandLabel : '🖥️ Desktop';
+    badge.textContent = `${dev.browserIcon} ${dev.browserName} · ${platform}`;
   }
-
-  if (laterBtn) laterBtn.onclick = () => dismissPwaInstall(false);
+  // Installations-Schritte befüllen
+  const steps = document.getElementById('pi-steps');
+  if (steps) steps.innerHTML = _getInstallSteps(dev);
+  // Install-Button konfigurieren
+  const btn = document.getElementById('pi-install-btn');
+  if (btn) {
+    if (dev.canDirectInstall) {
+      btn.textContent = '📲 Jetzt installieren';
+      btn.onclick = triggerPwaInstall;
+      btn.style.display = '';
+    } else if (dev.isIOS || (dev.isFirefox && dev.isDesktop)) {
+      btn.style.display = 'none'; // Nur Anleitung, kein direkter Install
+    } else {
+      btn.textContent = '📖 Anleitung anzeigen';
+      btn.onclick = () => { /* Anleitung bereits sichtbar */ };
+      btn.style.display = '';
+    }
+  }
   panel.classList.add('show');
 }
 
 function _hidePwaInstall() {
-  const panel = document.getElementById('pwa-install');
-  if (panel) panel.classList.remove('show');
+  const p = document.getElementById('pwa-install');
+  if (p) p.classList.remove('show');
 }
 
-// Ablehnen: permanent=true → nie wieder; false → nach 2 Tagen erneut fragen
+// ── Banner ablehnen ──────────────────────────────────────────
 function dismissPwaInstall(permanent) {
   _hidePwaInstall();
   if (permanent) {
@@ -7529,11 +8400,11 @@ function dismissPwaInstall(permanent) {
   }
 }
 
+// ── Direkter Install-Prompt (Chrome/Edge/Samsung) ───────────
 async function triggerPwaInstall() {
   if (!_deferredInstallPrompt) {
-    // Kein Browser-Prompt verfügbar → manuelle Anleitung zeigen
-    _hidePwaInstall();
-    _showPwaInstall('manual');
+    // Kein direkter Prompt → Anleitung im Banner zeigen
+    _showPwaInstall();
     return;
   }
   try {
@@ -7544,7 +8415,6 @@ async function triggerPwaInstall() {
     if (choice.outcome === 'accepted') {
       toast('🎉 App wird installiert…');
     } else {
-      // Nutzer hat den Browser-Dialog abgelehnt → 2-Tage-Sperre
       localStorage.setItem(PWA_DECLINE_KEY, String(Date.now()));
     }
   } catch(e) {
@@ -7553,34 +8423,168 @@ async function triggerPwaInstall() {
   }
 }
 
-// Manuellen Install aus Settings-Panel auslösen
-function openInstallGuide() {
-  const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-    || ('standalone' in window.navigator && window.navigator.standalone);
-
-  if (isStandalone) {
-    toast('✅ App ist bereits installiert!');
-    return;
-  }
-  if (_deferredInstallPrompt) {
-    // Direkter Install möglich
-    triggerPwaInstall();
-    return;
-  }
-  // Kein deferred prompt → Anleitung zeigen
-  _showPwaInstall(isIos ? 'ios' : 'manual');
+// ── Prüfen ob Banner gezeigt werden darf (Sperre) ───────────
+function _canShowInstall() {
+  if (localStorage.getItem(PWA_DECLINE_PERM)) return false;
+  const ts = parseInt(localStorage.getItem(PWA_DECLINE_KEY) || '0', 10);
+  return !ts || (Date.now() - ts) > PWA_REASK_MS;
 }
 
-// iOS-Erkennung: kein beforeinstallprompt-Support → Anleitung zeigen
-function _checkIosInstall() {
-  const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-    || ('standalone' in window.navigator && window.navigator.standalone);
-
-  if (isIos && !isStandalone && _canShowInstall()) {
-    setTimeout(() => _showPwaInstall('ios'), 5000);
+// ── beforeinstallprompt: Chrome/Edge/Samsung abfangen ────────
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  _deferredInstallPrompt = e;
+  if (_canShowInstall()) {
+    setTimeout(_showPwaInstall, 2000); // 2s nach Seitenload
   }
+});
+
+// ── App erfolgreich installiert ──────────────────────────────
+window.addEventListener('appinstalled', () => {
+  _hidePwaInstall();
+  toast('🎉 App installiert! Genieße die Trails offline.');
+  _deferredInstallPrompt = null;
+  localStorage.setItem(PWA_DECLINE_PERM, '1');
+  // App-Tab aktualisieren
+  const tab = document.getElementById('sp-tab-app');
+  if (tab && tab.classList.contains('on')) _initAppInstallTab();
+});
+
+// ── iOS / Firefox: kein beforeinstallprompt → Anleitung ──────
+function _checkIosInstall() {
+  const dev = _detectDevice();
+  if (dev.isStandalone || !_canShowInstall()) return;
+  // iOS Safari
+  if (dev.isIOS && dev.isSafari) {
+    setTimeout(_showPwaInstall, 4000);
+    return;
+  }
+  // Firefox Mobile
+  if (dev.isFirefox && dev.isAndroid) {
+    setTimeout(_showPwaInstall, 5000);
+    return;
+  }
+}
+
+// ── openInstallGuide: aus Einstellungen heraus ───────────────
+function openInstallGuide() {
+  closeSettings();
+  const dev = _detectDevice();
+  if (dev.isStandalone) { toast('✅ App ist bereits installiert!'); return; }
+  if (dev.canDirectInstall) { triggerPwaInstall(); return; }
+  setTimeout(_showPwaInstall, 250);
+}
+
+// ── App-Install-Tab Initialisierung ─────────────────────────
+function _initAppInstallTab() {
+  const dev = _detectDevice();
+  // Status-Karte
+  const statusEl = document.getElementById('ai-status-card');
+  if (statusEl) {
+    if (dev.isStandalone) {
+      statusEl.className = 'ai-status-card installed';
+      statusEl.innerHTML = `<div class="ai-status-icon">✅</div>
+        <div><div class="ai-status-label">App installiert</div>
+        <div class="ai-status-sub">Läuft als eigenständige PWA</div></div>`;
+    } else {
+      statusEl.className = 'ai-status-card not-installed';
+      statusEl.innerHTML = `<div class="ai-status-icon">📲</div>
+        <div><div class="ai-status-label">Nicht installiert</div>
+        <div class="ai-status-sub">Als App auf diesem Gerät installierbar</div></div>`;
+    }
+  }
+  // Geräte-Info
+  const infoEl = document.getElementById('ai-device-info');
+  if (infoEl) {
+    const swOk = 'serviceWorker' in navigator && navigator.serviceWorker.controller;
+    const platform = dev.isIOS ? '🍎 Apple iOS' : dev.isAndroid ? ('🤖 ' + dev.brandLabel + ' Android') : '🖥️ Desktop';
+    infoEl.innerHTML =
+      `<strong>Gerät:</strong> ${platform} &nbsp;·&nbsp; <strong>Browser:</strong> ${dev.browserIcon} ${dev.browserName}<br>` +
+      `<strong>Direct-Install:</strong> ${dev.canDirectInstall ? '✅ Verfügbar' : '❌ Anleitung nötig'} &nbsp;·&nbsp; ` +
+      `<strong>Service Worker:</strong> ${swOk ? '✅ Aktiv (Offline OK)' : '⏳ Noch nicht aktiv'}`;
+  }
+  // Install-Button
+  const instBtn = document.getElementById('ai-install-btn');
+  if (instBtn) {
+    if (dev.isStandalone) {
+      instBtn.textContent = '✅ Bereits installiert';
+      instBtn.disabled = true; instBtn.style.opacity = '.5';
+    } else if (dev.canDirectInstall) {
+      instBtn.textContent = '📲 App jetzt installieren';
+      instBtn.disabled = false; instBtn.style.opacity = '';
+      instBtn.onclick = () => { closeSettings(); setTimeout(triggerPwaInstall, 200); };
+    } else {
+      instBtn.textContent = '📖 Installationsanleitung öffnen';
+      instBtn.disabled = false; instBtn.style.opacity = '';
+      instBtn.onclick = () => { closeSettings(); setTimeout(_showPwaInstall, 300); };
+    }
+  }
+  // Anleitung befüllen
+  const stepsEl = document.getElementById('ai-steps-box');
+  if (stepsEl) stepsEl.innerHTML = _getInstallSteps(dev);
+  // Cache-Infos
+  _updateAiCacheInfo();
+}
+
+// ── Cache-Statistik für App-Tab ──────────────────────────────
+function _updateAiCacheInfo() {
+  if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
+    const tot = document.getElementById('ai-cache-total');
+    if (tot) tot.textContent = '–';
+    return;
+  }
+  const ch = new MessageChannel();
+  ch.port1.onmessage = (e) => {
+    const d = e.data || {};
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set('ai-cache-total', d.total || 0);
+    set('ai-cache-tiles', d.tileCount || 0);
+    set('ai-cache-shell', d.shellCount || 0);
+    set('ai-cache-gpx',   d.gpxCount  || 0);
+    set('ai-cache-fonts', d.fontCount || 0);
+    const bar = document.getElementById('ai-tile-bar');
+    if (bar) bar.style.width = Math.min(100, ((d.tileCount || 0) / 3000 * 100)) + '%';
+  };
+  navigator.serviceWorker.controller.postMessage({ type: 'GET_CACHE_SIZE' }, [ch.port2]);
+}
+
+// ── Karten-Bereich für Offline vorab cachen ──────────────────
+function cacheCurrentMapArea() {
+  if (!map) { toast('⚠️ Karte noch nicht geladen'); return; }
+  const zoom = map.getZoom();
+  if (zoom < 12) { toast('⚠️ Bitte zuerst auf das Trail-Gebiet zoomen (min. Zoom 12)!', 3500); return; }
+  const bounds = map.getBounds();
+  const urls = [];
+  const subdomains = ['a','b','c'];
+  for (let z = Math.max(12, zoom - 1); z <= Math.min(18, zoom + 2); z++) {
+    const nw = L.CRS.EPSG3857.latLngToPoint(bounds.getNorthWest(), z).divideBy(256);
+    const se = L.CRS.EPSG3857.latLngToPoint(bounds.getSouthEast(), z).divideBy(256);
+    const x0 = Math.floor(nw.x), x1 = Math.floor(se.x);
+    const y0 = Math.floor(nw.y), y1 = Math.floor(se.y);
+    for (let x = x0; x <= x1; x++) {
+      for (let y = y0; y <= y1; y++) {
+        const s = subdomains[Math.abs(x + y) % 3];
+        urls.push(`https://${s}.tile.openstreetmap.org/${z}/${x}/${y}.png`);
+        urls.push(`https://tile.opentopomap.org/${z}/${x}/${y}.png`);
+      }
+    }
+  }
+  if (urls.length > 800) {
+    toast(`⚠️ ${urls.length} Tiles — bitte weiter einzoomen!`, 3500);
+    return;
+  }
+  if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
+    toast('⚠️ Service Worker noch nicht bereit — kurz warten'); return;
+  }
+  toast(`⏳ Lade ${urls.length} Karten-Tiles für Offline-Betrieb…`, 4000);
+  const ch = new MessageChannel();
+  ch.port1.onmessage = (e) => {
+    if (e.data?.success) {
+      toast(`✅ ${e.data.count} Tiles gecacht — Karte nun offline verfügbar!`);
+      _updateAiCacheInfo();
+    }
+  };
+  navigator.serviceWorker.controller.postMessage({ type: 'PREFETCH_TILES', urls }, [ch.port2]);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -8024,6 +9028,20 @@ function swPrefetchGpxTracks() {
 </div>
 
 <!-- ══ RACE OVERLAY ════════════════════════════════════════════ -->
+<!-- ══ RUN DETAIL MODAL ════════════════════════════════════════ -->
+<div id="run-detail-modal" role="dialog" aria-modal="true" aria-label="Lauf-Details">
+  <div class="rdm-header">
+    <button onclick="closeRunDetail()"
+      style="background:var(--s3);border:1px solid var(--bd2);border-radius:10px;color:var(--tx);width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0">←</button>
+    <span class="rdm-header-title">Lauf-Details</span>
+    <button id="rdm-gpx-btn" onclick="exportCurrentRunDetailGpx()"
+      style="background:var(--s3);border:1px solid var(--bd2);border-radius:8px;color:var(--td);padding:6px 10px;font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.5px;cursor:pointer">🗺 GPX</button>
+  </div>
+  <div class="rdm-body" id="rdm-body">
+    <!-- dynamisch befüllt durch openRunDetail() -->
+  </div>
+</div>
+
 <div id="race-overlay" role="dialog" aria-modal="true" aria-label="Rennen">
   <button class="race-overlay-x" id="race-x-btn" onclick="confirmAbortRace()" aria-label="Rennen abbrechen">×</button>
 
@@ -8036,8 +9054,14 @@ function swPrefetchGpxTracks() {
     <div class="ra-unit">Meter bis Start</div>
     <div class="ra-acc" id="ra-gps-acc"></div>
     <div class="ra-hint">Nähere dich der Startlinie — bei ≤5 m erscheint die Start-Bestätigung</div>
+    <div class="ra-sensors-row">
+      <span class="ra-sensor-badge" id="ra-sensor-gps">📍 GPS –</span>
+      <span class="ra-sensor-badge" id="ra-sensor-motion">📐 Sensor –</span>
+      <span class="ra-sensor-badge" id="ra-sensor-bt">🔵 BT –</span>
+    </div>
+    <button class="ra-bt-btn" onclick="_connectSmartwatch()">🔵 Smartwatch / BLE-GPS verbinden (optional)</button>
     <button onclick="confirmAbortRace()"
-      style="margin-top:22px;padding:10px 28px;background:var(--s3);color:var(--td);
+      style="margin-top:14px;padding:10px 28px;background:var(--s3);color:var(--td);
              border:1px solid var(--bd2);border-radius:var(--r);font-family:var(--fh);
              font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer">
       ✕ Rennen abbrechen
@@ -8073,6 +9097,7 @@ function swPrefetchGpxTracks() {
     <div class="rr-name" id="rr-track-nm">—</div>
     <div class="rr-timer" id="rr-timer">00:00.0</div>
     <div class="rr-pause-lbl" id="rr-pause-lbl"></div>
+    <div class="rr-fall-row" id="rr-fall-row"></div>
     <div class="rr-splits-grid" id="rr-splits-grid"><!-- dynamisch --></div>
     <div class="rr-speed-lbl" id="rr-speed-lbl"></div>
     <button class="rr-abort-btn" onclick="confirmAbortRace()">■ Abbrechen</button>
@@ -8093,6 +9118,11 @@ function swPrefetchGpxTracks() {
     <div class="rres-total-time" id="rres-total">—</div>
     <div class="rres-total-lbl">Netto-Gesamtzeit</div>
     <div class="rres-splits-grid" id="rres-splits-grid"></div>
+    <!-- Signatur-Box (tamper-evident) -->
+    <div class="rres-sig-box" id="rres-sig-box" style="display:none">
+      <div class="rres-sig-lbl">🔐 Signatur (fälschungssicher)</div>
+      <div class="rres-sig-val" id="rres-sig-val">–</div>
+    </div>
     <!-- QR-Code mit Zeiten + Zeitstempeln -->
     <div class="rres-qr-wrap">
       <canvas id="rres-qr-canvas" width="120" height="120" aria-label="Ergebnis QR-Code"></canvas>
@@ -8101,8 +9131,8 @@ function swPrefetchGpxTracks() {
     <div class="rres-lb-head">🏆 Bestenliste</div>
     <div id="rres-lb"></div>
     <div class="rres-actions">
-      <button class="rres-btn sec" onclick="exportRunJson()">⬇ JSON</button>
-      <button class="rres-btn sec" onclick="shareRunQr()">🔄 QR neu</button>
+      <button class="rres-btn sec" onclick="exportRaceGpx()">🗺 GPX</button>
+      <button class="rres-btn sec" onclick="shareRunQr()">🔄 QR</button>
       <button class="rres-btn prim" onclick="closeRaceOverlay()">Fertig</button>
     </div>
   </div>
@@ -8123,6 +9153,8 @@ function swPrefetchGpxTracks() {
     <button class="sp-tab" data-t="backup"  onclick="switchSpTab('backup',this)">Backup</button>
     <button class="sp-tab" data-t="markers" onclick="switchSpTab('markers',this)">Marker</button>
     <button class="sp-tab" data-t="qr"      onclick="switchSpTab('qr',this)">QR-Scan</button>
+    <button class="sp-tab" data-t="app"     onclick="switchSpTab('app',this)">📲 App</button>
+    <button class="sp-tab" data-t="profile" onclick="switchSpTab('profile',this)">👤 Profil</button>
   </div>
 
   <!-- Tab: Allgemein -->
@@ -8166,7 +9198,8 @@ function swPrefetchGpxTracks() {
       <div style="margin-top:8px;padding:8px 10px;background:var(--s3);border-radius:8px;font-size:11px;color:var(--td);line-height:1.8">
         ✅ GPX-Strecken &amp; Rennzeiten &nbsp;·&nbsp; ✅ Eigene Marker<br>
         ✅ Karten-Marker-Anpassungen &nbsp;·&nbsp; ✅ Marker-Größe<br>
-        ✅ GPS-Emoji &nbsp;·&nbsp; ✅ Home-Position &nbsp;·&nbsp; ✅ Theme
+        ✅ GPS-Emoji &nbsp;·&nbsp; ✅ Home-Position &nbsp;·&nbsp; ✅ Theme<br>
+        ✅ Fahrerprofil (Name, Muni, Radgröße, …)
       </div>
       <button class="sp-btn prim" onclick="exportFullBackup()" style="width:100%;margin-top:10px;justify-content:center">
         ⬇ GMTW_Backup.json erstellen
@@ -8193,6 +9226,15 @@ function swPrefetchGpxTracks() {
         </label>
       </div>
     </div>
+    <!-- Alle Zeiten exportieren -->
+    <div class="sp-section">
+      <div class="sp-label">📊 Alle Zeiten exportieren</div>
+      <div class="sp-hint">Alle gefahrenen Rennen auf allen Strecken — inkl. Fahrer, Muni, Splits &amp; Signatur</div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button onclick="exportAllRunsJson()" class="sp-btn sec" style="flex:1;justify-content:center">⬇ JSON</button>
+        <button onclick="exportAllRunsCsv()"  class="sp-btn sec" style="flex:1;justify-content:center">⬇ CSV</button>
+      </div>
+    </div>
     <!-- Speicher -->
     <div class="sp-section">
       <div class="sp-label">💾 Speichernutzung</div>
@@ -8203,12 +9245,148 @@ function swPrefetchGpxTracks() {
         🔒 Dauerhaften Speicher anfragen
       </button>
     </div>
-    <!-- App Install -->
+  </div>
+
+  <!-- Tab: App Installation -->
+  <div class="sp-content" id="sp-tab-app">
+
+    <!-- Status-Karte: Installiert / Nicht installiert -->
+    <div id="ai-status-card" class="ai-status-card not-installed">
+      <div class="ai-status-icon">📲</div>
+      <div>
+        <div class="ai-status-label">Prüfe…</div>
+        <div class="ai-status-sub">Installationsstatus wird geladen</div>
+      </div>
+    </div>
+
+    <!-- Geräteinformationen -->
+    <div class="sp-section">
+      <div class="sp-label">📱 Gerät &amp; Browser</div>
+      <div id="ai-device-info" class="ai-device-info">Wird erkannt…</div>
+
+      <!-- Schritt-für-Schritt Anleitung -->
+      <div class="sp-label" style="margin-top:10px">📖 Installationsanleitung</div>
+      <div id="ai-steps-box" class="ai-steps-box">Wird geladen…</div>
+
+      <!-- Install-Button -->
+      <button id="ai-install-btn" class="sp-btn prim" style="width:100%;margin-top:12px;justify-content:center" onclick="openInstallGuide()">
+        📲 App installieren
+      </button>
+    </div>
+
+    <!-- Cache &amp; Offline-Status -->
+    <div class="sp-section">
+      <div class="sp-label">💾 Offline-Cache</div>
+      <div style="font-size:11px;color:var(--td);margin-bottom:8px;line-height:1.6">
+        Je mehr Tiles gecacht, desto besser funktioniert die App ohne Internet.
+      </div>
+      <div class="ai-cache-row"><span>Gesamt gecacht:</span><strong id="ai-cache-total">…</strong></div>
+      <div class="ai-cache-row"><span>Karten-Tiles:</span><strong id="ai-cache-tiles">…</strong><span style="opacity:.5">&nbsp;/ 3000 max</span></div>
+      <div class="ai-bar-wrap"><div class="ai-bar-fill" id="ai-tile-bar"></div></div>
+      <div class="ai-cache-row"><span>App-Shell (JS/CSS):</span><strong id="ai-cache-shell">…</strong></div>
+      <div class="ai-cache-row"><span>GPX-Strecken:</span><strong id="ai-cache-gpx">…</strong></div>
+      <div class="ai-cache-row"><span>Schriftarten:</span><strong id="ai-cache-fonts">…</strong></div>
+
+      <!-- Tile-Bereich cachen -->
+      <div style="background:rgba(200,255,0,.07);border:1px solid rgba(200,255,0,.25);border-radius:10px;padding:11px 12px;margin-top:10px;font-size:11.5px;color:var(--td);line-height:1.7">
+        🗺️ <strong style="color:var(--tx)">Karten-Bereich für Offline cachen:</strong><br>
+        Zoome auf das Trail-Gebiet und tippe dann den Button unten. Die aktuell sichtbaren Karten-Tiles werden lokal gespeichert.
+      </div>
+      <button class="sp-btn prim" onclick="cacheCurrentMapArea()" style="width:100%;margin-top:8px;justify-content:center;background:var(--acd)">
+        🗺️ Sichtbaren Kartenbereich cachen
+      </button>
+      <button class="sp-btn sec" onclick="swPrefetchGpxTracks();toast('⏳ GPX-Strecken werden gecacht…')" style="width:100%;margin-top:6px;justify-content:center">
+        📥 Alle GPX-Strecken jetzt cachen
+      </button>
+      <button class="sp-btn sec" onclick="_updateAiCacheInfo();toast('🔄 Cache-Info aktualisiert')" style="width:100%;margin-top:6px;justify-content:center">
+        🔄 Cache-Info aktualisieren
+      </button>
+    </div>
+
+    <!-- Speicher -->
+    <div class="sp-section">
+      <div class="sp-label">🔒 Dauerhafter Speicher</div>
+      <div class="sp-hint">Verhindert dass der Browser die Offline-Daten löscht</div>
+      <button class="sp-btn sec" onclick="requestPersistentStorage()" style="width:100%;margin-top:8px;justify-content:center">
+        🔒 Dauerhaften Speicher anfragen
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Tab: Profil -->
+  <div class="sp-content" id="sp-tab-profile">
+
+    <!-- Profil-Übersicht Karte -->
+    <div class="sp-section">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div class="profile-avatar">🦄</div>
+        <div>
+          <div class="profile-name-display" id="pf-name-display">Kein Name gesetzt</div>
+          <div class="profile-muni-display" id="pf-muni-display">Kein Muni-Name</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fahrer-Name -->
+    <div class="sp-section">
+      <div class="sp-label">👤 Dein Name (Fahrer)</div>
+      <div class="sp-hint">Erscheint in der Bestenliste bei deinen Zeiten</div>
+      <input class="sp-input" id="pf-input-name" type="text" maxlength="32"
+        placeholder="z.B. Max Muster" style="margin-top:8px;width:100%;box-sizing:border-box">
+    </div>
+
+    <!-- Muni-Daten -->
+    <div class="sp-section">
+      <div class="sp-label">🦄 Muni-Name</div>
+      <div class="sp-hint">Wie heißt dein Einrad? (wird im QR-Code und der Signatur verwendet)</div>
+      <input class="sp-input" id="pf-input-muni" type="text" maxlength="40"
+        placeholder="z.B. The Beast, Fluffmaster 3000 …" style="margin-top:8px;width:100%;box-sizing:border-box">
+    </div>
+
+    <!-- Rad-Details -->
+    <div class="sp-section">
+      <div class="sp-label">⚙️ Rad-Details</div>
+
+      <div class="sp-hint" style="margin-bottom:6px">Radgröße</div>
+      <select class="sp-input" id="pf-input-wheel" style="width:100%;box-sizing:border-box">
+        <option value="">– Bitte wählen –</option>
+        <option value='19"'>19" (Trial)</option>
+        <option value='20"'>20" (Freestyle)</option>
+        <option value='24"'>24" (Muni Standard)</option>
+        <option value='26"'>26"</option>
+        <option value='27.5"'>27.5"</option>
+        <option value='29"'>29" (Muni XL)</option>
+        <option value='36"'>36" (Road)</option>
+      </select>
+
+      <div class="sp-hint" style="margin-top:10px;margin-bottom:6px">Farbe (Rahmen / Muni)</div>
+      <input class="sp-input" id="pf-input-color" type="text" maxlength="40"
+        placeholder="z.B. schwarz/grün, carbon …" style="width:100%;box-sizing:border-box">
+
+      <div class="sp-hint" style="margin-top:10px;margin-bottom:6px">Bremse</div>
+      <input class="sp-input" id="pf-input-brake" type="text" maxlength="40"
+        placeholder="z.B. Magura MT5, KH Moment, keine …" style="width:100%;box-sizing:border-box">
+
+      <div class="sp-hint" style="margin-top:10px;margin-bottom:6px">Sattelklemmen-Farbe</div>
+      <input class="sp-input" id="pf-input-seatclamp" type="text" maxlength="30"
+        placeholder="z.B. rot, blau, silber …" style="width:100%;box-sizing:border-box">
+
+      <div class="sp-hint" style="margin-top:10px;margin-bottom:4px">Besonderheit / Nabe</div>
+      <input class="sp-input" id="pf-input-special" type="text" maxlength="60"
+        placeholder="z.B. Schlumpf-Nabe, Freewheel, Moment-Kurbeln …" style="width:100%;box-sizing:border-box">
+      <div class="profile-quick-btns" style="margin-top:6px">
+        <button class="profile-quick-btn" onclick="document.getElementById('pf-input-special').value='Schlumpf-Nabe'">Schlumpf-Nabe</button>
+        <button class="profile-quick-btn" onclick="document.getElementById('pf-input-special').value='Freewheel'">Freewheel</button>
+        <button class="profile-quick-btn" onclick="document.getElementById('pf-input-special').value='Standard'">Standard</button>
+        <button class="profile-quick-btn" onclick="document.getElementById('pf-input-special').value=''">✕ Löschen</button>
+      </div>
+    </div>
+
+    <!-- Speichern -->
     <div class="sp-section" style="border-bottom:none">
-      <div class="sp-label">📲 App installieren</div>
-      <div class="sp-hint">Als PWA auf dem Home-Bildschirm installieren — vollständig offline nutzbar</div>
-      <button class="sp-btn prim" onclick="openInstallGuide()" style="width:100%;margin-top:10px;justify-content:center">
-        📲 App auf Gerät installieren
+      <button class="sp-btn prim" onclick="saveProfile()" style="width:100%;justify-content:center">
+        ✓ Profil speichern
       </button>
     </div>
   </div>
@@ -8385,33 +9563,28 @@ function swPrefetchGpxTracks() {
   </div>
 </div>
 
-<!-- ══ PWA INSTALL PROMPT ══════════════════════════════════════ -->
+<!-- ══ PWA INSTALL PROMPT (v3 — gerätespezifisch) ════════════ -->
 <div id="pwa-install" role="dialog" aria-modal="true" aria-label="App installieren">
+  <!-- Header: Icon + Titel + Gerätebadge -->
   <div class="pi-head">
     <div class="pi-icon">🗺️</div>
-    <div>
+    <div style="flex:1;min-width:0">
       <div class="pi-title">GMTW Trail Map</div>
-      <div class="pi-sub">Als App installieren — vollständig offline nutzbar</div>
+      <div class="pi-sub">Offline-fähige App — kein Internet nötig</div>
+      <div class="pi-badge" id="pi-device-badge">🌐 Browser</div>
     </div>
+    <button onclick="dismissPwaInstall(false)" style="background:none;border:none;color:var(--td);font-size:20px;cursor:pointer;line-height:1;padding:4px;flex-shrink:0" aria-label="Schließen">✕</button>
   </div>
-  <!-- iOS Safari Anleitung -->
-  <div class="pi-ios-steps" id="pi-ios-steps" style="display:none">
-    1. Tippe auf das <strong>Teilen-Symbol</strong> <span style="font-size:16px">⎙</span> unten in Safari<br>
-    2. Scrolle und wähle <strong>„Zum Home-Bildschirm"</strong><br>
-    3. Tippe <strong>„Hinzufügen"</strong> — fertig!
-  </div>
-  <!-- Manuelle Anleitung für andere Browser -->
-  <div id="pi-manual-steps" style="display:none;font-size:12px;color:var(--tx);line-height:1.7;margin:4px 0 8px;background:var(--s2);border-radius:10px;padding:10px 12px">
-    <strong>Chrome/Edge:</strong> Menü ⋮ → <em>„App installieren"</em> oder <em>„Zum Startbildschirm"</em><br>
-    <strong>Samsung Browser:</strong> Menü ≡ → <em>„Seite hinzufügen"</em><br>
-    <strong>Firefox:</strong> Menü ⋮ → <em>„Zum Startbildschirm"</em>
-  </div>
+  <!-- Gerätespezifische Schritt-Anleitung (per JS befüllt) -->
+  <div class="pi-steps" id="pi-steps">Wird geladen…</div>
+  <!-- Aktionsbuttons -->
   <div class="pi-acts">
-    <button class="pi-btn later" id="pi-later-btn" onclick="dismissPwaInstall(false)">Später</button>
-    <button class="pi-btn inst" id="pi-install-btn" onclick="triggerPwaInstall()">Installieren</button>
+    <button class="pi-btn later" onclick="dismissPwaInstall(false)">Später</button>
+    <button class="pi-btn inst" id="pi-install-btn" onclick="triggerPwaInstall()">📲 Installieren</button>
   </div>
-  <div style="text-align:center;margin-top:6px">
-    <button onclick="dismissPwaInstall(true)" style="background:none;border:none;color:var(--td);font-size:11px;cursor:pointer;padding:4px">Nicht mehr fragen</button>
+  <!-- Permanent ablehnen -->
+  <div class="pi-dismiss">
+    <button onclick="dismissPwaInstall(true)">Nicht mehr fragen</button>
   </div>
 </div>
 

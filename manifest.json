@@ -1,15 +1,21 @@
 {
+  "id": "./index.html",
   "name": "GMTW Trail Map",
   "short_name": "GMTW Map",
-  "description": "Interaktive Trail-Karte für das GMTW Event in Hohensyburg/Herdecke — offline-fähig, GPS-Navigation, GPX-Tracks",
+  "description": "Interaktive Trail-Karte fuer das GMTW Event in Hohensyburg/Herdecke - offline-faehig, GPS-Navigation, GPX-Tracks",
   "lang": "de",
-  "start_url": "./index.html",
+  "start_url": "./index.html?source=pwa",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui", "browser"],
   "orientation": "any",
   "theme_color": "#0b0e14",
   "background_color": "#0b0e14",
   "scope": "./",
   "categories": ["sports", "navigation", "maps"],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "handle_links": "preferred",
   "icons": [
     {
       "src": "icons/icon-192.png",
