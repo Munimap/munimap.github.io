@@ -3454,27 +3454,45 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         /* ── SETTINGS PANEL CONTENT ────────────────────────────── */
         .sp-content{display:none;flex:1;overflow-y:auto;padding:14px 16px;flex-direction:column;gap:14px}
         .sp-content.on{display:flex}
+        /* sp-col: tab mit eigenem Scroll-Layout (kein padding, kein gap — z.B. Marker-Tab) */
+        .sp-col{padding:0!important;gap:0!important;overflow:hidden!important}
+        .sp-col.on{display:flex;flex-direction:column}
         /* override section to not have its own background (use inside sp-content) */
         #sp-tab-general .sp-section,#sp-tab-backup .sp-section{background:var(--s2);border-radius:12px;padding:14px;border-bottom:1px solid var(--bd2);border:1px solid var(--bd2);margin-bottom:4px}
 
         /* ── CUSTOM MARKER MODAL (md-overlay) ──────────────────── */
         #md-overlay.show{display:flex!important}
+        #md-overlay.show .md-sheet{transform:translateY(0)}
         .md-label{font-size:11px;font-weight:700;color:var(--td);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
         .md-input{background:var(--s2);border:1px solid var(--bd2);border-radius:8px;color:var(--tx);font-size:13px;padding:8px 10px;width:100%;box-sizing:border-box;outline:none;font-family:inherit}
         .md-input:focus{border-color:var(--ac)}
         .md-acts{display:flex;gap:8px;margin-top:14px}
+        /* Emoji-Picker im Marker-Modal */
+        .md-emoji-btn{background:var(--s2);border:1px solid var(--bd2);border-radius:8px;width:34px;height:34px;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .15s,background .15s;padding:0;flex-shrink:0}
+        .md-emoji-btn.selected{border-color:var(--ac);background:var(--ac)22}
+        .md-emoji-btn:active{opacity:.7}
 
         /* ── CUSTOM MARKERS LIST ────────────────────────────────── */
         .cm-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd2)}
         .cm-item:last-child{border-bottom:none}
-        .cm-emoji{font-size:24px;flex-shrink:0;width:36px;text-align:center}
+        .cm-emoji{font-size:22px;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
         .cm-info{flex:1;min-width:0}
         .cm-name{font-size:13px;font-weight:700;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         .cm-cat{font-size:11px;color:var(--td);margin-top:2px}
-        .cm-actions{display:flex;gap:6px}
-        .cm-act-btn{background:var(--s3);border:1px solid var(--bd2);border-radius:7px;padding:5px 10px;cursor:pointer;font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--tx)}
-        .cm-act-btn.del{color:#ef4444;border-color:rgba(239,68,68,.3)}
-        .cm-empty{text-align:center;padding:20px;color:var(--td);font-size:13px}
+        .cm-desc{font-size:11px;color:var(--td);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-style:italic}
+        .cm-actions{display:flex;gap:4px;flex-shrink:0}
+        .cm-act-btn{background:var(--s3);border:1px solid var(--bd2);border-radius:7px;padding:5px 8px;cursor:pointer;font-size:12px;color:var(--tx);line-height:1}
+        .cm-act-btn.del{color:#ef4444;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.08)}
+        .cm-empty{text-align:center;padding:24px 12px;color:var(--td);font-size:13px;line-height:1.6}
+        /* ── MARKER-LIST SECTION HEADERS ───────────────────────── */
+        .cm-section-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 0 4px;margin-top:4px;border-bottom:2px solid var(--bd2);position:sticky;top:0;background:var(--bg);z-index:1}
+        .cm-section-title{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--td)}
+        .cm-section-count{font-size:11px;color:var(--td);background:var(--s3);border-radius:10px;padding:1px 7px}
+        .cm-act-btn.reset{color:#f59e0b;border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.08)}
+        /* ── MARKER SIZE SLIDER ──────────────────────────────────── */
+        .mk-slider-row{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--s2);border-radius:10px;margin:10px 16px 0;flex-shrink:0}
+        .mk-slider-row input[type=range]{flex:1;accent-color:var(--ac);height:4px}
+        .mk-slider-val{font-size:12px;font-weight:700;color:var(--ac);min-width:36px;text-align:right;font-family:var(--fh)}
     </style>
 </head>
 <body>
@@ -3698,6 +3716,10 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
           <button class="gpx-btn sec" onclick="recExportGpx()" style="flex:1">⬇ GPX</button>
           <button class="gpx-btn sec" onclick="recExportJson()" style="flex:1">⬇ JSON</button>
         </div>
+        <!-- Web Share API — GPX direkt teilen (Android/iOS) -->
+        <button id="rec-share-btn" class="gpx-btn prim" onclick="recShareGpx()" style="width:100%;display:none">
+          📤 Strecke teilen (Android / iOS)
+        </button>
         <button class="gpx-btn danger" onclick="recReset()" style="width:100%">🗑 Aufnahme verwerfen</button>
       </div>
     </div>
@@ -3721,6 +3743,11 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
     <button class="qbtn sec" onclick="closeAll()" style="flex:1;background:var(--s2);color:var(--td)">← Zurück</button>
     <button class="qbtn dl" onclick="trkQrDownloadGpx()" style="flex:2" id="trk-qr-dl-btn">⬇ GPX laden</button>
   </div>
+  <!-- Web Share API: GPX-Datei teilen (Android/iOS/Chrome) -->
+  <button id="trk-qr-share-btn" class="qbtn dl" onclick="trkQrShareGpx()"
+    style="width:100%;margin-bottom:8px;background:var(--ac);color:#000;display:none">
+    📤 GPX teilen (Android / iOS)
+  </button>
   <div style="display:flex;gap:8px">
     <button class="qbtn cp" onclick="trkQrDownloadImg()" style="flex:1;background:var(--s3);color:var(--tx)">⬇ QR Bild</button>
     <button class="qbtn cp" onclick="trkQrCopyUrl()" style="flex:1;background:var(--s3);color:var(--tx)">📋 Link</button>
@@ -3820,13 +3847,9 @@ const LS = {
 const LOCS = [
   // BEGINNER
   { id:"muni",     name:"Muni Start Beginner/Mittel", lat:51.421812, lng:7.492612, color:"#22c55e", emoji:"🚩", cat:"beginner", desc:"Startpunkt für Muni-Fahrer aller Levels" },
-  { id:"ein-beg",  name:"Einstieg Beginner",          lat:51.419668, lng:7.484089, color:"#22c55e", emoji:"🟢", cat:"beginner", desc:"Haupteinstieg für Anfänger" },
   { id:"ein-bm",   name:"Einstieg Beginner/Mittel",   lat:51.420365, lng:7.483406, color:"#22c55e", emoji:"🟡", cat:"beginner", desc:"Gemischter Einstieg — Beginner & Mittel" },
-  { id:"end-ein",  name:"Ende Beginner",               lat:51.418374, lng:7.478817, color:"#22c55e", emoji:"🏁", cat:"beginner", desc:"Ziel der einfachen Strecke" },
   // MITTEL — Koordinaten korrekt: sam-mit=Sammelpunkt(51.423371), ziel-mit=Ziel(51.419329)
   { id:"ein-mit",  name:"Einstieg Mittel",            lat:51.423421, lng:7.480829, color:"#f59e0b", emoji:"🟡", cat:"mittel",   desc:"Einstieg in die mittlere Strecke" },
-  { id:"end-mit",  name:"Ende Mittel",                lat:51.418704, lng:7.477420, color:"#f59e0b", emoji:"🏁", cat:"mittel",   desc:"Ziel der mittleren Strecke" },
-  { id:"sam-mit",  name:"Sammelpunkt Mittel",         lat:51.423371, lng:7.513606, color:"#f59e0b", emoji:"👥", cat:"mittel",   desc:"Sammelpunkt — Auf dem Spielplatz" },
   { id:"ziel-mit", name:"Ziel Mittel",                lat:51.419329, lng:7.511120, color:"#f59e0b", emoji:"🏆", cat:"mittel",   desc:"Ziel der mittleren Strecke — an der Ruhr" },
   // EXPERT
   { id:"st-exp",   name:"Start Expert",               lat:51.418657, lng:7.477602, color:"#ef4444", emoji:"💀", cat:"expert",   desc:"Nur für erfahrene Fahrer!" },
@@ -3909,8 +3932,72 @@ L.polyline(WEG,{color:'#f59e0b',weight:3.5,dashArray:'8 10',lineCap:'round',opac
 const MKR={};
 let curFilter='all';
 
+// Globale Marker-Größen-Skalierung (1.0 = Standard, 0.7–2.0)
+let _markerScale = Math.max(0.5, Math.min(2.0, parseFloat(LS.get('gmtw_marker_scale','1.0')) || 1.0));
+
+// LOCS-Sichtbarkeit und Überschreibungen (pro Marker)
+let _locsHidden   = new Set();
+let _locsOverrides= {};
+(function _initLocsState(){
+  try { const h = JSON.parse(localStorage.getItem('gmtw_locs_hidden') || '[]'); if(Array.isArray(h)) _locsHidden = new Set(h); } catch(e) {}
+  try { _locsOverrides = JSON.parse(localStorage.getItem('gmtw_locs_overrides') || '{}'); } catch(e) {}
+})();
+
+function _saveLocsState() {
+  localStorage.setItem('gmtw_locs_hidden',    JSON.stringify([..._locsHidden]));
+  localStorage.setItem('gmtw_locs_overrides', JSON.stringify(_locsOverrides));
+}
+
+function toggleLocsVisibility(id) {
+  if (_locsHidden.has(id)) {
+    _locsHidden.delete(id);
+    if (MKR[id]) MKR[id].m.addTo(map);
+    toast('👁 Marker wieder eingeblendet');
+  } else {
+    _locsHidden.add(id);
+    if (MKR[id]) map.removeLayer(MKR[id].m);
+    toast('🙈 Marker ausgeblendet');
+  }
+  _saveLocsState();
+  renderAllMarkersList();
+}
+
+// LOCS-Marker bearbeiten (Name/Emoji/Beschreibung überschreiben)
+function editLocsMarker(id) {
+  const base = LOCS.find(l => l.id === id);
+  if (!base) return;
+  const ov = _locsOverrides[id] || {};
+  // Temporär eigenes Modal-Objekt als LOCS-Edit öffnen
+  _pendingLocsEditId = id;
+  openMdModal(null, base.lat, base.lng);
+  // Felder mit aktuellen Werten befüllen (override > base)
+  setTimeout(() => {
+    document.getElementById('md-name').value  = ov.name  || base.name;
+    document.getElementById('md-cat').value   = base.cat;
+    document.getElementById('md-desc').value  = ov.desc  || base.desc || '';
+    document.getElementById('md-emoji').value = ov.emoji || base.emoji;
+    document.getElementById('md-gmaps').value = ov.gmapsUrl || _buildMapsLink(base.lat, base.lng);
+    document.getElementById('md-lat').value   = base.lat;
+    document.getElementById('md-lng').value   = base.lng;
+    document.getElementById('md-lat-disp').textContent = base.lat.toFixed(6);
+    document.getElementById('md-lng-disp').textContent = base.lng.toFixed(6);
+    document.getElementById('md-title').textContent = 'Marker bearbeiten';
+    document.getElementById('md-edit-id').value = ''; // kein custom-id
+    _buildMdEmojiPicker(ov.emoji || base.emoji);
+    _updateMdShareQr(base.lat, base.lng, ov.name || base.name);
+  }, 30);
+}
+
+let _pendingLocsEditId = null; // gesetzt wenn LOCS-Marker im Modal bearbeitet wird
+
+// saveMdMarker Override: erkennt LOCS-Bearbeitung
+const _origSaveMdMarker = null; // wird nach Definition gepatcht
+
 function mkIcon(loc){
-  const s=loc.large?36:30, is=loc.large?16:13;
+  const scale = _markerScale;
+  const base  = loc.large ? 36 : 30;
+  const s     = Math.round(base * scale);
+  const is    = Math.round((loc.large ? 16 : 13) * scale);
   return L.divIcon({
     className:'',
     html:`<div class="pm${loc.large?' lg':''}"><div class="pm-h" style="background:${loc.color}"><span class="pm-i" style="font-size:${is}px">${loc.emoji}</span></div><div class="pm-d" style="background:${loc.color}"></div></div>`,
@@ -3943,11 +4030,49 @@ function mkPopup(loc){
 }
 
 LOCS.forEach(loc=>{
-  const m=L.marker([loc.lat,loc.lng],{icon:mkIcon(loc)}).addTo(map);
-  m.bindTooltip(loc.name,{permanent:true,direction:'bottom',offset:[0,4],className:'map-label'});
-  m.bindPopup(mkPopup(loc),{maxWidth:292,minWidth:250});
-  MKR[loc.id]={m,loc};
+  // Überschreibungen aus localStorage anwenden
+  const ov  = _locsOverrides[loc.id] || {};
+  const eff = { ...loc, name: ov.name||loc.name, emoji: ov.emoji||loc.emoji, desc: ov.desc||loc.desc };
+  const m   = L.marker([loc.lat,loc.lng],{icon:mkIcon(eff)});
+  if (!_locsHidden.has(loc.id)) m.addTo(map);
+  m.bindTooltip(eff.name,{permanent:true,direction:'bottom',offset:[0,4],className:'map-label'});
+  m.bindPopup(mkPopup(eff),{maxWidth:292,minWidth:250});
+  MKR[loc.id]={m, loc:eff, _base:loc};
 });
+
+// Alle LOCS-Marker mit aktuellen Überschreibungen neu rendern (nach Einstellungsänderung)
+function reloadLocsMarkers() {
+  LOCS.forEach(loc => {
+    const entry = MKR[loc.id];
+    if (!entry) return;
+    const ov  = _locsOverrides[loc.id] || {};
+    const eff = { ...loc, name: ov.name||loc.name, emoji: ov.emoji||loc.emoji, desc: ov.desc||loc.desc };
+    entry.loc = eff;
+    entry.m.setIcon(mkIcon(eff));
+    entry.m.setTooltipContent(eff.name);
+    entry.m.setPopupContent(mkPopup(eff));
+    if (_locsHidden.has(loc.id)) { if (map.hasLayer(entry.m)) map.removeLayer(entry.m); }
+    else { if (!map.hasLayer(entry.m)) entry.m.addTo(map); }
+  });
+}
+
+// ── MARKER-GRÖSSE SLIDER ───────────────────────────────────────
+// Live-Vorschau während Slider gezogen wird (nur Label aktualisieren)
+function onMkScaleInput(val) {
+  const sliderVal = document.getElementById('mk-scale-val');
+  if (sliderVal) sliderVal.textContent = val + '%';
+}
+// Beim Loslassen: Skalierung speichern + alle Marker neu rendern
+function onMkScaleChange(val) {
+  const pct = parseInt(val, 10);
+  _markerScale = Math.max(0.5, Math.min(2.0, pct / 100));
+  localStorage.setItem('gmtw_marker_scale', _markerScale.toString());
+  // LOCS-Marker neu rendern
+  reloadLocsMarkers();
+  // Custom-Marker neu rendern
+  _cmMarkers.forEach(cm => _renderOneCmMarker(cm));
+  toast('📐 Marker-Größe: ' + pct + '%');
+}
 
 // ── SHEET / POI-LISTE ──────────────────────────────────────────
 function buildList(){
@@ -3990,14 +4115,52 @@ function closeAll(){
 }
 
 // ── FILTER ─────────────────────────────────────────────────────
+// Globaler Kategorie-Filter: synchronisiert LOCS-Marker, GPX-Tracks, Eigene Marker
 function setFilter(f,el){
   curFilter=f;
+  // Map-Chip-Buttons aktualisieren
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');
+  if(el) el.classList.add('on');
+
+  // 1. LOCS-Marker: nach Kategorie zeigen/verstecken (beachte _locsHidden)
   LOCS.forEach(loc=>{
+    if(!MKR[loc.id]) return;
     const lm=MKR[loc.id].m;
-    (f==='all'||loc.cat===f)?map.addLayer(lm):map.removeLayer(lm);
+    const catMatch = (f==='all'||loc.cat===f);
+    const userHidden = _locsHidden.has(loc.id);
+    if(catMatch && !userHidden) { if(!map.hasLayer(lm)) map.addLayer(lm); }
+    else { if(map.hasLayer(lm)) map.removeLayer(lm); }
   });
+
+  // 2. GPX-Tracks: nach Kategorie zeigen/verstecken (beachte t.visible)
+  gpxFilter = f;
+  // GPX-Filter-Buttons im Track-Panel synchronisieren (data-c Attribut)
+  document.querySelectorAll('.cat-fbtn').forEach(b => {
+    b.classList.toggle('on', b.dataset.c === f);
+  });
+  trackStore.tracks.forEach(t => {
+    const shouldShow = (f === 'all' || t.cat === f) && t.visible;
+    if (shouldShow) {
+      if (!map.hasLayer(t.gpxLayer)) t.gpxLayer.addTo(map);
+      if (t._startMkr  && !map.hasLayer(t._startMkr))  t._startMkr.addTo(map);
+      if (t._finishMkr && !map.hasLayer(t._finishMkr)) t._finishMkr.addTo(map);
+    } else {
+      if (map.hasLayer(t.gpxLayer)) map.removeLayer(t.gpxLayer);
+      if (t._startMkr  && map.hasLayer(t._startMkr))  map.removeLayer(t._startMkr);
+      if (t._finishMkr && map.hasLayer(t._finishMkr)) map.removeLayer(t._finishMkr);
+    }
+  });
+
+  // 3. Eigene Marker: nach Kategorie zeigen/verstecken
+  _cmMarkers.forEach(cm => {
+    const layer = _cmLeafletLayers[cm.id];
+    if (!layer) return;
+    const show = (f === 'all' || cm.cat === f);
+    if (show) { if (!map.hasLayer(layer)) map.addLayer(layer); }
+    else       { if (map.hasLayer(layer))  map.removeLayer(layer); }
+  });
+
+  // 4. POI-Liste aktualisieren
   buildList();
 }
 
@@ -4735,23 +4898,12 @@ function zoomTrackFull(id) {
 }
 
 function filterTracks(cat, btn) {
-  gpxFilter = cat;
+  document.getElementById('elev-panel').style.display = 'none';
+  // Globalen setFilter aufrufen → synchronisiert LOCS, Tracks, Custom-Marker, Chips
+  setFilter(cat, null);
+  // Eigene cat-fbtn-Buttons synchronisieren
   document.querySelectorAll('.cat-fbtn').forEach(b => b.classList.remove('on'));
   if (btn) btn.classList.add('on');
-  document.getElementById('elev-panel').style.display = 'none';
-  // Sync Kartenebenen und Marker: Kategorie-Filter + Nutzer-Sichtbarkeit
-  trackStore.tracks.forEach(t => {
-    const shouldShow = (cat === 'all' || t.cat === cat) && t.visible;
-    if (shouldShow) {
-      if (!map.hasLayer(t.gpxLayer)) t.gpxLayer.addTo(map);
-      if (t._startMkr  && !map.hasLayer(t._startMkr))  t._startMkr.addTo(map);
-      if (t._finishMkr && !map.hasLayer(t._finishMkr)) t._finishMkr.addTo(map);
-    } else {
-      if (map.hasLayer(t.gpxLayer))  map.removeLayer(t.gpxLayer);
-      if (t._startMkr  && map.hasLayer(t._startMkr))   map.removeLayer(t._startMkr);
-      if (t._finishMkr && map.hasLayer(t._finishMkr))  map.removeLayer(t._finishMkr);
-    }
-  });
   renderTrackList();
 }
 
@@ -5041,6 +5193,7 @@ function openTrackQR(trackId){
     document.getElementById('trk-qr-dl-btn').dataset.name=t.name;
 
     closeAll();
+    _updateTrkQrShareBtn();
     const m=document.getElementById('trk-qrm');
     m.style.opacity='0';m.style.visibility='visible';m.style.transform='translate(-50%,-50%) scale(.88)';
     requestAnimationFrame(()=>{
@@ -5094,6 +5247,23 @@ function trkQrCopyUrl(){
   const url=(t&&t.sourceUrl)?t.sourceUrl:window.location.href;
   if(navigator.clipboard) navigator.clipboard.writeText(url).then(()=>toast('📋 Link kopiert!'));
   else{legacyCopy(url);toast('📋 Link kopiert!');}
+}
+
+// Web Share: GPX aus Track-QR-Modal teilen
+async function trkQrShareGpx(){
+  const btn=document.getElementById('trk-qr-dl-btn');
+  const gpxStr=btn.dataset.gpx;
+  const t=trackStore.tracks.find(t=>t.id===curTrkQrId);
+  const name=(t?t.name:'GMTW_Track');
+  const subtitle=t?`${t.stats.dist} km · ${t.cat}`:'';
+  if(!gpxStr){toast('❌ Kein GPX verfügbar');return;}
+  await _shareGpxFile(gpxStr, name, subtitle);
+}
+
+// Track-QR-Modal Share-Button: nach Öffnen sichtbar schalten
+function _updateTrkQrShareBtn(){
+  const btn=document.getElementById('trk-qr-share-btn');
+  if(btn) btn.style.display=(navigator.share||navigator.canShare)?'':'none';
 }
 
 // ── STRECKEN-AUFNAHME ──────────────────────────────────────────
@@ -5176,6 +5346,9 @@ function recStop(){
   document.getElementById('rec-stop-btn').style.display='none';
   if(!recorder.points.length){toast('⚠️ Keine GPS-Punkte aufgezeichnet');recReset();return;}
   document.getElementById('rec-save-section').style.display='';
+  // Share-Button nur anzeigen wenn Web Share API verfügbar
+  const rsb=document.getElementById('rec-share-btn');
+  if(rsb) rsb.style.display=(navigator.share||navigator.canShare)?'':'none';
   LS.del(LS.K.REC); // Autosave löschen
   toast(`✅ Aufnahme beendet · ${recorder.points.length} Punkte`);
 }
@@ -5273,6 +5446,67 @@ function recExportJson(){
   dlFile(name+'.json',JSON.stringify({name,creator:'GMTW Trail Map',created:new Date().toISOString(),stats:{points:recorder.points.length,distanceKm:(recorder.totalDist/1000).toFixed(3),elapsedMs:recorder.elapsed},points:recorder.points},null,2),'application/json');
   toast('⬇ JSON gespeichert!');
 }
+
+// Web Share API — Aufgezeichnete Strecke als GPX-Datei teilen
+async function recShareGpx(){
+  if(!recorder.points.length){toast('⚠️ Keine Punkte aufgezeichnet');return;}
+  const name=document.getElementById('rec-name-inp').value.trim()||'GMTW_Track';
+  const gpxStr=recBuildGpxString(name);
+  await _shareGpxFile(gpxStr, name, `${recorder.points.length} Punkte · ${(recorder.totalDist/1000).toFixed(2)} km`);
+}
+
+// Gemeinsame Funktion: GPX-Datei per Web Share API teilen (mit Fallback)
+async function _shareGpxFile(gpxStr, name, subtitle){
+  const safeName = name.replace(/[^a-zA-Z0-9_\-äöüÄÖÜß ]/g,'').trim() || 'GMTW_Track';
+  const fileName  = safeName.replace(/\s+/g,'_') + '.gpx';
+  // Web Share API Level 2: Datei-Sharing
+  if(navigator.canShare){
+    const file = new File([gpxStr], fileName, {type:'application/gpx+xml'});
+    if(navigator.canShare({files:[file]})){
+      try{
+        await navigator.share({
+          title: `GMTW – ${safeName}`,
+          text:  subtitle || 'Aufgezeichnet mit GMTW Trail Map',
+          files: [file]
+        });
+        toast('✅ Geteilt!');
+        return;
+      } catch(e){
+        if(e.name==='AbortError') return; // Nutzer hat abgebrochen
+        console.warn('Web Share files failed:', e);
+      }
+    }
+  }
+  // Fallback: normales Share ohne Datei (nur Text/URL)
+  if(navigator.share){
+    try{
+      await navigator.share({
+        title: `GMTW – ${safeName}`,
+        text:  `${subtitle || 'GPX Track'} — Lade die GPX-Datei in der GMTW Trail Map App.`,
+        url:   window.location.href
+      });
+      toast('✅ Link geteilt (Datei-Sharing nicht unterstützt)');
+      return;
+    } catch(e){
+      if(e.name==='AbortError') return;
+    }
+  }
+  // Letzter Fallback: direkt herunterladen
+  dlFile(fileName, gpxStr, 'application/gpx+xml');
+  toast('⬇ GPX heruntergeladen (Teilen nicht verfügbar)');
+}
+
+// Share-Buttons anzeigen wenn Web Share API verfügbar ist
+function _initShareButtons(){
+  if(navigator.share || navigator.canShare){
+    const recBtn = document.getElementById('rec-share-btn');
+    if(recBtn) recBtn.style.display='';
+    const trkBtn = document.getElementById('trk-qr-share-btn');
+    if(trkBtn) trkBtn.style.display='';
+  }
+}
+// Beim Start prüfen und nach jedem Track-QR-Öffnen
+document.addEventListener('DOMContentLoaded', _initShareButtons);
 
 function dlFile(filename,content,mime){
   const blob=new Blob([content],{type:mime});
@@ -6247,7 +6481,7 @@ function openSettings() {
   p.classList.add('open');
   _loadSettingsForm();
   updateStorageInfo();
-  renderCmList();
+  renderAllMarkersList();
 }
 
 function closeSettings() {
@@ -6266,7 +6500,7 @@ function switchSpTab(name, btn) {
   if (name === 'qr')     _initQrTab();
   if (name === 'tracks') _initTracksTab();
   if (name === 'backup') updateStorageInfo();
-  if (name === 'markers') renderCmList();
+  if (name === 'markers') renderAllMarkersList();
 }
 
 // Emoji-Grid befüllen
@@ -6301,6 +6535,14 @@ function _loadSettingsForm() {
   if (hr) {
     document.getElementById('sp-home-lat').value = hr.lat || '';
     document.getElementById('sp-home-lng').value = hr.lng || '';
+  }
+  // Marker-Größen-Slider initialisieren
+  const slider = document.getElementById('mk-scale-slider');
+  const sliderVal = document.getElementById('mk-scale-val');
+  if (slider) {
+    const pct = Math.round(_markerScale * 100);
+    slider.value = pct;
+    if (sliderVal) sliderVal.textContent = pct + '%';
   }
 }
 
@@ -6402,28 +6644,48 @@ async function exportFullBackup() {
   try {
     toast('⏳ Backup wird erstellt…');
 
-    // Alle Daten zusammenstellen
-    const tracks   = await localforage.getItem(LS.K.TRACKS) || [];
-    const runs     = await localforage.getItem(LS.K.RUNS)   || {};
-    const markers  = await localforage.getItem(LS.K.CUSTOM_MARKERS) || [];
+    // Alle Daten aus IndexedDB
+    const tracks  = await localforage.getItem(LS.K.TRACKS)         || [];
+    const runs    = await localforage.getItem(LS.K.RUNS)            || {};
+    const markers = await localforage.getItem(LS.K.CUSTOM_MARKERS)  || [];
+
+    // Vollständige Einstellungen (alle localStorage-Keys inkl. Marker-Konfiguration)
     const settings = {
-      gpsEmoji:   LS.get(LS.K.GPS_EMOJI, '🦄'),
-      homeRegion: LS.get(LS.K.HOME_REGION, null),
-      theme:      LS.get(LS.K.THEME, 'dark'),
+      gpsEmoji:       LS.get(LS.K.GPS_EMOJI,      '🦄'),
+      homeRegion:     LS.get(LS.K.HOME_REGION,    null),
+      theme:          LS.get(LS.K.THEME,          'dark'),
+      lastView:       LS.get(LS.K.VIEW,           null),
+      installDecline: LS.get(LS.K.INSTALL_DECLINE, null),
+      // Marker-Einstellungen (v4)
+      markerScale:    parseFloat(localStorage.getItem('gmtw_marker_scale') || '1.0'),
+      locsHidden:     JSON.parse(localStorage.getItem('gmtw_locs_hidden')    || '[]'),
+      locsOverrides:  JSON.parse(localStorage.getItem('gmtw_locs_overrides') || '{}'),
     };
 
+    // Aktuell geladene Tracks mit vollständigen GPX-Daten sichern
+    // (in-memory Tracks könnten neuere gpxString haben als IndexedDB)
+    const liveTracksMap = {};
+    trackStore.tracks.forEach(t => {
+      if (t.gpxString) liveTracksMap[t.id] = t.gpxString;
+    });
+    const mergedTracks = tracks.map(t => ({
+      ...t,
+      gpxString: liveTracksMap[t.id] || t.gpxString || null
+    }));
+
     const backup = {
-      _version:  2,
+      _version:  4,
       _app:      'GMTW Trail Map',
       _exported: new Date().toISOString(),
-      tracks,
+      tracks:    mergedTracks,
       runs,
       customMarkers: markers,
       settings,
     };
 
-    const json = JSON.stringify(backup, null, 2);
+    const json  = JSON.stringify(backup, null, 2);
     const fname = `GMTW_Backup_${new Date().toISOString().slice(0,10)}.json`;
+    const kb    = Math.round(json.length / 1024);
 
     // File System Access API (Chrome 86+) — mit Fallback auf Blob-Download
     if (window.showSaveFilePicker) {
@@ -6435,17 +6697,17 @@ async function exportFullBackup() {
         const writable = await fh.createWritable();
         await writable.write(json);
         await writable.close();
-        toast('✅ Backup gespeichert via File System API');
+        toast(`✅ Backup gespeichert (${kb} KB · ${mergedTracks.length} Tracks · ${markers.length} Marker)`);
         return;
       } catch(e) {
-        // Nutzer hat abgebrochen oder API nicht erlaubt → Fallback
         if (e.name === 'AbortError') return;
+        console.warn('[backup] showSaveFilePicker fehlgeschlagen, Blob-Fallback:', e);
       }
     }
 
-    // Fallback: klassischer Blob-Download (iOS Safari, Firefox)
+    // Fallback: klassischer Blob-Download (iOS Safari, Firefox, PWA)
     dlFile(fname, json, 'application/json');
-    toast('✅ Backup exportiert (' + Math.round(json.length / 1024) + ' KB)');
+    toast(`✅ Backup exportiert (${kb} KB · ${mergedTracks.length} Tracks · ${markers.length} Marker)`);
   } catch(e) {
     toast('❌ Export fehlgeschlagen: ' + e.message);
     console.error('exportFullBackup:', e);
@@ -6453,56 +6715,85 @@ async function exportFullBackup() {
 }
 
 async function importFullBackup(input) {
-  const file = input.files && input.files[0];
+  // Unterstützt sowohl <input type="file"> (file) als auch Blob (QR-Import)
+  let file = null;
+  if (input && input.files && input.files[0]) {
+    file = input.files[0];
+    input.value = '';
+  } else if (input instanceof Blob) {
+    file = input;
+  }
   if (!file) return;
-  input.value = ''; // Reset für erneuten Import
 
   const reader = new FileReader();
   reader.onload = async (ev) => {
     try {
-      const raw = ev.target.result;
+      const raw  = ev.target.result;
       const data = JSON.parse(raw);
 
-      // Validierung — mindestens _app muss passen
+      // Validierung
       if (!data._app || !data._app.includes('GMTW')) {
-        toast('❌ Ungültige Backup-Datei');
+        toast('❌ Ungültige Backup-Datei (kein GMTW-Backup)');
         return;
       }
 
-      if (!confirm(`Backup vom ${data._exported ? new Date(data._exported).toLocaleDateString('de') : '?'} importieren?\n\nAlle bestehenden Daten werden durch die Backup-Daten ersetzt.`)) return;
+      const dateStr = data._exported ? new Date(data._exported).toLocaleDateString('de') : '?';
+      const tracksN  = Array.isArray(data.tracks) ? data.tracks.length : 0;
+      const markersN = Array.isArray(data.customMarkers) ? data.customMarkers.length : 0;
+      const version  = data._version || 1;
+
+      if (!confirm(
+        `GMTW Backup vom ${dateStr} importieren?\n` +
+        `• ${tracksN} Strecken · ${markersN} eigene Marker\n` +
+        `• Version ${version} · Alle bestehenden Daten werden ersetzt.\n\n` +
+        `Fortfahren?`
+      )) return;
 
       toast('⏳ Importiere…');
 
-      // Tracks in IndexedDB
-      if (Array.isArray(data.tracks) && data.tracks.length) {
-        // GPX-Layer können nicht serialisiert werden — müssen neu geladen werden
-        // Wir speichern die Track-Metadaten ohne gpxLayer-Referenz
+      // Tracks in IndexedDB (ohne nicht-serialisierbare Leaflet-Objekte)
+      if (tracksN > 0) {
         const stripped = data.tracks.map(t => {
-          const { gpxLayer, _startMkr, ...rest } = t;
+          const { gpxLayer, _startMkr, _finishMkr, ...rest } = t;
           return rest;
         });
         await localforage.setItem(LS.K.TRACKS, stripped);
       }
 
-      // Runs / Zeiten in IndexedDB
+      // Runs / Zeiten
       if (data.runs && typeof data.runs === 'object') {
         await localforage.setItem(LS.K.RUNS, data.runs);
       }
 
-      // Custom Markers in IndexedDB
-      if (Array.isArray(data.customMarkers)) {
+      // Custom Markers
+      if (markersN > 0) {
         await localforage.setItem(LS.K.CUSTOM_MARKERS, data.customMarkers);
       }
 
-      // Einstellungen in localStorage
+      // Einstellungen in localStorage (vollständig)
       if (data.settings) {
-        if (data.settings.gpsEmoji)   LS.set(LS.K.GPS_EMOJI, data.settings.gpsEmoji);
-        if (data.settings.homeRegion) LS.set(LS.K.HOME_REGION, data.settings.homeRegion);
-        if (data.settings.theme)      LS.set(LS.K.THEME, data.settings.theme);
+        const s = data.settings;
+        if (s.gpsEmoji)       LS.set(LS.K.GPS_EMOJI,      s.gpsEmoji);
+        if (s.homeRegion)     LS.set(LS.K.HOME_REGION,    s.homeRegion);
+        if (s.theme)          LS.set(LS.K.THEME,          s.theme);
+        if (s.lastView)       LS.set(LS.K.VIEW,           s.lastView);
+        // Explizit null/false erlauben für installDecline
+        if ('installDecline' in s) LS.set(LS.K.INSTALL_DECLINE, s.installDecline);
+        // Marker-Einstellungen (v4+)
+        if (typeof s.markerScale === 'number' && s.markerScale > 0) {
+          localStorage.setItem('gmtw_marker_scale', String(s.markerScale));
+        }
+        if (Array.isArray(s.locsHidden)) {
+          localStorage.setItem('gmtw_locs_hidden', JSON.stringify(s.locsHidden));
+        }
+        if (s.locsOverrides && typeof s.locsOverrides === 'object') {
+          localStorage.setItem('gmtw_locs_overrides', JSON.stringify(s.locsOverrides));
+        }
       }
 
-      toast('✅ Backup importiert — Seite wird neu geladen…');
-      setTimeout(() => location.reload(), 1500);
+      const imported = `${tracksN} Strecken · ${markersN} Marker`;
+      toast(`✅ Backup v${version} importiert (${imported}) — Seite wird neu geladen…`);
+      setTimeout(() => location.reload(), 1800);
 
     } catch(e) {
       toast('❌ Import fehlgeschlagen: ' + e.message);
@@ -6549,6 +6840,38 @@ function toggleMarkerMode(on) {
   }
 }
 
+// Emoji-Liste für Marker-Symbol-Picker
+const CM_EMOJIS = ['📍','📌','⭐','🔥','🏔','🌲','🏁','🚩','🎯','💡','⚡','🏕','🦅','🚵','⛺','🏆','🛤','🌄','💎','🔵'];
+
+// Ermittelt den Maps-Link basierend auf Gerät (Apple → Apple Maps, sonst Google Maps)
+function _buildMapsLink(lat, lng) {
+  const isApple = /iphone|ipad|ipod|macintosh/i.test(navigator.userAgent) && 'ontouchend' in document;
+  if (isApple) {
+    return `https://maps.apple.com/?ll=${lat},${lng}&q=GMTW+Marker`;
+  }
+  return `https://www.google.com/maps?q=${lat},${lng}`;
+}
+
+// Symbol-Picker aufbauen
+function _buildMdEmojiPicker(selected) {
+  const grid = document.getElementById('md-emoji-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  CM_EMOJIS.forEach(em => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'md-emoji-btn' + (em === selected ? ' selected' : '');
+    btn.textContent = em;
+    btn.title = em;
+    btn.onclick = () => {
+      document.querySelectorAll('.md-emoji-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('md-emoji').value = em;
+    };
+    grid.appendChild(btn);
+  });
+}
+
 // Modal öffnen: editId = null → neu, sonst Bearbeiten
 function openMdModal(editId, lat, lng) {
   const overlay = document.getElementById('md-overlay');
@@ -6565,22 +6888,113 @@ function openMdModal(editId, lat, lng) {
       document.getElementById('md-name').value = cm.name;
       document.getElementById('md-cat').value = cm.cat;
       document.getElementById('md-desc').value = cm.desc || '';
-      document.getElementById('md-gmaps').value = cm.gmapsUrl || '';
+      document.getElementById('md-emoji').value = cm.emoji || '📍';
+      const mapsUrl = cm.gmapsUrl || _buildMapsLink(cm.lat, cm.lng);
+      document.getElementById('md-gmaps').value = mapsUrl;
       document.getElementById('md-lat').value = cm.lat;
       document.getElementById('md-lng').value = cm.lng;
       document.getElementById('md-lat-disp').textContent = cm.lat.toFixed(6);
       document.getElementById('md-lng-disp').textContent = cm.lng.toFixed(6);
+      _buildMdEmojiPicker(cm.emoji || '📍');
+      _updateMdMapsLink(cm.lat, cm.lng);
+      _updateMdShareQr(cm.lat, cm.lng, cm.name);
     }
   } else {
     document.getElementById('md-name').value = '';
     document.getElementById('md-cat').value = 'mittel';
     document.getElementById('md-desc').value = '';
+    document.getElementById('md-emoji').value = '📍';
     document.getElementById('md-gmaps').value = '';
-    document.getElementById('md-lat').value = lat || '';
-    document.getElementById('md-lng').value = lng || '';
-    document.getElementById('md-lat-disp').textContent = lat ? lat.toFixed(6) : '—';
-    document.getElementById('md-lng-disp').textContent = lng ? lng.toFixed(6) : '—';
+    document.getElementById('md-lat').value = lat !== undefined ? lat : '';
+    document.getElementById('md-lng').value = lng !== undefined ? lng : '';
+    document.getElementById('md-lat-disp').textContent = lat !== undefined ? lat.toFixed(6) : '—';
+    document.getElementById('md-lng-disp').textContent = lng !== undefined ? lng.toFixed(6) : '—';
+    _buildMdEmojiPicker('📍');
+    if (lat !== undefined && lng !== undefined) {
+      _updateMdMapsLink(lat, lng);
+      _updateMdShareQr(lat, lng, '');
+    } else {
+      _clearMdMapsLink();
+      _clearMdShareQr();
+    }
   }
+}
+
+// Maps-Link Auto-generieren und in Feld eintragen
+function _updateMdMapsLink(lat, lng) {
+  const url = _buildMapsLink(lat, lng);
+  const el = document.getElementById('md-gmaps');
+  if (el && !el.dataset.userEdited) el.value = url;
+  const lbl = document.getElementById('md-maps-lbl');
+  const isApple = /iphone|ipad|ipod|macintosh/i.test(navigator.userAgent) && 'ontouchend' in document;
+  if (lbl) lbl.textContent = isApple ? 'Apple Maps Link (auto)' : 'Google Maps Link (auto)';
+}
+
+function _clearMdMapsLink() {
+  const el = document.getElementById('md-gmaps');
+  if (el) { el.value = ''; delete el.dataset.userEdited; }
+}
+
+// QR-Code für die Position im Modal rendern
+// Speichert aktuelle Position für Share-Button
+let _mdQrLat = 0, _mdQrLng = 0, _mdQrMapsUrl = '';
+
+function _updateMdShareQr(lat, lng, name) {
+  const wrap = document.getElementById('md-share-qr-wrap');
+  const canvas = document.getElementById('md-share-qr-canvas');
+  if (!wrap || !canvas) return;
+  _mdQrLat = lat; _mdQrLng = lng;
+  _mdQrMapsUrl = _buildMapsLink(lat, lng);
+  try {
+    const qr = qrcode(0, 'M');
+    qr.addData(_mdQrMapsUrl);
+    qr.make();
+    const size = 148; // Größerer QR-Code für bessere Lesbarkeit
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const mod = qr.getModuleCount();
+    const cell = size / mod;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#000000';
+    for (let r = 0; r < mod; r++) {
+      for (let c = 0; c < mod; c++) {
+        if (qr.isDark(r, c)) ctx.fillRect(Math.floor(c * cell), Math.floor(r * cell), Math.ceil(cell), Math.ceil(cell));
+      }
+    }
+    wrap.style.display = 'block';
+    // Download-Button
+    const dlBtn = document.getElementById('md-share-qr-dl');
+    if (dlBtn) dlBtn.onclick = () => {
+      const nm = document.getElementById('md-name').value.trim() || 'marker';
+      downloadCanvas(canvas, `GMTW_Pos_${nm.replace(/\s+/g,'_')}.png`);
+    };
+    // Web Share-Button anzeigen wenn verfügbar
+    const shrBtn = document.getElementById('md-share-qr-share');
+    if (shrBtn) shrBtn.style.display = (navigator.share || navigator.canShare) ? '' : 'none';
+  } catch(e) {
+    wrap.style.display = 'none';
+  }
+}
+
+// Position via Web Share teilen (Karte-Link)
+async function _mdShareQrPos() {
+  const nm = document.getElementById('md-name')?.value.trim() || 'Marker';
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: `GMTW – ${nm}`, url: _mdQrMapsUrl });
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; }
+  }
+  // Fallback: in Zwischenablage
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(_mdQrMapsUrl).then(() => toast('📋 Link kopiert!'));
+  }
+}
+
+function _clearMdShareQr() {
+  const wrap = document.getElementById('md-share-qr-wrap');
+  if (wrap) wrap.style.display = 'none';
 }
 
 function closeMdModal() {
@@ -6597,14 +7011,29 @@ async function saveMdMarker() {
   const lng  = parseFloat(document.getElementById('md-lng').value);
   if (isNaN(lat) || isNaN(lng)) { toast('⚠️ Koordinaten fehlen'); return; }
 
-  const editId = document.getElementById('md-edit-id').value;
+  const editId   = document.getElementById('md-edit-id').value;
+  const emoji    = document.getElementById('md-emoji').value.trim() || '📍';
+  const gmapsRaw = document.getElementById('md-gmaps').value.trim();
+  const gmapsUrl = gmapsRaw || _buildMapsLink(lat, lng);
+  const desc     = document.getElementById('md-desc').value.trim();
+  const cat      = document.getElementById('md-cat').value;
+
+  // ── LOCS-Marker bearbeiten (Überschreibung speichern, kein custom marker) ──
+  if (_pendingLocsEditId) {
+    const locId = _pendingLocsEditId;
+    _pendingLocsEditId = null;
+    _locsOverrides[locId] = { name, emoji, desc, gmapsUrl };
+    _saveLocsState();
+    reloadLocsMarkers();
+    closeMdModal();
+    toast(`✅ "${escHtml(name)}" aktualisiert`);
+    renderAllMarkersList();
+    return;
+  }
+
   const marker = {
     id:       editId || ('cm_' + Date.now()),
-    name:     name,
-    cat:      document.getElementById('md-cat').value,
-    desc:     document.getElementById('md-desc').value.trim(),
-    gmapsUrl: document.getElementById('md-gmaps').value.trim(),
-    lat, lng,
+    name, cat, emoji, desc, gmapsUrl, lat, lng,
     createdAt: editId
       ? (_cmMarkers.find(m=>m.id===editId)?.createdAt || new Date().toISOString())
       : new Date().toISOString()
@@ -6644,7 +7073,7 @@ async function deleteCmMarker(id) {
 
   _cmMarkers = _cmMarkers.filter(m => m.id !== id);
   await _saveCustomMarkers();
-  renderCmList();
+  renderAllMarkersList();
   toast('🗑 Marker gelöscht');
 }
 
@@ -6674,26 +7103,36 @@ function _renderOneCmMarker(cm) {
     delete _cmLeafletLayers[cm.id];
   }
 
-  const color = CM_CAT_COLORS[cm.cat] || '#888';
+  const color    = CM_CAT_COLORS[cm.cat] || '#888';
   const catLabel = CATS[cm.cat]?.label || cm.cat;
+  const emoji    = cm.emoji || '📍';
 
-  // Custom Pin Icon
-  const html = `<div style="position:relative;width:32px;height:42px">
-    <div style="width:30px;height:36px;background:${color};border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.6)">
-      <span style="transform:rotate(45deg);font-size:14px;line-height:1">📍</span>
+  // Custom Pin Icon mit individuellem Emoji + Skalierung
+  const sc  = _markerScale;
+  const w   = Math.round(34 * sc);
+  const h   = Math.round(40 * sc);
+  const fs  = Math.round(16 * sc);
+  const tip = Math.round(10 * sc);
+  const tw  = Math.round(7 * sc);
+  const totalW = w + 2;
+  const totalH = h + tip;
+  const html = `<div style="position:relative;width:${totalW}px;height:${totalH}px">
+    <div style="width:${w}px;height:${h}px;background:${color};border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.65)">
+      <span style="transform:rotate(45deg);font-size:${fs}px;line-height:1">${emoji}</span>
     </div>
-    <div style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid ${color}"></div>
+    <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:${tw}px solid transparent;border-right:${tw}px solid transparent;border-top:${tip}px solid ${color}"></div>
   </div>`;
 
-  const icon = L.divIcon({ className: '', html, iconSize: [32, 42], iconAnchor: [16, 42], popupAnchor: [0, -44] });
+  const icon = L.divIcon({ className: '', html, iconSize: [totalW, totalH], iconAnchor: [totalW/2, totalH], popupAnchor: [0, -(totalH+4)] });
 
   // Popup-Inhalt (XSS-safe)
   const nm  = escHtml(cm.name);
   const ds  = escHtml(cm.desc || '');
   const cl  = escHtml(catLabel);
-  const gm  = cm.gmapsUrl && cm.gmapsUrl.startsWith('http')
-    ? `<a href="${escHtml(cm.gmapsUrl)}" target="_blank" rel="noopener" style="color:var(--ac);font-size:11px;display:block;margin-top:6px">↗ Google Maps öffnen</a>`
-    : '';
+  const mapsUrl = cm.gmapsUrl || _buildMapsLink(cm.lat, cm.lng);
+  const isApple = /iphone|ipad|ipod|macintosh/i.test(navigator.userAgent) && 'ontouchend' in document;
+  const mapsLabel = isApple ? 'Apple Maps öffnen' : 'Google Maps öffnen';
+  const mapsLink = `<a href="${escHtml(mapsUrl)}" target="_blank" rel="noopener" style="color:var(--ac);font-size:11px;display:block;margin-top:6px">↗ ${mapsLabel}</a>`;
 
   const popup = `<div style="background:var(--s1)">
     <div class="p-top">
@@ -6701,10 +7140,11 @@ function _renderOneCmMarker(cm) {
       <div class="p-name">${nm}</div>
       <div class="p-crds">${cm.lat.toFixed(5)}, ${cm.lng.toFixed(5)}</div>
       ${ds ? `<div class="p-desc">${ds}</div>` : ''}
-      ${gm}
+      ${mapsLink}
     </div>
     <div class="p-acts" style="flex-wrap:wrap;gap:6px">
       <button class="pbtn nav" onclick="navTo(${cm.lat},${cm.lng},'${esc(cm.name)}')">Navigation</button>
+      <button class="pbtn shr" onclick="openCmShareQr('${cm.id}')">📤 Teilen</button>
       <button class="pbtn shr" onclick="openMdModal('${cm.id}');map.closePopup()">✏ Bearbeiten</button>
       <button class="pbtn" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)" onclick="deleteCmMarker('${cm.id}');map.closePopup()">🗑 Löschen</button>
     </div>
@@ -6718,38 +7158,226 @@ function _renderOneCmMarker(cm) {
   _cmLeafletLayers[cm.id] = mkr;
 }
 
-// Custom-Marker-Liste im Settings-Panel rendern
-function renderCmList() {
+// QR-Code für einen Custom-Marker im bestehenden QR-Modal anzeigen
+function openCmShareQr(id) {
+  const cm = _cmMarkers.find(m => m.id === id);
+  if (!cm) return;
+  map.closePopup();
+
+  // Marker-Payload als GMTW-Marker-QR-Code
+  const payload = JSON.stringify({
+    type:  'gmtw-marker',
+    name:  cm.name,
+    cat:   cm.cat,
+    emoji: cm.emoji || '📍',
+    desc:  cm.desc || '',
+    lat:   cm.lat,
+    lng:   cm.lng,
+  });
+  // Falls zu lang: Maps-URL als Fallback
+  const mapsUrl = cm.gmapsUrl || _buildMapsLink(cm.lat, cm.lng);
+  const qrData  = payload.length <= 800 ? payload : mapsUrl;
+
+  // Bestehendes QR-Modal befüllen und öffnen
+  curQrUrl   = qrData;
+  curQrLocId = 'marker_' + cm.id;
+  document.getElementById('qr-nm').textContent   = (cm.emoji || '📍') + ' ' + cm.name;
+  document.getElementById('qr-hint').textContent = 'QR scannen → Marker importieren oder Position öffnen';
+  const inpEl = document.getElementById('qr-inp');
+  if (inpEl) inpEl.value = mapsUrl; // Link-Feld zeigt Maps-URL
+  const canvas = document.getElementById('qr-canvas');
+  drawQR(canvas, qrData, 160, '#0b0e14', '#ffffff');
+  closeAll();
+  document.getElementById('qrm').classList.add('show');
+  document.getElementById('backdrop').classList.add('show');
+}
+
+// Alle Marker (LOCS + Custom) im Settings-Panel rendern
+function renderAllMarkersList() {
   const container = document.getElementById('cm-list-container');
-  const countLbl  = document.getElementById('cm-count-lbl');
   if (!container) return;
 
-  if (countLbl) countLbl.textContent = `${_cmMarkers.length} eigene Marker`;
-
-  if (!_cmMarkers.length) {
-    container.innerHTML = '<div class="cm-empty">Noch keine eigenen Marker<br><span style="font-size:11px">Aktiviere den Marker-Modus und doppelklicke auf der Karte</span></div>';
-    return;
-  }
-
   container.innerHTML = '';
-  _cmMarkers.forEach(cm => {
-    const color = CM_CAT_COLORS[cm.cat] || '#888';
-    const catLabel = CATS[cm.cat]?.label || cm.cat;
+
+  // ── Abschnitt 1: Karten-Marker (LOCS) ────────────────────────
+  const locsHdr = document.createElement('div');
+  locsHdr.className = 'cm-section-hdr';
+  locsHdr.innerHTML = `<span class="cm-section-title">Karten-Marker</span><span class="cm-section-count">${LOCS.length}</span>`;
+  container.appendChild(locsHdr);
+
+  // Deduplizierte LOCS-Liste (sam-mit taucht 2x auf → einmalig anzeigen)
+  const seenLocs = new Set();
+  LOCS.forEach(loc => {
+    if (seenLocs.has(loc.id)) return;
+    seenLocs.add(loc.id);
+
+    const ov      = _locsOverrides[loc.id] || {};
+    const effName = ov.name  || loc.name;
+    const effEmoji= ov.emoji || loc.emoji;
+    const hidden  = _locsHidden.has(loc.id);
+    const hasOv   = Object.keys(ov).length > 0;
+    const catLabel= CATS[loc.cat]?.label || loc.cat;
+
     const item = document.createElement('div');
     item.className = 'cm-item';
+    item.style.opacity = hidden ? '0.45' : '1';
     item.innerHTML = `
-      <div class="cm-emoji" style="background:${color}22;border-radius:8px">📍</div>
+      <div class="cm-emoji" style="background:${loc.color}22;border-radius:8px">${effEmoji}</div>
       <div class="cm-info">
-        <div class="cm-name">${escHtml(cm.name)}</div>
-        <div class="cm-cat">${escHtml(catLabel)} · ${cm.lat.toFixed(4)}, ${cm.lng.toFixed(4)}</div>
+        <div class="cm-name">${escHtml(effName)}${hasOv ? ' <span style="font-size:9px;color:var(--ac);font-weight:700;letter-spacing:.5px;vertical-align:middle">GEÄ</span>' : ''}</div>
+        <div class="cm-cat">${escHtml(catLabel)} · ${loc.lat.toFixed(4)}, ${loc.lng.toFixed(4)}</div>
       </div>
       <div class="cm-actions">
-        <button class="cm-act-btn" onclick="closeSettings();map.setView([${cm.lat},${cm.lng}],17)">📍</button>
-        <button class="cm-act-btn" onclick="openMdModal('${cm.id}')">✏</button>
-        <button class="cm-act-btn del" onclick="deleteCmMarker('${cm.id}')">🗑</button>
+        <button class="cm-act-btn" title="${hidden ? 'Einblenden' : 'Ausblenden'}"
+          onclick="toggleLocsVisibility('${loc.id}')">${hidden ? '👁' : '🙈'}</button>
+        <button class="cm-act-btn" title="Auf Karte zeigen"
+          onclick="closeSettings();map.setView([${loc.lat},${loc.lng}],17);setTimeout(()=>{ if(MKR['${loc.id}']) MKR['${loc.id}'].m.openPopup(); },300)">📍</button>
+        <button class="cm-act-btn" title="Bearbeiten"
+          onclick="editLocsMarker('${loc.id}')">✏</button>
+        ${hasOv ? `<button class="cm-act-btn reset" title="Zurücksetzen" onclick="resetLocsMarker('${loc.id}')">↺</button>` : ''}
       </div>`;
     container.appendChild(item);
   });
+
+  // ── Abschnitt 2: Strecken-Marker (Start/Ziel der geladenen GPX-Tracks) ─
+  const trkMarkers = [];
+  trackStore.tracks.forEach(t => {
+    if (t._startMkr)  trkMarkers.push({ track: t, type: 'start',  mkr: t._startMkr,  emoji: '🚩', label: 'Start' });
+    if (t._finishMkr) trkMarkers.push({ track: t, type: 'finish', mkr: t._finishMkr, emoji: '🏁', label: 'Ziel'  });
+  });
+
+  if (trkMarkers.length > 0) {
+    const trkHdr = document.createElement('div');
+    trkHdr.className = 'cm-section-hdr';
+    trkHdr.style.marginTop = '12px';
+    trkHdr.innerHTML = `<span class="cm-section-title">Strecken-Marker</span><span class="cm-section-count">${trkMarkers.length}</span>`;
+    container.appendChild(trkHdr);
+
+    trkMarkers.forEach(({ track, type, mkr, emoji, label }) => {
+      const color = track.color || '#888';
+      const catLabel = CATS[track.cat]?.label || track.cat;
+      const hidden = !map.hasLayer(mkr);
+      const pos = mkr.getLatLng();
+      const item = document.createElement('div');
+      item.className = 'cm-item';
+      item.style.opacity = hidden ? '0.45' : '1';
+      item.innerHTML = `
+        <div class="cm-emoji" style="background:${color}22;border-radius:8px;font-size:20px">${emoji}</div>
+        <div class="cm-info">
+          <div class="cm-name">${escHtml(label + ': ' + track.name)}</div>
+          <div class="cm-cat">${escHtml(catLabel)} · ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}</div>
+        </div>
+        <div class="cm-actions">
+          <button class="cm-act-btn" title="Auf Karte zeigen"
+            onclick="closeSettings();map.setView([${pos.lat},${pos.lng}],17);setTimeout(()=>{const m=trackStore.tracks.find(t=>t.id==='${track.id}');if(m&&m._${type}Mkr)m._${type}Mkr.openPopup();},300)">📍</button>
+          <button class="cm-act-btn" title="Zu Strecke zoomen"
+            onclick="closeSettings();zoomTrack('${track.id}')">↗</button>
+        </div>`;
+      container.appendChild(item);
+    });
+  }
+
+  // ── Abschnitt 3: Eigene Marker ────────────────────────────────
+  const cmHdr = document.createElement('div');
+  cmHdr.className = 'cm-section-hdr';
+  cmHdr.style.marginTop = '12px';
+  cmHdr.innerHTML = `<span class="cm-section-title">Eigene Marker</span><span class="cm-section-count">${_cmMarkers.length}</span>`;
+  container.appendChild(cmHdr);
+
+  if (!_cmMarkers.length) {
+    const empty = document.createElement('div');
+    empty.className = 'cm-empty';
+    empty.innerHTML = 'Noch keine eigenen Marker<br><span style="font-size:11px">Aktiviere den Marker-Modus und tippe auf der Karte</span>';
+    container.appendChild(empty);
+  } else {
+    _cmMarkers.forEach(cm => {
+      const color    = CM_CAT_COLORS[cm.cat] || '#888';
+      const catLabel = CATS[cm.cat]?.label || cm.cat;
+      const emoji    = cm.emoji || '📍';
+      const item = document.createElement('div');
+      item.className = 'cm-item';
+      item.innerHTML = `
+        <div class="cm-emoji" style="background:${color}22;border-radius:8px">${emoji}</div>
+        <div class="cm-info">
+          <div class="cm-name">${escHtml(cm.name)}</div>
+          <div class="cm-cat">${escHtml(catLabel)} · ${cm.lat.toFixed(4)}, ${cm.lng.toFixed(4)}</div>
+          ${cm.desc ? `<div class="cm-desc">${escHtml(cm.desc.substring(0, 60))}${cm.desc.length > 60 ? '…' : ''}</div>` : ''}
+        </div>
+        <div class="cm-actions">
+          <button class="cm-act-btn" title="Auf Karte zeigen"
+            onclick="closeSettings();map.setView([${cm.lat},${cm.lng}],17);setTimeout(()=>{ if(_cmLeafletLayers['${cm.id}']) _cmLeafletLayers['${cm.id}'].openPopup(); },300)">${emoji}</button>
+          <button class="cm-act-btn" title="Teilen" onclick="openCmShareQr('${cm.id}')">📤</button>
+          <button class="cm-act-btn" title="Bearbeiten" onclick="openMdModal('${cm.id}')">✏</button>
+          <button class="cm-act-btn del" title="Löschen" onclick="deleteCmMarker('${cm.id}')">🗑</button>
+        </div>`;
+      container.appendChild(item);
+    });
+  }
+}
+
+// Rückwärts-kompatibler Alias
+function renderCmList() { renderAllMarkersList(); }
+
+// LOCS-Überschreibung zurücksetzen
+function resetLocsMarker(id) {
+  if (!confirm('Marker auf Standardwerte zurücksetzen?')) return;
+  delete _locsOverrides[id];
+  _saveLocsState();
+  reloadLocsMarkers();
+  renderAllMarkersList();
+  toast('↺ Marker zurückgesetzt');
+}
+
+// Marker als JSON exportieren
+function exportMarkersJson() {
+  if (!_cmMarkers.length) { toast('⚠️ Keine Marker vorhanden'); return; }
+  const json  = JSON.stringify({ type: 'gmtw-markers', markers: _cmMarkers }, null, 2);
+  const fname = `GMTW_Marker_${new Date().toISOString().slice(0,10)}.json`;
+  dlFile(fname, json, 'application/json');
+  toast(`✅ ${_cmMarkers.length} Marker exportiert`);
+}
+
+// Marker aus JSON importieren (Merge)
+function importMarkersJson(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  input.value = '';
+  const reader = new FileReader();
+  reader.onload = async (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      let list = [];
+      if (Array.isArray(data)) list = data;
+      else if (Array.isArray(data.markers)) list = data.markers;
+      else if (data.type === 'gmtw-marker') list = [data];
+      if (!list.length) { toast('⚠️ Keine Marker in der Datei gefunden'); return; }
+      // Merge: keine Duplikate (per id)
+      let added = 0;
+      list.forEach(cm => {
+        if (!cm.lat || !cm.lng || !cm.name) return;
+        if (!cm.id) cm.id = 'cm_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+        const exists = _cmMarkers.findIndex(m => m.id === cm.id);
+        if (exists >= 0) _cmMarkers[exists] = { ...cm };
+        else { _cmMarkers.push({ ...cm }); added++; }
+      });
+      await _saveCustomMarkers();
+      // Karte neu rendern
+      _cmMarkers.forEach(cm => _renderOneCmMarker(cm));
+      renderAllMarkersList();
+      toast(`✅ ${added} Marker importiert`);
+    } catch(e) {
+      toast('❌ Import fehlgeschlagen: ' + e.message);
+    }
+  };
+  reader.onerror = () => toast('❌ Datei nicht lesbar');
+  reader.readAsText(file, 'utf-8');
+}
+
+// Marker manuell erstellen (ohne Karten-Klick)
+function openMdModalManual() {
+  // Aktuelle Kartenposition als Standard
+  const c = map.getCenter();
+  openMdModal(null, c.lat, c.lng);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -6824,42 +7452,65 @@ function _onGpsPos(pos) {
 }
 
 // ══════════════════════════════════════════════════════════════
-// ── PWA INSTALL PROMPT ─────────────────────────────────────────
+// ── PWA INSTALL PROMPT ─────────────────────────────────════════
 // ══════════════════════════════════════════════════════════════
+
+const PWA_DECLINE_KEY   = 'gmtw_install_decline_ts';  // Timestamp der letzten Ablehnung
+const PWA_DECLINE_PERM  = 'gmtw_install_decline_perm'; // Permanente Ablehnung
+const PWA_REASK_MS      = 2 * 24 * 60 * 60 * 1000;    // 2 Tage in ms
 
 let _deferredInstallPrompt = null;
 
-// Chrome/Android: beforeinstallprompt abfangen
+// Prüft ob Install-Banner angezeigt werden soll (2-Tage-Sperre)
+function _canShowInstall() {
+  if (localStorage.getItem(PWA_DECLINE_PERM)) return false;
+  const ts = parseInt(localStorage.getItem(PWA_DECLINE_KEY) || '0', 10);
+  return !ts || (Date.now() - ts) > PWA_REASK_MS;
+}
+
+// Chrome/Android/Samsung: beforeinstallprompt abfangen
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   _deferredInstallPrompt = e;
-  // Nur zeigen wenn User noch nicht abgelehnt hat
-  if (!LS.get(LS.K.INSTALL_DECLINE)) {
-    setTimeout(() => _showPwaInstall(false), 2500);
+  if (_canShowInstall()) {
+    setTimeout(() => _showPwaInstall('android'), 2500);
   }
 });
 
-// App wurde erfolgreich installiert
+// App wurde erfolgreich installiert → permanent kein Banner mehr
 window.addEventListener('appinstalled', () => {
   _hidePwaInstall();
   toast('🎉 App installiert! Genieße die Trails.');
   _deferredInstallPrompt = null;
+  localStorage.setItem(PWA_DECLINE_PERM, '1');
 });
 
-function _showPwaInstall(isIos) {
+function _showPwaInstall(mode) {
+  // mode: 'android' | 'ios' | 'manual'
   const panel = document.getElementById('pwa-install');
   if (!panel) return;
-  const iosSteps = document.getElementById('pi-ios-steps');
-  const installBtn = document.getElementById('pi-install-btn');
 
-  if (isIos) {
+  const iosSteps    = document.getElementById('pi-ios-steps');
+  const manualSteps = document.getElementById('pi-manual-steps');
+  const installBtn  = document.getElementById('pi-install-btn');
+  const laterBtn    = document.getElementById('pi-later-btn');
+
+  // Alle ausblenden
+  if (iosSteps)    iosSteps.style.display    = 'none';
+  if (manualSteps) manualSteps.style.display = 'none';
+
+  if (mode === 'ios') {
     if (iosSteps) iosSteps.style.display = 'block';
     if (installBtn) { installBtn.textContent = 'Verstanden'; installBtn.onclick = () => dismissPwaInstall(true); }
+  } else if (mode === 'manual') {
+    if (manualSteps) manualSteps.style.display = 'block';
+    if (installBtn) { installBtn.textContent = 'Verstanden'; installBtn.onclick = () => dismissPwaInstall(true); }
   } else {
-    if (iosSteps) iosSteps.style.display = 'none';
-    if (installBtn) { installBtn.textContent = 'Installieren'; installBtn.onclick = triggerPwaInstall; }
+    // Android / Chrome / Samsung — direkter Install möglich
+    if (installBtn) { installBtn.textContent = 'Jetzt installieren'; installBtn.onclick = triggerPwaInstall; }
   }
 
+  if (laterBtn) laterBtn.onclick = () => dismissPwaInstall(false);
   panel.classList.add('show');
 }
 
@@ -6868,30 +7519,67 @@ function _hidePwaInstall() {
   if (panel) panel.classList.remove('show');
 }
 
+// Ablehnen: permanent=true → nie wieder; false → nach 2 Tagen erneut fragen
 function dismissPwaInstall(permanent) {
   _hidePwaInstall();
-  if (permanent) LS.set(LS.K.INSTALL_DECLINE, true);
-}
-
-async function triggerPwaInstall() {
-  if (!_deferredInstallPrompt) { _hidePwaInstall(); return; }
-  _deferredInstallPrompt.prompt();
-  const choice = await _deferredInstallPrompt.userChoice;
-  _deferredInstallPrompt = null;
-  _hidePwaInstall();
-  if (choice.outcome === 'accepted') {
-    toast('🎉 App wird installiert…');
+  if (permanent) {
+    localStorage.setItem(PWA_DECLINE_PERM, '1');
+  } else {
+    localStorage.setItem(PWA_DECLINE_KEY, String(Date.now()));
   }
 }
 
-// iOS-Erkennung: kein beforeinstallprompt-Support
+async function triggerPwaInstall() {
+  if (!_deferredInstallPrompt) {
+    // Kein Browser-Prompt verfügbar → manuelle Anleitung zeigen
+    _hidePwaInstall();
+    _showPwaInstall('manual');
+    return;
+  }
+  try {
+    _deferredInstallPrompt.prompt();
+    const choice = await _deferredInstallPrompt.userChoice;
+    _deferredInstallPrompt = null;
+    _hidePwaInstall();
+    if (choice.outcome === 'accepted') {
+      toast('🎉 App wird installiert…');
+    } else {
+      // Nutzer hat den Browser-Dialog abgelehnt → 2-Tage-Sperre
+      localStorage.setItem(PWA_DECLINE_KEY, String(Date.now()));
+    }
+  } catch(e) {
+    _hidePwaInstall();
+    console.warn('[PWA] Install prompt error:', e);
+  }
+}
+
+// Manuellen Install aus Settings-Panel auslösen
+function openInstallGuide() {
+  const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || ('standalone' in window.navigator && window.navigator.standalone);
+
+  if (isStandalone) {
+    toast('✅ App ist bereits installiert!');
+    return;
+  }
+  if (_deferredInstallPrompt) {
+    // Direkter Install möglich
+    triggerPwaInstall();
+    return;
+  }
+  // Kein deferred prompt → Anleitung zeigen
+  _showPwaInstall(isIos ? 'ios' : 'manual');
+}
+
+// iOS-Erkennung: kein beforeinstallprompt-Support → Anleitung zeigen
 function _checkIosInstall() {
   const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches
     || ('standalone' in window.navigator && window.navigator.standalone);
 
-  if (isIos && !isStandalone && !LS.get(LS.K.INSTALL_DECLINE)) {
-    setTimeout(() => _showPwaInstall(true), 4000);
+  if (isIos && !isStandalone && _canShowInstall()) {
+    setTimeout(() => _showPwaInstall('ios'), 5000);
   }
 }
 
@@ -7091,14 +7779,17 @@ function importQrMarker(data) {
     if (!_qrPendingData || typeof _qrPendingData !== 'object') { toast('❌ Keine Marker-Daten'); return; }
     data = _qrPendingData;
   }
+  const lat = parseFloat(data.lat);
+  const lng = parseFloat(data.lng);
+  if (isNaN(lat) || isNaN(lng)) { toast('❌ Ungültige Koordinaten im Marker-QR'); return; }
   const cm = {
     id: 'cm_qr_' + Date.now(),
-    name: data.name || 'Unbekannter Marker',
-    cat:  data.cat  || 'logistik',
-    desc: data.desc || '',
-    gmapsUrl: data.gmapsUrl || '',
-    lat: parseFloat(data.lat) || 0,
-    lng: parseFloat(data.lng) || 0,
+    name:     data.name  || 'Unbekannter Marker',
+    cat:      data.cat   || 'logistik',
+    emoji:    data.emoji || '📍',
+    desc:     data.desc  || '',
+    gmapsUrl: data.gmapsUrl || _buildMapsLink(lat, lng),
+    lat, lng,
     createdAt: new Date().toISOString()
   };
   _cmMarkers.push(cm);
@@ -7154,19 +7845,25 @@ function _initTracksTab() {
   const el = document.getElementById('sp-auto-tracks-list');
   if (!el) return;
 
+  const btnStyle = 'font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer;border:1px solid var(--bd2);font-family:var(--fh);font-weight:700;line-height:1.4';
+
   // Offizielle Strecken
   const autoHtml = AUTO_TRACKS.map(t => {
-    const loaded = trackStore.tracks.some(tr => tr.sourceUrl === t.url || tr.name === t.name);
+    const tr    = trackStore.tracks.find(tr => tr.sourceUrl === t.url || tr.name === t.name);
+    const loaded = !!tr;
     const catDot = { beginner:'#27AE60', mittel:'#D4A017', expert:'#8E44AD' }[t.cat] || '#888';
-    return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd2)">
+    const btns = loaded
+      ? `<button onclick="closeSettings();zoomTrack('${tr.id}')" title="Auf Karte" style="${btnStyle};background:var(--s3);color:var(--td)">📍</button>`
+        + `<button onclick="openTrackQR('${tr.id}')" title="QR/Teilen" style="${btnStyle};background:var(--s3);color:var(--ac)">📤</button>`
+        + `<button onclick="removeTrackFromSettings('${tr.id}')" title="Entfernen" style="${btnStyle};background:rgba(239,68,68,.12);color:#ef4444">🗑</button>`
+      : `<button onclick="loadAutoTrack('${esc(t.url)}','${esc(t.name)}','${esc(t.cat)}')" style="${btnStyle};background:var(--ac);color:#000;border:none">⬇ Laden</button>`;
+    return `<div style="display:flex;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid var(--bd2)">
       <span style="width:10px;height:10px;border-radius:50%;background:${catDot};flex-shrink:0;display:inline-block"></span>
       <div style="flex:1;min-width:0">
         <div style="font-size:12px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(t.name)}</div>
-        <div style="font-size:10px;color:${loaded?'var(--ac)':'var(--td)'};font-family:var(--fh);font-weight:700">${loaded?'✅ GELADEN':'⬜ FEHLT'}</div>
+        <div style="font-size:10px;color:${loaded?'var(--ac)':'var(--td)'};font-family:var(--fh);font-weight:700">${loaded?`✅ ${tr.stats?.dist||'?'} km`:'⬜ nicht geladen'}</div>
       </div>
-      ${loaded
-        ? `<button onclick="zoomTrack(trackStore.tracks.find(tr=>tr.sourceUrl==='${esc(t.url)}'||tr.name==='${esc(t.name)}')?.id)" style="font-size:10px;padding:4px 7px;background:var(--s3);color:var(--td);border:1px solid var(--bd2);border-radius:6px;cursor:pointer">📍</button>`
-        : `<button onclick="loadAutoTrack('${esc(t.url)}','${esc(t.name)}','${esc(t.cat)}')" style="font-size:10px;padding:4px 7px;background:var(--ac);color:#000;border:none;border-radius:6px;cursor:pointer;font-family:var(--fh);font-weight:800">⬇ Laden</button>`}
+      <div style="display:flex;gap:4px;flex-shrink:0">${btns}</div>
     </div>`;
   }).join('');
 
@@ -7175,23 +7872,41 @@ function _initTracksTab() {
     !AUTO_TRACKS.some(at => at.url === t.sourceUrl || at.name === t.name)
   );
   const customHtml = customTracks.length
-    ? `<div style="margin-top:14px;margin-bottom:4px;font-size:10px;font-weight:800;color:var(--td);letter-spacing:.5px;text-transform:uppercase">Eigene Strecken (${customTracks.length})</div>`
-      + customTracks.map(t => `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd2)">
+    ? `<div style="margin-top:16px;margin-bottom:6px;font-size:10px;font-weight:800;color:var(--td);letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between">
+        <span>Eigene Strecken (${customTracks.length})</span>
+      </div>`
+      + customTracks.map(t => `<div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--bd2)">
           <span style="width:10px;height:10px;border-radius:50%;background:${t.color};flex-shrink:0;display:inline-block"></span>
-          <span style="flex:1;font-size:12px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(t.name)}</span>
-          <button onclick="zoomTrack('${t.id}')" style="font-size:10px;padding:4px 7px;background:var(--s3);color:var(--td);border:1px solid var(--bd2);border-radius:6px;cursor:pointer">📍</button>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(t.name)}</div>
+            <div style="font-size:10px;color:var(--td);font-family:var(--fh);font-weight:700">${escHtml(t.cat)} · ${t.stats?.dist||'?'} km</div>
+          </div>
+          <div style="display:flex;gap:4px;flex-shrink:0">
+            <button onclick="closeSettings();zoomTrack('${t.id}')" title="Auf Karte" style="${btnStyle};background:var(--s3);color:var(--td)">📍</button>
+            <button onclick="openTrackQR('${t.id}')" title="QR/Teilen" style="${btnStyle};background:var(--s3);color:var(--ac)">📤</button>
+            <button onclick="removeTrackFromSettings('${t.id}')" title="Entfernen" style="${btnStyle};background:rgba(239,68,68,.12);color:#ef4444">🗑</button>
+          </div>
         </div>`).join('')
     : '';
 
   // Fehlende offizielle Strecken laden-Schaltfläche
   const missing = AUTO_TRACKS.filter(t => !trackStore.tracks.some(tr => tr.sourceUrl === t.url || tr.name === t.name));
   const loadAllBtn = missing.length > 0
-    ? `<button onclick="loadAllMissingTracks()" style="margin-top:10px;width:100%;padding:9px;background:var(--ac);color:#000;border:none;border-radius:9px;font-family:var(--fh);font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.5px">
+    ? `<button onclick="loadAllMissingTracks()" style="margin-top:12px;width:100%;padding:10px;background:var(--ac);color:#000;border:none;border-radius:10px;font-family:var(--fh);font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.5px">
         ⬇ Alle ${missing.length} fehlenden Strecken laden
       </button>`
     : `<div style="padding:8px 0;font-size:11px;color:var(--ac);font-family:var(--fh);font-weight:700">✅ Alle offiziellen Strecken geladen</div>`;
 
   el.innerHTML = autoHtml + customHtml + loadAllBtn;
+}
+
+// Track aus Settings-Tab entfernen (mit Bestätigung)
+function removeTrackFromSettings(id) {
+  const t = trackStore.tracks.find(t => t.id === id);
+  if (!t) return;
+  if (!confirm(`"${t.name}" wirklich aus der App entfernen?`)) return;
+  removeTrack(id);
+  setTimeout(_initTracksTab, 200);
 }
 
 // Einzelne Auto-Strecke aus Repository laden
@@ -7206,6 +7921,8 @@ async function loadAutoTrack(url, name, cat) {
     loadGpxXml(gpxStr, name, cat, null, url, false); // nicht-silent: Zoom + Popup
     // Tab nach kurzer Verzögerung refreshen (nach loaded-Event)
     setTimeout(_initTracksTab, 1800);
+    // GPX-URL aggressiv cachen
+    setTimeout(swPrefetchGpxTracks, 500);
   } catch(e) {
     toast(`❌ Laden fehlgeschlagen: ${escHtml(e.message)}`);
   }
@@ -7258,9 +7975,33 @@ if ('serviceWorker' in navigator) {
             if (granted) console.log('[Storage] Persistenter Speicher gewährt');
           });
         }
+        // GPX-Tracks aggressiv vorab cachen (nach kurzer Verzögerung)
+        setTimeout(() => swPrefetchGpxTracks(), 3000);
       })
       .catch(err => console.warn('[SW] Registrierung fehlgeschlagen:', err));
   });
+}
+
+// GPX-Track-URLs an Service Worker zum Vorab-Cachen senden
+function swPrefetchGpxTracks() {
+  if (!navigator.serviceWorker || !navigator.serviceWorker.controller) return;
+  // Alle bekannten GPX-URLs sammeln (Auto-Tracks + geladene Tracks mit Source-URL)
+  const urls = new Set();
+  AUTO_TRACKS.forEach(t => { if (t.url) urls.add(t.url); });
+  trackStore.tracks.forEach(t => {
+    if (t.sourceUrl && !t.sourceUrl.startsWith('blob:') && t.sourceUrl.startsWith('http')) {
+      urls.add(t.sourceUrl);
+    }
+  });
+  if (!urls.size) return;
+  const channel = new MessageChannel();
+  channel.port1.onmessage = (e) => {
+    if (e.data?.success) console.log('[SW] GPX Prefetch abgeschlossen für', urls.size, 'URLs');
+  };
+  navigator.serviceWorker.controller.postMessage(
+    { type: 'PREFETCH_GPX', urls: [...urls] },
+    [channel.port2]
+  );
 }
 
 // Hinweis: Initialisierung erfolgt im window-load-Event (siehe oben)
@@ -7418,42 +8159,86 @@ if ('serviceWorker' in navigator) {
 
   <!-- Tab: Backup -->
   <div class="sp-content" id="sp-tab-backup">
+    <!-- Export -->
     <div class="sp-section">
-      <div class="sp-label">Vollständiges Backup exportieren</div>
-      <div class="sp-hint">Alle Tracks, Zeiten, eigene Marker und Einstellungen als eine JSON-Datei</div>
+      <div class="sp-label">📦 Vollständiges Backup exportieren</div>
+      <div class="sp-hint">Sichert alle Daten vollständig als JSON-Datei</div>
+      <div style="margin-top:8px;padding:8px 10px;background:var(--s3);border-radius:8px;font-size:11px;color:var(--td);line-height:1.8">
+        ✅ GPX-Strecken &amp; Rennzeiten &nbsp;·&nbsp; ✅ Eigene Marker<br>
+        ✅ Karten-Marker-Anpassungen &nbsp;·&nbsp; ✅ Marker-Größe<br>
+        ✅ GPS-Emoji &nbsp;·&nbsp; ✅ Home-Position &nbsp;·&nbsp; ✅ Theme
+      </div>
       <button class="sp-btn prim" onclick="exportFullBackup()" style="width:100%;margin-top:10px;justify-content:center">
-        ⬇ GMTW_Backup.json exportieren
+        ⬇ GMTW_Backup.json erstellen
       </button>
     </div>
+    <!-- Import -->
     <div class="sp-section">
-      <div class="sp-label">Backup importieren</div>
-      <div class="sp-hint">Wähle eine zuvor exportierte <code style="background:var(--s3);padding:1px 4px;border-radius:3px;font-family:monospace;font-size:11px">GMTW_Backup.json</code> — alle vorhandenen Daten werden zusammengeführt</div>
-      <label style="display:flex;align-items:center;gap:10px;margin-top:10px;padding:12px;background:var(--s2);border:1px dashed var(--bd2);border-radius:12px;cursor:pointer;font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--td)">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4V13M6 9L10 13L14 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 16H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        JSON-Backup auswählen
+      <div class="sp-label">⬆ Backup importieren</div>
+      <div class="sp-hint">Wähle eine <code style="background:var(--s3);padding:1px 4px;border-radius:3px;font-family:monospace;font-size:11px">GMTW_Backup.json</code> — alle Daten werden ersetzt und die App neu geladen</div>
+      <label style="display:flex;align-items:center;gap:10px;margin-top:10px;padding:14px 12px;background:var(--s2);border:2px dashed var(--bd2);border-radius:12px;cursor:pointer;font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:.4px;color:var(--ac);justify-content:center">
+        📂 Backup-Datei auswählen
         <input type="file" id="backup-file-input" accept=".json,application/json" style="display:none" onchange="importFullBackup(this)">
       </label>
     </div>
-    <div class="sp-section" style="border-bottom:none">
-      <div class="sp-label">Speichernutzung</div>
+    <!-- Nur Marker -->
+    <div class="sp-section">
+      <div class="sp-label">📍 Nur eigene Marker ex-/importieren</div>
+      <div class="sp-hint">Teile eigene Marker mit anderen GMTW-Nutzern</div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="sp-btn sec" style="flex:1;justify-content:center" onclick="exportMarkersJson()">⬇ Exportieren</button>
+        <label class="sp-btn sec" style="flex:1;justify-content:center;cursor:pointer;margin:0">
+          ⬆ Importieren
+          <input type="file" accept=".json,application/json" style="display:none" onchange="importMarkersJson(this)">
+        </label>
+      </div>
+    </div>
+    <!-- Speicher -->
+    <div class="sp-section">
+      <div class="sp-label">💾 Speichernutzung</div>
       <div id="sp-storage-info" style="font-size:12px;color:var(--td);margin-top:6px;line-height:1.6">
         Wird berechnet…
       </div>
-      <button class="sp-btn sec" onclick="requestPersistentStorage()" style="width:100%;margin-top:10px;justify-content:center">
+      <button class="sp-btn sec" onclick="requestPersistentStorage()" style="width:100%;margin-top:8px;justify-content:center">
         🔒 Dauerhaften Speicher anfragen
+      </button>
+    </div>
+    <!-- App Install -->
+    <div class="sp-section" style="border-bottom:none">
+      <div class="sp-label">📲 App installieren</div>
+      <div class="sp-hint">Als PWA auf dem Home-Bildschirm installieren — vollständig offline nutzbar</div>
+      <button class="sp-btn prim" onclick="openInstallGuide()" style="width:100%;margin-top:10px;justify-content:center">
+        📲 App auf Gerät installieren
       </button>
     </div>
   </div>
 
-  <!-- Tab: Eigene Marker -->
-  <div class="sp-content" id="sp-tab-markers">
-    <div style="padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid var(--bd2)">
-      <span style="font-size:12px;color:var(--td)" id="cm-count-lbl">0 eigene Marker</span>
-      <button class="sp-btn prim" onclick="closeSettings();toggleMarkerMode(true)">
-        ＋ Neuen Marker setzen
-      </button>
+  <!-- Tab: Marker (LOCS + Eigene) -->
+  <div class="sp-content sp-col" id="sp-tab-markers">
+    <!-- Toolbar: Erstellen -->
+    <div style="padding:10px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0;border-bottom:1px solid var(--bd2);flex-wrap:wrap">
+      <span style="font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--td);flex:1">Marker verwalten</span>
+      <button class="sp-btn sec" style="padding:6px 10px;font-size:11px" onclick="openMdModalManual()" title="Marker manuell erstellen">＋ Neu</button>
+      <button class="sp-btn sec" style="padding:6px 10px;font-size:11px" onclick="closeSettings();toggleMarkerMode(true)" title="Marker per Kartenklick setzen">📍 Karte</button>
     </div>
-    <div style="overflow-y:auto;flex:1;padding:0 16px" id="cm-list-container">
+    <!-- Marker-Größe -->
+    <div class="mk-slider-row">
+      <span style="font-size:12px;color:var(--td);flex-shrink:0">Marker-Größe</span>
+      <input type="range" id="mk-scale-slider" min="50" max="200" step="5" value="100"
+        oninput="onMkScaleInput(this.value)" onchange="onMkScaleChange(this.value)"
+        style="flex:1;accent-color:var(--ac)">
+      <span class="mk-slider-val" id="mk-scale-val">100%</span>
+    </div>
+    <!-- Import/Export eigener Marker -->
+    <div style="padding:8px 16px;display:flex;gap:8px;flex-shrink:0;border-bottom:1px solid var(--bd2)">
+      <button class="sp-btn sec" style="flex:1;justify-content:center;font-size:11px" onclick="exportMarkersJson()">⬇ Exportieren</button>
+      <label class="sp-btn sec" style="flex:1;justify-content:center;font-size:11px;cursor:pointer;margin:0">
+        ⬆ Importieren
+        <input type="file" accept=".json,application/json" style="display:none" onchange="importMarkersJson(this)">
+      </label>
+    </div>
+    <!-- Liste (LOCS + Eigene) -->
+    <div style="overflow-y:auto;flex:1;padding:0 16px 16px" id="cm-list-container">
       <!-- wird per JS befüllt -->
     </div>
   </div>
@@ -7525,11 +8310,19 @@ if ('serviceWorker' in navigator) {
 
 <!-- ══ MARKER MODAL (Erstellen / Bearbeiten) ═══════════════════ -->
 <div id="md-overlay" style="display:none;position:fixed;inset:0;z-index:1300;background:rgba(0,0,0,.7);align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)">
-  <div class="md-sheet">
+  <div class="md-sheet" style="max-height:92dvh;overflow-y:auto">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <span id="md-title" style="font-family:var(--fh);font-size:16px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--tx)">Marker erstellen</span>
-      <button onclick="closeMdModal()" style="background:var(--s3);border:1px solid var(--bd2);border-radius:8px;color:var(--tx);width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px">×</button>
+      <button onclick="closeMdModal()" style="background:var(--s3);border:1px solid var(--bd2);border-radius:8px;color:var(--tx);width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0">×</button>
     </div>
+
+    <!-- Symbol-Picker -->
+    <div class="md-field">
+      <label class="md-label">Symbol / Emoji</label>
+      <div id="md-emoji-grid" style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px"></div>
+      <input type="hidden" id="md-emoji" value="📍">
+    </div>
+
     <div class="md-field">
       <label class="md-label">Name <span style="color:var(--exp)">*</span></label>
       <input class="md-input" id="md-name" type="text" placeholder="z.B. Geheimtipp Abfahrt" maxlength="60">
@@ -7545,14 +8338,20 @@ if ('serviceWorker' in navigator) {
     </div>
     <div class="md-field">
       <label class="md-label">Beschreibung</label>
-      <textarea class="md-input" id="md-desc" rows="3" placeholder="Optionale Beschreibung…" maxlength="500" style="resize:none"></textarea>
+      <textarea class="md-input" id="md-desc" rows="2" placeholder="Optionale Beschreibung…" maxlength="300" style="resize:none"></textarea>
     </div>
+
+    <!-- Maps-Link (auto-generiert) -->
     <div class="md-field">
-      <label class="md-label">Google Maps Link (optional)</label>
-      <input class="md-input" id="md-gmaps" type="url" placeholder="https://maps.google.com/…">
+      <label class="md-label" id="md-maps-lbl">Navigation-Link (auto)</label>
+      <div style="display:flex;gap:6px">
+        <input class="md-input" id="md-gmaps" type="url" placeholder="Wird automatisch erstellt…" style="flex:1" oninput="this.dataset.userEdited='1'">
+        <button type="button" onclick="document.getElementById('md-gmaps').dataset.userEdited='';_updateMdMapsLink(parseFloat(document.getElementById('md-lat').value),parseFloat(document.getElementById('md-lng').value))" style="background:var(--s3);border:1px solid var(--bd2);border-radius:8px;color:var(--td);padding:0 10px;cursor:pointer;font-size:12px;white-space:nowrap;flex-shrink:0" title="Auto-generieren">↺ Auto</button>
+      </div>
     </div>
-    <!-- Koordinaten (readonly, werden beim Öffnen gesetzt) -->
-    <div style="display:flex;gap:8px;margin-bottom:12px">
+
+    <!-- Koordinaten (readonly) -->
+    <div style="display:flex;gap:8px;margin-bottom:8px">
       <div style="flex:1;background:var(--s2);border-radius:8px;padding:8px 10px">
         <div style="font-size:10px;color:var(--td);margin-bottom:2px;font-family:var(--fh);font-weight:700">LATITUDE</div>
         <div id="md-lat-disp" style="font-size:13px;font-variant-numeric:tabular-nums;color:var(--tx)">—</div>
@@ -7562,6 +8361,20 @@ if ('serviceWorker' in navigator) {
         <div id="md-lng-disp" style="font-size:13px;font-variant-numeric:tabular-nums;color:var(--tx)">—</div>
       </div>
     </div>
+
+    <!-- QR-Code für Position teilen -->
+    <div id="md-share-qr-wrap" style="display:none;background:var(--s2);border-radius:12px;padding:14px;margin-bottom:12px;text-align:center">
+      <div style="font-size:10px;color:var(--td);font-family:var(--fh);font-weight:700;margin-bottom:10px;letter-spacing:.5px">POSITION TEILEN</div>
+      <!-- Weißer Rahmen um den QR-Code (wichtig für Scanner-Erkennung) -->
+      <div style="display:inline-block;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 12px rgba(0,0,0,.3)">
+        <canvas id="md-share-qr-canvas" width="148" height="148" style="display:block;image-rendering:pixelated;image-rendering:crisp-edges"></canvas>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;justify-content:center">
+        <button id="md-share-qr-dl" type="button" style="padding:6px 14px;background:var(--s3);border:1px solid var(--bd2);border-radius:8px;color:var(--td);font-size:11px;cursor:pointer;font-family:var(--fh);font-weight:700">⬇ QR laden</button>
+        <button id="md-share-qr-share" type="button" onclick="_mdShareQrPos()" style="padding:6px 14px;background:var(--ac);border:none;border-radius:8px;color:#000;font-size:11px;cursor:pointer;font-family:var(--fh);font-weight:700;display:none">📤 Teilen</button>
+      </div>
+    </div>
+
     <input type="hidden" id="md-lat">
     <input type="hidden" id="md-lng">
     <input type="hidden" id="md-edit-id">
@@ -7578,18 +8391,27 @@ if ('serviceWorker' in navigator) {
     <div class="pi-icon">🗺️</div>
     <div>
       <div class="pi-title">GMTW Trail Map</div>
-      <div class="pi-sub">Installieren für Offline-Nutzung &amp; schnellen Zugriff</div>
+      <div class="pi-sub">Als App installieren — vollständig offline nutzbar</div>
     </div>
   </div>
-  <!-- iOS-Anleitung (wird via JS ein-/ausgeblendet) -->
+  <!-- iOS Safari Anleitung -->
   <div class="pi-ios-steps" id="pi-ios-steps" style="display:none">
-    1. Tippe auf das <strong>Teilen-Symbol</strong> <span style="font-size:16px">⎙</span> in Safari<br>
-    2. Scrolle nach unten und wähle <strong>„Zum Home-Bildschirm"</strong><br>
+    1. Tippe auf das <strong>Teilen-Symbol</strong> <span style="font-size:16px">⎙</span> unten in Safari<br>
+    2. Scrolle und wähle <strong>„Zum Home-Bildschirm"</strong><br>
     3. Tippe <strong>„Hinzufügen"</strong> — fertig!
   </div>
+  <!-- Manuelle Anleitung für andere Browser -->
+  <div id="pi-manual-steps" style="display:none;font-size:12px;color:var(--tx);line-height:1.7;margin:4px 0 8px;background:var(--s2);border-radius:10px;padding:10px 12px">
+    <strong>Chrome/Edge:</strong> Menü ⋮ → <em>„App installieren"</em> oder <em>„Zum Startbildschirm"</em><br>
+    <strong>Samsung Browser:</strong> Menü ≡ → <em>„Seite hinzufügen"</em><br>
+    <strong>Firefox:</strong> Menü ⋮ → <em>„Zum Startbildschirm"</em>
+  </div>
   <div class="pi-acts">
-    <button class="pi-btn later" onclick="dismissPwaInstall(false)" id="pi-later-btn">Später</button>
-    <button class="pi-btn inst" onclick="triggerPwaInstall()" id="pi-install-btn">Installieren</button>
+    <button class="pi-btn later" id="pi-later-btn" onclick="dismissPwaInstall(false)">Später</button>
+    <button class="pi-btn inst" id="pi-install-btn" onclick="triggerPwaInstall()">Installieren</button>
+  </div>
+  <div style="text-align:center;margin-top:6px">
+    <button onclick="dismissPwaInstall(true)" style="background:none;border:none;color:var(--td);font-size:11px;cursor:pointer;padding:4px">Nicht mehr fragen</button>
   </div>
 </div>
 

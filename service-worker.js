@@ -1,29 +1,38 @@
 // =========================================================
-// GMTW Trail Map - Service Worker v4
+// GMTW Trail Map - Service Worker v5
 // Strategien:
 //   App-Shell (HTML/CSS/JS/Icons): Cache-First
 //   Karten-Tiles (OTM/Esri):      Network-First + Cache-Fallback
 //   Fonts (Bunny Fonts DSGVO):    Stale-While-Revalidate
+//   GPX Tracks:                   Network-First + aggressive Cache
 //   Sonstiges:                    Network-First + Cache-Fallback
 //
-// Offline-GPS-Hinweis:
-//   GPS-Position kommt vom Geraete-Hardware (navigator.geolocation).
-//   Bei Offline-Betrieb werden bereits gecachte Karten-Tiles angezeigt.
-//   Neuer Standort wird nahtlos auf dem gecachten Kartenbild dargestellt.
+// v5 Verbesserungen:
+//   - Icons im Shell-Cache (offline App-Icon)
+//   - GPX-Vorab-Caching via PREFETCH_GPX Nachricht
+//   - Tile-Cache auf 3000 erhöht
+//   - Robusteres Fehler-Handling
 // =========================================================
 
-const SW_VERSION  = 'gmtw-v4';
+const SW_VERSION  = 'gmtw-v5';
 const SHELL_CACHE = SW_VERSION + '-shell';
 const TILE_CACHE  = SW_VERSION + '-tiles';
 const DATA_CACHE  = SW_VERSION + '-data';
+const GPX_CACHE   = SW_VERSION + '-gpx';
 
 // Max. Tile-Cache-Groesse: FIFO-Rotation verhindert unendlichen Speicher
-const MAX_TILE_CACHE = 2000;
+const MAX_TILE_CACHE = 3000;
+const MAX_GPX_CACHE  = 200;
 
 // App-Shell Assets: werden beim Install vorab gecacht (alle offline verfügbar)
 const SHELL_ASSETS = [
   './index.html',
   './manifest.json',
+  // App-Icons (offline installierbar)
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-maskable-192.png',
+  './icons/icon-maskable-512.png',
   // Leaflet (Karten-Engine)
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
@@ -48,6 +57,13 @@ const TILE_PATTERNS = [
 const FONT_PATTERNS = [
   /fonts\.bunny\.net/,
   /fonts\.gstatic\.com/,
+];
+
+// GPX-Muster: GMTW GitHub + Raw-Inhalte
+const GPX_PATTERNS = [
+  /raw\.githubusercontent\.com.*\.gpx/i,
+  /munimap\.github\.io.*\.gpx/i,
+  /\.gpx(\?.*)?$/i,
 ];
 
 // ==========================================================
@@ -76,7 +92,7 @@ self.addEventListener('activate', (event) => {
     caches.keys()
       .then(keys => Promise.all(
         keys
-          .filter(k => k !== SHELL_CACHE && k !== TILE_CACHE && k !== DATA_CACHE)
+          .filter(k => k !== SHELL_CACHE && k !== TILE_CACHE && k !== DATA_CACHE && k !== GPX_CACHE)
           .map(k => {
             console.log('[SW] Loesche alten Cache:', k);
             return caches.delete(k);
@@ -106,6 +122,12 @@ self.addEventListener('fetch', (event) => {
   // Fonts: Stale-While-Revalidate (schnell + aktuell)
   if (FONT_PATTERNS.some(p => p.test(url))) {
     event.respondWith(staleWhileRevalidate(req, SHELL_CACHE));
+    return;
+  }
+
+  // GPX Tracks: Cache-First (offline Strecken), bei Miss Network
+  if (GPX_PATTERNS.some(p => p.test(url))) {
+    event.respondWith(cacheFirstWithNetworkFallback(req, GPX_CACHE));
     return;
   }
 
@@ -141,6 +163,37 @@ async function cacheFirst(req, cacheName) {
 }
 
 // ==========================================================
+// STRATEGIE: Cache-First mit Network-Fallback (für GPX)
+// Cache hat Priorität → Offline-Strecken immer verfügbar.
+// Bei Cache-Miss: Netz holen und cachen für nächstes Mal.
+// ==========================================================
+async function cacheFirstWithNetworkFallback(req, cacheName) {
+  const cache  = await caches.open(cacheName);
+  const cached = await cache.match(req);
+  if (cached) {
+    // Im Hintergrund aktualisieren (nicht blockierend)
+    fetch(req).then(fresh => {
+      if (fresh && fresh.ok) cache.put(req, fresh.clone());
+    }).catch(() => {});
+    return cached;
+  }
+
+  try {
+    const fresh = await fetch(req);
+    if (fresh.ok) {
+      cache.put(req, fresh.clone());
+      trimCache(cacheName, MAX_GPX_CACHE);
+    }
+    return fresh;
+  } catch(e) {
+    return new Response('GPX offline nicht verfügbar', {
+      status: 503,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+    });
+  }
+}
+
+// ==========================================================
 // STRATEGIE: Network-First fuer Karten-Tiles
 // Neues Tile vom Netz -> in Cache speichern.
 // Bei Offline -> gecachtes Tile oder transparentes PNG.
@@ -162,7 +215,6 @@ async function networkFirstTile(req) {
     // Offline: gecachtes Tile zurueckgeben
     const cached = await cache.match(req);
     if (cached) {
-      console.log('[SW] Offline-Tile aus Cache:', req.url);
       return cached;
     }
 
@@ -231,7 +283,7 @@ async function trimCache(cacheName, maxEntries) {
     // Aelteste Eintraege (Anfang der Liste) loeschen
     const toDelete = keys.slice(0, keys.length - maxEntries);
     await Promise.all(toDelete.map(k => cache.delete(k)));
-    console.log('[SW] Tile-Cache Rotation:', toDelete.length, 'Eintraege entfernt,', maxEntries, 'verbleiben');
+    console.log('[SW] Cache Rotation:', cacheName, '-', toDelete.length, 'entfernt,', maxEntries, 'verbleiben');
   }
 }
 
@@ -269,18 +321,39 @@ self.addEventListener('message', (event) => {
       });
       break;
 
+    case 'PREFETCH_GPX':
+      // App sendet Liste von GPX-URLs zum Vorab-Cachen (aggressive Offline-Strategie)
+      if (Array.isArray(event.data.urls)) {
+        caches.open(GPX_CACHE).then(cache => {
+          const fetches = event.data.urls.map(url =>
+            cache.match(url).then(cached => {
+              if (cached) return; // Bereits gecacht
+              return fetch(url)
+                .then(r => { if (r.ok) cache.put(url, r); })
+                .catch(err => console.warn('[SW] GPX prefetch miss:', url, err.message));
+            })
+          );
+          return Promise.allSettled(fetches);
+        }).then(() => {
+          event.ports[0]?.postMessage({ success: true });
+        });
+      }
+      break;
+
     case 'GET_CACHE_SIZE':
       // Cache-Statistik an die App senden
       Promise.all([
         caches.open(TILE_CACHE).then(c => c.keys()),
         caches.open(SHELL_CACHE).then(c => c.keys()),
         caches.open(DATA_CACHE).then(c => c.keys()),
-      ]).then(([tiles, shell, data]) => {
+        caches.open(GPX_CACHE).then(c => c.keys()),
+      ]).then(([tiles, shell, data, gpx]) => {
         event.ports[0]?.postMessage({
           tileCount:  tiles.length,
           shellCount: shell.length,
           dataCount:  data.length,
-          total:      tiles.length + shell.length + data.length,
+          gpxCount:   gpx.length,
+          total:      tiles.length + shell.length + data.length + gpx.length,
         });
       });
       break;
