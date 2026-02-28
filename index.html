@@ -7,8 +7,21 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="GMTW Trail Map">
     <meta name="theme-color" content="#0b0e14">
+    <meta name="msapplication-TileColor" content="#0b0e14">
+    <meta name="msapplication-TileImage" content="icons/icon-144x144.png">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <!-- Favicon — mehrere Größen für Browser-Tab, Lesezeichen, Desktop-Verknüpfung -->
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="icons/icon-48x48.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="icons/icon-96x96.png">
+    <link rel="shortcut icon" href="icons/icon-32x32.png">
+    <!-- Apple Touch Icons — Homescreen-Icon auf iPhone und iPad -->
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180x180.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144x144.png">
+    <link rel="apple-touch-icon" href="icons/icon-180x180.png">
     <title>GMTW · Trail Map</title>
     <!-- Bunny Fonts — DSGVO-konformer Ersatz für Google Fonts (kein Tracking, EU-Hosting) -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -2994,10 +3007,11 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
             --ac:#0f5200; --acd:#083800;
             --shadow:0 2px 12px rgba(0,0,0,.35);
         }
-        [data-theme=light] .leaflet-popup-content-wrapper,
-        [data-theme=light] .leaflet-popup-content-wrapper *{
+        [data-theme=light] .leaflet-popup-content-wrapper{
             background:var(--s1)!important; color:var(--tx)!important;
         }
+        [data-theme=light] .leaflet-popup-tip{background:var(--s1)!important}
+        [data-theme=light] .leaflet-popup-content{color:var(--tx)!important}
         [data-theme=light] .leaflet-control-zoom a{
             background:var(--s1)!important;color:var(--tx)!important;
             border-color:var(--bd2)!important;
@@ -3014,6 +3028,93 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         [data-theme=light] .ibtn,[data-theme=light] #titlepill,[data-theme=light] .fab{
             box-shadow:0 2px 10px rgba(0,0,0,.22)!important;
         }
+        /* ── LIGHT MODE: MENU & PANEL CONTRAST FIXES ──────────────────────
+           Alle Text-Elemente auf weißen/hellen Flächen: schwarz oder sehr dunkel.
+           Kein Grau auf Weiß mehr. */
+        [data-theme=light] .sp-hint{color:#364255!important}
+        [data-theme=light] .sp-label{color:#0c1420!important}
+        [data-theme=light] .sp-section{border-bottom-color:rgba(0,0,0,.14)!important}
+        [data-theme=light] .sp-tab{color:#364255!important;background:#e8edf6!important;border-color:rgba(0,0,0,.14)!important}
+        [data-theme=light] .sp-tab.active{color:#0c1420!important;background:#fff!important;border-bottom-color:#fff!important}
+        [data-theme=light] .sp-input{background:#fff!important;color:#0c1420!important;border-color:rgba(0,0,0,.28)!important}
+        [data-theme=light] .sp-input::placeholder{color:#6a7887!important}
+        [data-theme=light] .sp-btn{color:#0c1420!important;border-color:rgba(0,0,0,.24)!important}
+        [data-theme=light] .sp-btn.sec{background:#f0f4fd!important;color:#0c1420!important}
+        [data-theme=light] .sp-btn.prim{background:var(--ac)!important;color:#fff!important}
+        [data-theme=light] #settings-panel{background:#f3f6fc!important;border-color:rgba(0,0,0,.18)!important}
+        /* Sheet (burger menu) */
+        [data-theme=light] #sheet{background:#fff!important}
+        [data-theme=light] .s-title{color:#0c1420!important}
+        [data-theme=light] .cat-head{color:#0c1420!important;background:#e8edf6!important;border-color:rgba(0,0,0,.12)!important}
+        [data-theme=light] .l-nm{color:#0c1420!important}
+        [data-theme=light] .l-co{color:#364255!important}
+        [data-theme=light] .lrow{border-bottom-color:rgba(0,0,0,.08)!important}
+        [data-theme=light] .lbtn{background:#edf1f9!important;border-color:rgba(0,0,0,.2)!important;color:#0c1420!important}
+        [data-theme=light] .lbtn.nav{background:var(--ac)!important;color:#fff!important}
+        /* GPX panel */
+        [data-theme=light] .gpx-label{color:#0c1420!important}
+        [data-theme=light] .gpx-select,.gpx-input{background:#fff!important;color:#0c1420!important;border-color:rgba(0,0,0,.24)!important}
+        [data-theme=light] .gpx-section{border-bottom-color:rgba(0,0,0,.1)!important}
+        /* Settings profile, cm-item */
+        [data-theme=light] .cm-item{border-color:rgba(0,0,0,.1)!important}
+        [data-theme=light] .cm-name{color:#0c1420!important}
+        [data-theme=light] .cm-cat{color:#364255!important}
+        [data-theme=light] .cm-section-title{color:#0c1420!important}
+        [data-theme=light] .cm-act-btn{background:#edf1f9!important;color:#0c1420!important;border-color:rgba(0,0,0,.18)!important}
+        /* TTS bar */
+        [data-theme=light] #tts-ctrl-bar{background:#fff!important;border-color:rgba(0,0,0,.22)!important}
+        [data-theme=light] #tts-status-txt{color:#364255!important}
+        [data-theme=light] .tts-ctrl-btn{background:#edf1f9!important;color:#0c1420!important;border-color:rgba(0,0,0,.22)!important}
+        /* Navigation HUD */
+        [data-theme=light] #nav-hud{background:#fff!important;border-color:rgba(0,0,0,.2)!important}
+        [data-theme=light] .nh-title{color:#0c1420!important}
+        [data-theme=light] .nh-dist{color:#0c1420!important}
+        [data-theme=light] .nh-sub{color:#364255!important}
+        /* Toast */
+        [data-theme=light] #toast{background:#0c1420!important;color:#fff!important}
+        /* Chip filters */
+        [data-theme=light] .chip{background:#fff!important;color:#0c1420!important;border-color:rgba(0,0,0,.22)!important;box-shadow:0 1px 4px rgba(0,0,0,.12)!important}
+        [data-theme=light] .chip.on{background:#0c1420!important;color:#fff!important}
+        /* Topbar */
+        [data-theme=light] #topbar{background:#fff!important;border-bottom-color:rgba(0,0,0,.12)!important}
+        [data-theme=light] .ttl{color:#0c1420!important}
+        [data-theme=light] .tsub{color:#364255!important}
+        [data-theme=light] .ibtn{background:#fff!important;color:#0c1420!important;border-color:rgba(0,0,0,.18)!important}
+        /* Profile quick buttons, lang buttons */
+        [data-theme=light] .profile-quick-btn{background:#edf1f9!important;color:#0c1420!important;border-color:rgba(0,0,0,.18)!important}
+        [data-theme=light] .lang-btn{background:#edf1f9!important;color:#0c1420!important;border-color:rgba(0,0,0,.2)!important}
+        [data-theme=light] .lang-btn.active{background:var(--ac)!important;color:#fff!important;border-color:var(--ac)!important}
+        /* A11Y big toggle */
+        [data-theme=light] .a11y-big-toggle{background:#edf1f9!important;border-color:rgba(0,0,0,.2)!important;color:#0c1420!important}
+        [data-theme=light] .a11y-big-toggle.on{background:var(--ac)!important;border-color:var(--ac)!important;color:#fff!important}
+        /* ── LOCS POPUP — Light mode ──────────────────────────────── */
+        [data-theme=light] .p-top{background:var(--s1)!important}
+        [data-theme=light] .p-name{color:#0c1420!important}
+        [data-theme=light] .p-desc{color:#364255!important}
+        [data-theme=light] .p-crds{color:#5a6878!important}
+        [data-theme=light] .p-acts{background:var(--s1)!important}
+        /* LOCS popup action buttons */
+        [data-theme=light] .pbtn{color:#0c1420!important}
+        [data-theme=light] .pbtn.nav{background:var(--ac)!important;color:#fff!important;border-color:var(--ac)!important}
+        [data-theme=light] .pbtn.nav:active{background:var(--acd)!important}
+        [data-theme=light] .pbtn.shr{background:#dde3f4!important;color:#0c1420!important;border-color:rgba(0,0,0,.3)!important}
+        [data-theme=light] .pbtn.spk{background:#dde3f4!important;color:#0c1420!important;border-color:rgba(0,0,0,.3)!important}
+        /* ── GPX TRACK POPUP — Light mode ─────────────────────────── */
+        [data-theme=light] .tpop-name{color:#0c1420!important}
+        [data-theme=light] .tpop-meta{color:#364255!important}
+        [data-theme=light] .tpop-gps{background:#dde3f4!important;color:#364255!important}
+        [data-theme=light] .tpop-sep{border-color:rgba(0,0,0,.14)!important}
+        [data-theme=light] .tpop-btn{color:#0c1420!important}
+        [data-theme=light] .tpop-btn.navi{background:var(--ac)!important;color:#fff!important}
+        [data-theme=light] .tpop-btn.race{background:#0f5fa0!important;color:#fff!important}
+        [data-theme=light] .tpop-btn.sec{background:#dde3f4!important;color:#0c1420!important;border:1.5px solid rgba(0,0,0,.22)!important}
+        [data-theme=light] .tpop-btn.spk{background:#dde3f4!important;color:#0c1420!important;border:1.5px solid rgba(0,0,0,.22)!important}
+        /* ── CATEGORY FILTER BUTTONS — Light mode ──────────────────── */
+        [data-theme=light] .cat-fbtn{background:#dde3f4!important;color:#0c1420!important;border-color:rgba(0,0,0,.28)!important;font-weight:800!important}
+        /* ── SPEAK BUTTON — nur anzeigen wenn TTS aktiv ─────────────── */
+        /* Standardmäßig versteckt; erscheint wenn html[data-a11y-on] gesetzt */
+        html:not([data-a11y-on]) .pbtn.spk{display:none!important}
+        html:not([data-a11y-on]) .tpop-btn.spk{display:none!important}
         /* Sichtbarer Fokus-Ring für Tastaturnavigation */
         :focus-visible{
             outline:3px solid var(--ac)!important;
@@ -3229,7 +3330,7 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         .cat-fbtn.on{border-color:transparent;color:#000}
         .cat-fbtn[data-c=beginner].on{background:#27AE60}
         .cat-fbtn[data-c=mittel].on{background:#D4A017}
-        .cat-fbtn[data-c=expert].on{background:#8E44AD}
+        .cat-fbtn[data-c=expert].on{background:#ef4444}
         .cat-fbtn[data-c=all].on{background:var(--tx)}
         /* Fab Nummer-Badge */
         .fab-badge{position:absolute;top:-4px;right:-4px;background:var(--ac);color:var(--bg);border-radius:8px;font-family:var(--fh);font-size:10px;font-weight:800;padding:1px 5px;line-height:1.4;pointer-events:none}
@@ -3239,15 +3340,57 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         .cors-hint a{color:var(--ac)}
 
         /* ── NAVIGATION HUD ─────────────────────────────────── */
-        #nav-hud{position:fixed;top:max(118px,calc(env(safe-area-inset-top,0px)+118px));left:50%;transform:translateX(-50%);z-index:600;background:var(--s1);border:1px solid var(--bd2);border-radius:var(--r);padding:10px 14px;display:flex;align-items:flex-start;gap:10px;box-shadow:var(--shadow);min-width:260px;max-width:320px;transition:opacity .3s,visibility .3s,transform .3s;opacity:0;visibility:hidden;pointer-events:none;will-change:transform}
+        @keyframes navPulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.025)}}
+        @keyframes navArrowBounce{0%,100%{transform:none}50%{transform:translateY(-3px)}}
+        @keyframes navWrongWay{0%,100%{background:var(--s1)}50%{background:rgba(239,68,68,.12)}}
+        #nav-hud{
+          position:fixed;top:max(118px,calc(env(safe-area-inset-top,0px)+118px));
+          left:50%;transform:translateX(-50%) translateY(-6px);
+          z-index:600;background:var(--s1);
+          border:1.5px solid var(--bd2);border-radius:18px;
+          padding:12px 14px 10px;
+          display:flex;align-items:center;gap:12px;
+          box-shadow:0 8px 32px rgba(0,0,0,.65);
+          min-width:280px;max-width:340px;
+          transition:opacity .35s,visibility .35s,transform .35s cubic-bezier(.32,.72,0,1);
+          opacity:0;visibility:hidden;pointer-events:none;will-change:transform;
+        }
         #nav-hud.show{opacity:1;visibility:visible;pointer-events:all;transform:translateX(-50%) translateY(0)}
-        #nav-hud .nh-arrow{font-size:30px;line-height:1;flex-shrink:0;transition:transform .4s}
+        #nav-hud.nav-close{animation:navPulse .6s ease-in-out}
+        #nav-hud.nav-offroute{animation:navWrongWay 1s ease-in-out infinite;border-color:#ef4444}
+        /* Arrow container — big, round, animated */
+        #nav-hud .nh-arrow-wrap{
+          width:52px;height:52px;border-radius:14px;
+          background:var(--ac);display:flex;align-items:center;justify-content:center;
+          flex-shrink:0;transition:background .3s;
+        }
+        #nav-hud.nav-offroute .nh-arrow-wrap{background:#ef4444}
+        #nav-hud.nav-ontrack .nh-arrow-wrap{background:#22c55e}
+        #nav-hud .nh-arrow{
+          font-size:28px;line-height:1;
+          display:block;
+          transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+        }
+        #nav-hud.nav-close .nh-arrow{animation:navArrowBounce .5s ease-in-out infinite}
         #nav-hud .nh-txt{flex:1;min-width:0}
-        #nav-hud .nh-title{font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--td);margin-bottom:2px}
-        #nav-hud .nh-dist{font-family:var(--fh);font-size:24px;font-weight:800;color:var(--ac);line-height:1;font-variant-numeric:tabular-nums}
-        #nav-hud .nh-sub{font-size:11px;color:var(--td);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        #nav-hud .nh-gmaps{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--log);text-decoration:none;margin-top:4px}
-        #nav-hud .nh-close{background:none;border:none;color:var(--td);font-size:20px;cursor:pointer;padding:0;line-height:1;flex-shrink:0;margin-top:-2px}
+        #nav-hud .nh-mode{font-family:var(--fh);font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--td);margin-bottom:1px;display:flex;align-items:center;gap:4px}
+        #nav-hud .nh-mode .nh-dot{width:6px;height:6px;border-radius:50%;background:var(--ac);display:inline-block;animation:navArrowBounce 1s ease-in-out infinite}
+        #nav-hud.nav-offroute .nh-mode .nh-dot{background:#ef4444}
+        #nav-hud .nh-title{font-family:var(--fh);font-size:13px;font-weight:800;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+        #nav-hud .nh-dist{font-family:var(--fh);font-size:22px;font-weight:900;color:var(--ac);line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+        #nav-hud.nav-offroute .nh-dist{color:#ef4444}
+        #nav-hud .nh-sub{font-size:10px;color:var(--td);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        #nav-hud .nh-offroute-warn{font-size:11px;font-weight:700;color:#ef4444;margin-top:3px;display:none}
+        #nav-hud.nav-offroute .nh-offroute-warn{display:block}
+        #nav-hud .nh-gmaps{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--log);text-decoration:none;margin-top:3px}
+        #nav-hud .nh-close{
+          background:var(--s3);border:1px solid var(--bd2);border-radius:10px;
+          color:var(--td);width:30px;height:30px;
+          cursor:pointer;padding:0;line-height:1;
+          display:flex;align-items:center;justify-content:center;
+          flex-shrink:0;font-size:16px;align-self:flex-start;transition:all .15s;
+        }
+        #nav-hud .nh-close:active{background:var(--s2);transform:scale(.9)}
 
         /* ── RACE OVERLAY ────────────────────────────────────── */
         #race-overlay{position:fixed;inset:0;z-index:2000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);transition:background .3s;opacity:0;visibility:hidden;pointer-events:none}
@@ -3620,10 +3763,83 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
         /* High-contrast focus ring (active in hc mode or always for keyboard nav) */
         [data-a11y-hc] *:focus-visible{outline:4px solid #ff0 !important;outline-offset:3px !important}
-        /* Speaker FAB — nur sichtbar wenn TTS aktiv ([data-a11y-on] auf <html>) */
-        #a11y-speak-fab{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 174px);right:12px;z-index:490;width:42px;height:42px;background:var(--ac);color:var(--bg);border-radius:50%;border:none;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;transition:transform .15s}
-        #a11y-speak-fab:active{transform:scale(.88)}
-        html[data-a11y-on] #a11y-speak-fab{display:flex}
+        /* ── TTS CONTROL BAR — sichtbar wenn [data-a11y-on] auf <html> ── */
+        #tts-ctrl-bar{
+          position:fixed;bottom:calc(env(safe-area-inset-bottom,0px)+10px);
+          left:12px;right:72px;z-index:491;
+          background:var(--s1);border:1.5px solid var(--bd2);border-radius:18px;
+          padding:7px 10px;display:none;align-items:center;gap:7px;
+          box-shadow:0 6px 24px rgba(0,0,0,.55);
+        }
+        html[data-a11y-on] #tts-ctrl-bar{display:flex}
+        /* Primary speak button — big, accent colour */
+        #tts-speak-btn{
+          width:50px;height:50px;border-radius:14px;border:none;
+          background:var(--ac);color:var(--bg);font-size:24px;
+          cursor:pointer;display:flex;align-items:center;justify-content:center;
+          flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,.4);transition:transform .12s;
+        }
+        #tts-speak-btn:active{transform:scale(.85)}
+        /* Secondary control buttons */
+        .tts-ctrl-btn{
+          width:40px;height:40px;border-radius:11px;
+          border:1.5px solid var(--bd2);background:var(--s2);
+          color:var(--tx);font-size:18px;cursor:pointer;
+          display:flex;align-items:center;justify-content:center;
+          flex-shrink:0;transition:all .12s;
+        }
+        .tts-ctrl-btn:active{transform:scale(.85);background:var(--s3)}
+        /* Status text */
+        #tts-status-txt{
+          flex:1;font-size:11px;color:var(--td);
+          font-family:var(--fh);font-weight:600;
+          overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+          min-width:0;
+        }
+        /* Big A11Y toggle button */
+        .a11y-big-toggle{
+          width:100%;padding:15px 18px;border-radius:15px;
+          border:2px solid var(--bd2);background:var(--s2);
+          display:flex;align-items:center;gap:14px;cursor:pointer;
+          transition:all .15s;text-align:left;margin-top:10px;
+        }
+        .a11y-big-toggle.on{
+          background:var(--ac);border-color:var(--ac);color:var(--bg);
+        }
+        .a11y-big-toggle-icon{font-size:32px;flex-shrink:0;line-height:1}
+        .a11y-big-toggle-text{flex:1}
+        .a11y-big-toggle-label{
+          font-size:15px;font-weight:800;font-family:var(--fh);
+          letter-spacing:.5px;display:block;
+        }
+        .a11y-big-toggle.on .a11y-big-toggle-label{color:var(--bg)}
+        .a11y-big-toggle-state{
+          font-size:12px;font-weight:700;letter-spacing:1px;
+          text-transform:uppercase;opacity:.75;display:block;margin-top:2px;
+        }
+        .a11y-big-toggle-switch{
+          width:44px;height:26px;border-radius:13px;background:var(--bd2);
+          position:relative;flex-shrink:0;transition:background .2s;
+        }
+        .a11y-big-toggle-switch::after{
+          content:'';position:absolute;top:3px;left:3px;
+          width:20px;height:20px;border-radius:50%;background:#fff;
+          box-shadow:0 2px 6px rgba(0,0,0,.4);transition:left .2s;
+        }
+        .a11y-big-toggle.on .a11y-big-toggle-switch{background:rgba(0,0,0,.25)}
+        .a11y-big-toggle.on .a11y-big-toggle-switch::after{left:21px}
+        /* Tracks sub-tab active style */
+        .trk-sub-tab.active{color:var(--tx)!important;border-bottom-color:var(--ac)!important;font-weight:800!important}
+        /* Language selector */
+        .lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+        .lang-btn{
+          padding:10px 8px;border-radius:11px;border:2px solid var(--bd2);
+          background:var(--s2);color:var(--tx);font-size:13px;font-weight:700;
+          cursor:pointer;transition:all .15s;display:flex;align-items:center;
+          justify-content:center;gap:6px;font-family:var(--fh);
+        }
+        .lang-btn.active{background:var(--ac);border-color:var(--ac);color:var(--bg)}
+        .lang-btn:active{transform:scale(.93)}
     </style>
 </head>
 <body>
@@ -3654,8 +3870,15 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
   <button class="chip"    data-f="logistik" aria-label="Logistik Filter" onclick="setFilter('logistik',this)">🔵 Logistik</button>
 </div>
 
-<!-- Speaker FAB: Vorlesen-Button (nur sichtbar wenn TTS aktiv) -->
-<button id="a11y-speak-fab" onclick="speakCurrentContext()" aria-label="Vorlesen" title="Aktuelle Ansicht vorlesen [V]">🔊</button>
+<!-- TTS Control Bar — persistent, sichtbar wenn Vorlesefunktion aktiv -->
+<div id="tts-ctrl-bar" role="toolbar" aria-label="Sprachsteuerung">
+  <button id="tts-speak-btn" onclick="speakCurrentContext()" aria-label="Vorlesen" title="Aktuelle Ansicht vorlesen [V]">🔊</button>
+  <button class="tts-ctrl-btn" id="tts-prev-btn"  onclick="ttsRepeat()"        aria-label="Wiederholen" title="Letzten Text wiederholen">⏮</button>
+  <button class="tts-ctrl-btn" id="tts-pause-btn" onclick="ttsTogglePause()"   aria-label="Pause / Weiter" title="Pause / Weiter">⏸</button>
+  <button class="tts-ctrl-btn" id="tts-skip-btn"  onclick="ttsSkipForward()"   aria-label="Weiter / Überspringen" title="Aktuellen Text überspringen">⏭</button>
+  <button class="tts-ctrl-btn" id="tts-stop-btn"  onclick="speakStop()"        aria-label="Stopp" title="Sprachausgabe stoppen">⏹</button>
+  <span id="tts-status-txt" style="flex:1;min-width:0;font-size:11px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis" aria-live="polite">Bereit</span>
+</div>
 
 <!-- FABS -->
 <div class="fabs">
@@ -4197,14 +4420,13 @@ function mkIcon(loc){
 
 function mkPopup(loc){
   const c=CATS[loc.cat];
-  // escHtml für alle user-sichtbaren Strings
   const nm=escHtml(loc.name), ds=escHtml(loc.desc||''), badge=escHtml(c.label);
   return `<div style="background:var(--s1)">
     <div class="p-top">
       <div class="p-badge" style="background:${loc.color}">${badge}</div>
       <div class="p-name">${nm}</div>
       <div class="p-crds">${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}</div>
-      ${ds?`<div class="p-desc">${ds}`:''}
+      ${ds?`<div class="p-desc">${ds}</div>`:''}
     </div>
     <div class="p-acts">
       <button class="pbtn nav" onclick="navTo(${loc.lat},${loc.lng},'${esc(loc.name)}')" aria-label="Navigation starten">
@@ -4215,6 +4437,7 @@ function mkPopup(loc){
         <svg width="15" height="15" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="9" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><path d="M9 9h1v1M11 9h1M9 11v1M11 12h1M12 11v-1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         Nav-QR
       </button>
+      <button class="pbtn spk" onclick="speakPopupContent('${esc(loc.name)}','${esc(loc.desc||'')}','${esc(badge)}')" aria-label="Vorlesen" title="Vorlesen [🔊]">🔊</button>
     </div>
   </div>`;
 }
@@ -4277,24 +4500,99 @@ function onMkScaleChange(val) {
 function buildList(){
   const c=document.getElementById('s-list'); c.innerHTML='';
   let n=0;
+  const _navSvg = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1L12 6.5L6.5 12M1 6.5H11" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const _qrSvg  = `<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="9" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><path d="M9 9h1v1M11 9h1M9 11v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`;
+
+  // ── 1. LOCS (feste Kartenpunkte) ───────────────────────────────────────
   ['beginner','mittel','expert','logistik'].forEach(cat=>{
-    const items=LOCS.filter(l=>l.cat===cat&&(curFilter==='all'||curFilter===cat));
+    const items=LOCS.filter(l=>l.cat===cat&&(curFilter==='all'||curFilter===cat)&&!_locsHidden.has(l.id));
     if(!items.length)return;
     const hd=document.createElement('div'); hd.className='cat-head'; hd.textContent=CATS[cat].label; c.appendChild(hd);
     items.forEach(loc=>{
+      if(loc.line)return; // Nur Linien-Marker überspringen (weg-camp etc.)
       n++;
+      const ov=_locsOverrides[loc.id]||{};
+      const effName=ov.name||loc.name; const effEmoji=ov.emoji||loc.emoji;
       const r=document.createElement('div'); r.className='lrow';
       r.setAttribute('role','listitem');
-      r.innerHTML=`<div class="l-ico" style="background:${loc.color}22"><span role="img" aria-label="${escHtml(CATS[loc.cat].label)}">${loc.emoji}</span></div>
-        <div class="l-inf"><div class="l-nm">${escHtml(loc.name)}</div><div class="l-co">${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}</div></div>
+      r.innerHTML=`<div class="l-ico" style="background:${loc.color}22"><span role="img" aria-label="${escHtml(CATS[loc.cat].label)}">${effEmoji}</span></div>
+        <div class="l-inf"><div class="l-nm">${escHtml(effName)}</div><div class="l-co">${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}</div></div>
         <div class="l-btns">
-          <button class="lbtn nav" aria-label="Navigation zu ${escHtml(loc.name)}" onclick="event.stopPropagation();navTo(${loc.lat},${loc.lng},'${esc(loc.name)}')"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1L12 6.5L6.5 12M1 6.5H11" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <button class="lbtn" aria-label="QR-Code für ${escHtml(loc.name)}" onclick="event.stopPropagation();openQR('${esc(loc.id)}')"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="9" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><path d="M9 9h1v1M11 9h1M9 11v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>
+          <button class="lbtn nav" aria-label="Navigation zu ${escHtml(effName)}" onclick="event.stopPropagation();navTo(${loc.lat},${loc.lng},'${esc(effName)}')">${_navSvg}</button>
+          <button class="lbtn" aria-label="QR-Code für ${escHtml(effName)}" onclick="event.stopPropagation();openQR('${esc(loc.id)}')">${_qrSvg}</button>
         </div>`;
-      r.addEventListener('click',()=>focusMarker(loc.id));
+      r.addEventListener('click',()=>{ closeAll(); focusMarker(loc.id); });
       c.appendChild(r);
     });
   });
+
+  // ── 2. Strecken-Marker (Start / Ziel der geladenen GPX-Tracks) ─────────
+  const trkRows=[];
+  trackStore.tracks.forEach(t=>{
+    if(curFilter!=='all'&&curFilter!==t.cat) return;
+    if(t._startMkr){
+      const p=t._startMkr.getLatLng();
+      trkRows.push({label:'Start',track:t,lat:p.lat,lng:p.lng,emoji:'🚩',type:'start'});
+    }
+    if(t._finishMkr){
+      const p=t._finishMkr.getLatLng();
+      trkRows.push({label:'Ziel',track:t,lat:p.lat,lng:p.lng,emoji:'🏁',type:'finish'});
+    }
+  });
+  if(trkRows.length>0){
+    const hd=document.createElement('div'); hd.className='cat-head';
+    hd.innerHTML=`<span>Strecken-Pins</span> <span style="font-size:10px;opacity:.7;font-weight:600">(Start &amp; Ziel)</span>`;
+    c.appendChild(hd);
+    trkRows.forEach(({label,track,lat,lng,emoji,type})=>{
+      n++;
+      const r=document.createElement('div'); r.className='lrow';
+      r.setAttribute('role','listitem');
+      const catColor=track.color||'#888';
+      r.innerHTML=`<div class="l-ico" style="background:${catColor}22"><span role="img">${emoji}</span></div>
+        <div class="l-inf">
+          <div class="l-nm">${escHtml(label+': '+track.name)}</div>
+          <div class="l-co" style="display:flex;align-items:center;gap:4px">
+            <span style="width:7px;height:7px;border-radius:50%;background:${catColor};display:inline-block;flex-shrink:0"></span>
+            ${lat.toFixed(5)}, ${lng.toFixed(5)}
+          </div>
+        </div>
+        <div class="l-btns">
+          <button class="lbtn nav" aria-label="Navigation zu ${escHtml(track.name)}" onclick="event.stopPropagation();navTo(${lat},${lng},'${esc(label+': '+track.name)}')">${_navSvg}</button>
+          <button class="lbtn" aria-label="QR-Code für ${escHtml(track.name)}" onclick="event.stopPropagation();openTrackQR('${track.id}')">${_qrSvg}</button>
+        </div>`;
+      r.addEventListener('click',()=>{
+        closeAll();
+        map.setView([lat,lng],17);
+        setTimeout(()=>{
+          const mk=type==='start'?track._startMkr:track._finishMkr;
+          if(mk) mk.openPopup();
+        },350);
+      });
+      c.appendChild(r);
+    });
+  }
+
+  // ── 3. Eigene Marker ────────────────────────────────────────────────────
+  const visCm=_cmMarkers.filter(()=>curFilter==='all'); // Custom markers always in "all" view
+  if(visCm.length>0){
+    const hd=document.createElement('div'); hd.className='cat-head'; hd.textContent='Eigene Marker'; c.appendChild(hd);
+    visCm.forEach(cm=>{
+      n++;
+      const color=CM_CAT_COLORS[cm.cat]||'#888';
+      const emoji=cm.emoji||'📍';
+      const r=document.createElement('div'); r.className='lrow';
+      r.setAttribute('role','listitem');
+      r.innerHTML=`<div class="l-ico" style="background:${color}22"><span role="img">${emoji}</span></div>
+        <div class="l-inf"><div class="l-nm">${escHtml(cm.name)}</div><div class="l-co">${cm.lat.toFixed(5)}, ${cm.lng.toFixed(5)}</div></div>
+        <div class="l-btns">
+          <button class="lbtn nav" onclick="event.stopPropagation();navTo(${cm.lat},${cm.lng},'${esc(cm.name)}')">${_navSvg}</button>
+          <button class="lbtn" onclick="event.stopPropagation();openCmShareQr('${cm.id}')">${_qrSvg}</button>
+        </div>`;
+      r.addEventListener('click',()=>{ closeAll(); map.setView([cm.lat,cm.lng],17); setTimeout(()=>{ if(_cmLeafletLayers[cm.id]) _cmLeafletLayers[cm.id].openPopup(); },350); });
+      c.appendChild(r);
+    });
+  }
+
   document.getElementById('s-cnt').textContent=n;
 }
 
@@ -4631,6 +4929,9 @@ let _a11y = {
   autoAnnounce: true, // Toast / Tab-Wechsel automatisch vorlesen
 };
 
+// App-Sprache für TTS und UI: 'de' | 'en' | 'fr' | 'es'
+let _appLang = 'de';
+
 /** Persistiert aktuelle A11Y-Einstellungen in localStorage */
 function _saveA11ySettings() {
   LS.set(LS.K.A11Y, _a11y);
@@ -4639,15 +4940,20 @@ function _saveA11ySettings() {
   else           document.documentElement.removeAttribute('data-a11y-hc');
 }
 
-/** Lädt A11Y-Einstellungen beim App-Start */
+/** Lädt A11Y-Einstellungen und App-Sprache beim App-Start */
 function _loadA11ySettings() {
   const saved = LS.get(LS.K.A11Y, null);
   if (saved && typeof saved === 'object') {
     _a11y = { ..._a11y, ...saved };
   }
+  // Sprache aus Profil laden
+  const prof = LS.get(LS.K.PROFILE, null);
+  if (prof && prof.lang && ['de','en','fr','es'].includes(prof.lang)) {
+    _appLang = prof.lang;
+  }
   // High-Contrast immer anwenden (auch ohne TTS)
   if (_a11y.hc) document.documentElement.setAttribute('data-a11y-hc','');
-  // Speaker-FAB sichtbar wenn TTS aktiv
+  // TTS-Bar sichtbar wenn TTS aktiv
   if (_a11y.enabled) document.documentElement.setAttribute('data-a11y-on','');
   // Keyboard-Shortcuts immer initialisieren
   _initKeyboardShortcuts();
@@ -4663,6 +4969,7 @@ let _ttsQueue    = [];
 let _ttsSpeaking = false;
 let _ttsVoices   = [];          // Gecachte Stimmen (laden ist async in Chrome)
 let _ttsKeepalive = null;       // Chrome 15s-Timeout-Fix: periodisches resume()
+let _ttsLastText  = '';         // Letzter gesprochener Text (für Wiederholen-Funktion)
 
 // Stimmen vorab laden (wird auch in _loadA11ySettings() gesetzt)
 if (window.speechSynthesis) {
@@ -4705,9 +5012,11 @@ function _ttsFlush() {
   if (_ttsQueue.length === 0) {
     _ttsSpeaking = false;
     clearInterval(_ttsKeepalive); _ttsKeepalive = null;
+    _updateTtsBar('Bereit');
     return;
   }
   _ttsSpeaking = true;
+  _updateTtsBar('Liest vor…');
   // Chrome 15s-Timeout-Workaround: speechSynthesis jede 10s aufwecken
   if (!_ttsKeepalive) {
     _ttsKeepalive = setInterval(() => {
@@ -4715,21 +5024,26 @@ function _ttsFlush() {
       if (speechSynthesis.paused) speechSynthesis.resume();
     }, 10000);
   }
-  const utt = new SpeechSynthesisUtterance(_ttsQueue.shift());
-  utt.lang  = 'de-DE';
+  const _nextText = _ttsQueue.shift();
+  _ttsLastText = _nextText;
+  const utt = new SpeechSynthesisUtterance(_nextText);
+  // Sprache aus App-Einstellung
+  const _langMap = { de:'de-DE', en:'en-GB', fr:'fr-FR', es:'es-ES' };
+  utt.lang  = _langMap[_appLang] || 'de-DE';
   utt.rate  = _a11y.rate;
   utt.pitch = 1.0;
-  utt.onend = () => _ttsFlush();
+  utt.onend = () => { _ttsPaused = false; _ttsFlush(); };
   utt.onerror = (e) => {
-    // 'canceled' ist kein echter Fehler (passiert beim interrupt)
     if (e.error !== 'canceled') console.warn('[TTS] error:', e.error);
     _ttsSpeaking = false;
     clearInterval(_ttsKeepalive); _ttsKeepalive = null;
-    _ttsFlush(); // weiter mit nächstem in der Queue
+    _updateTtsBar('Fehler');
+    _ttsFlush();
   };
-  // Deutschen Voice bevorzugen (gecacht, kein getVoices()-Aufruf)
-  const deVoice = _ttsVoices.find(v => v.lang.startsWith('de'));
-  if (deVoice) utt.voice = deVoice;
+  // Passende Stimme bevorzugen
+  const langPrefix = (utt.lang||'de').split('-')[0];
+  const voice = _ttsVoices.find(v => v.lang.startsWith(langPrefix));
+  if (voice) utt.voice = voice;
   window.speechSynthesis.speak(utt);
 }
 
@@ -4738,7 +5052,81 @@ function speakStop() {
   if (window.speechSynthesis) window.speechSynthesis.cancel();
   _ttsQueue    = [];
   _ttsSpeaking = false;
+  _ttsPaused   = false;
   clearInterval(_ttsKeepalive); _ttsKeepalive = null;
+  _updateTtsBar('Gestoppt');
+  setTimeout(() => _updateTtsBar('Bereit'), 1500);
+}
+
+/** Liest Popup-Inhalt eines LOCS-Markers vor */
+function speakPopupContent(name, desc, cat) {
+  if (!_a11y.enabled) {
+    toast('🔊 Vorlesefunktion in Einstellungen aktivieren');
+    return;
+  }
+  const parts = [cat, name, desc].filter(s => s && s.trim());
+  speak(parts.join('. '), true);
+}
+
+/** Liest Track-Popup vor (Start oder Ziel) */
+function speakTrackPopup(trackId, isFinish) {
+  const track = trackStore.tracks.find(t => t.id === trackId);
+  if (!track) return;
+  const lbl  = isFinish ? 'Ziel' : 'Start';
+  const cat  = { beginner:'Anfänger', mittel:'Mittel', expert:'Expert' }[track.cat] || track.cat;
+  const dist = track.stats?.dist ? `${track.stats.dist} Kilometer` : '';
+  const dur  = track.stats?.dur  ? `Dauer: ${track.stats.dur}`      : '';
+  const parts = [cat, track.name, lbl, dist, dur].filter(Boolean);
+  speak(parts.join('. '), true);
+}
+
+/** Überspringt die aktuelle Sprachausgabe und geht zur nächsten */
+function ttsSkipForward() {
+  if (!window.speechSynthesis) return;
+  if (speechSynthesis.speaking || speechSynthesis.paused) {
+    speechSynthesis.cancel();
+    _ttsSpeaking = false;
+    _ttsPaused   = false;
+    // Kleiner Delay damit cancel() abgeschlossen ist, dann nächsten Eintrag abspielen
+    setTimeout(() => _ttsFlush(), 120);
+  } else if (_ttsQueue.length > 0) {
+    _ttsFlush();
+  } else {
+    speakCurrentContext();
+  }
+}
+
+/** Wiederholt den zuletzt gesprochenen Text */
+function ttsRepeat() {
+  if (_ttsLastText) {
+    speak(_ttsLastText, true);
+  } else {
+    speakCurrentContext();
+  }
+}
+
+/** Aktualisiert die Sprach-Buttons im Profil-Tab */
+function _applyLangButtons() {
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === _appLang);
+  });
+}
+
+/** Setzt die App-Sprache und speichert sie im Profil */
+function setAppLang(lang) {
+  if (!['de','en','fr','es'].includes(lang)) return;
+  _appLang = lang;
+  // In Profil speichern
+  const prof = LS.get(LS.K.PROFILE, {});
+  prof.lang = lang;
+  LS.set(LS.K.PROFILE, prof);
+  // UI-Buttons aktualisieren
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  const names = { de:'Deutsch', en:'English', fr:'Français', es:'Español' };
+  toast('🌐 Sprache: ' + (names[lang] || lang));
+  speak('Sprache geändert.', true);
 }
 
 // ── ARIA Live-Regionen ──────────────────────────────────────────
@@ -4883,30 +5271,69 @@ function _handleA11yKey(e) {
 
 // A11Y-Einstellungen im Settings-Panel aktualisieren (UI ↔ State)
 function _applyA11yUi() {
-  const chk = document.getElementById('a11y-enabled');
-  const rng = document.getElementById('a11y-rate');
-  const hcc = document.getElementById('a11y-hc');
+  const rng    = document.getElementById('a11y-rate');
+  const hcc    = document.getElementById('a11y-hc');
   const rngVal = document.getElementById('a11y-rate-val');
-  if (chk)    chk.checked = _a11y.enabled;
   if (rng)    rng.value   = _a11y.rate;
   if (hcc)    hcc.checked = _a11y.hc;
   if (rngVal) rngVal.textContent = _a11y.rate.toFixed(1) + '×';
-  // data-a11y-on auf <html> steuert Sichtbarkeit des Speaker-FAB
+  // Big toggle button state
+  const btn = document.getElementById('a11y-big-toggle');
+  const lbl = document.getElementById('a11y-toggle-state');
+  if (btn) { btn.classList.toggle('on', _a11y.enabled); }
+  if (lbl) { lbl.textContent = _a11y.enabled ? 'EIN — aktiv' : 'AUS'; }
+  // data-a11y-on steuert Sichtbarkeit der TTS Control Bar
   if (_a11y.enabled) document.documentElement.setAttribute('data-a11y-on','');
   else               document.documentElement.removeAttribute('data-a11y-on');
+  _updateTtsBar();
 }
 
 function onA11yToggle(val) {
   _a11y.enabled = !!val;
   _saveA11ySettings();
-  // Speaker-FAB sofort anzeigen/verstecken
   if (_a11y.enabled) {
     document.documentElement.setAttribute('data-a11y-on','');
+    const btn = document.getElementById('a11y-big-toggle');
+    const lbl = document.getElementById('a11y-toggle-state');
+    if (btn) btn.classList.add('on');
+    if (lbl) lbl.textContent = 'EIN — aktiv';
+    _updateTtsBar('Bereit');
     speak('Vorlesefunktion aktiviert.', true);
   } else {
     document.documentElement.removeAttribute('data-a11y-on');
+    const btn = document.getElementById('a11y-big-toggle');
+    const lbl = document.getElementById('a11y-toggle-state');
+    if (btn) btn.classList.remove('on');
+    if (lbl) lbl.textContent = 'AUS';
     speakStop();
   }
+}
+
+/** Aktualisiert die TTS-Control-Bar (Status + Pause-Icon) */
+function _updateTtsBar(status) {
+  const txt  = document.getElementById('tts-status-txt');
+  const pBtn = document.getElementById('tts-pause-btn');
+  if (txt && status !== undefined) txt.textContent = status;
+  if (pBtn) pBtn.textContent = (window.speechSynthesis && speechSynthesis.paused) ? '▶️' : '⏸';
+}
+
+let _ttsPaused = false;
+/** Pausiert oder setzt TTS fort */
+function ttsTogglePause() {
+  if (!window.speechSynthesis) return;
+  if (speechSynthesis.paused) {
+    speechSynthesis.resume();
+    _ttsPaused = false;
+    _updateTtsBar('Liest vor…');
+  } else if (speechSynthesis.speaking) {
+    speechSynthesis.pause();
+    _ttsPaused = true;
+    _updateTtsBar('Pause');
+  } else {
+    speakCurrentContext();
+  }
+  const pBtn = document.getElementById('tts-pause-btn');
+  if (pBtn) pBtn.textContent = _ttsPaused ? '▶️' : '⏸';
 }
 function onA11yRate(val) {
   _a11y.rate = parseFloat(val) || 1.0;
@@ -6637,6 +7064,7 @@ function _buildTrackPopup(track, isFinish) {
       <button class="tpop-btn race" onclick="map.closePopup();beginPreRace('${track.id}')">⏱ Timing</button>
       <button class="tpop-btn sec"  onclick="map.closePopup();openTrackQR('${track.id}')">📲 QR</button>
       <button class="tpop-btn sec"  onclick="map.closePopup();openGpxPanel('tracks');setTimeout(()=>openTrackDetail('${track.id}'),180)">📋 Details</button>
+      <button class="tpop-btn spk"  onclick="speakTrackPopup('${track.id}',${isFinish})" style="grid-column:span 2" aria-label="Vorlesen">🔊 Vorlesen</button>
     </div>`;
   return L.popup({ className:'trk-popup-wrap', maxWidth:272, minWidth:230, offset:[0,-28] }).setContent(popHtml);
 }
@@ -6724,7 +7152,20 @@ function _removeFinishMarker(track) {
 // ══════════════════════════════════════════════════════════════
 // ── NAVIGATION ENGINE ─────────────────────────────────────────
 // ══════════════════════════════════════════════════════════════
-const NAV = { active:false, trackId:null, startPt:null, routeLine:null };
+const NAV = {
+  active:       false,
+  trackId:      null,
+  startPt:      null,     // {lat,lng} - target start point
+  trackPts:     [],       // full GPX points [{lat,lng},...]
+  routeLine:    null,     // Leaflet polyline user→target
+  mode:         'to-start', // 'to-start' | 'on-track'
+  _prevDist:    null,     // for wrong-direction detection
+  _offRouteCnt: 0,        // consecutive off-route GPS fixes
+  _lastBear:    0,        // for arrow rotation (smooth)
+  _heading:     null,     // user's estimated travel heading (from GPS fixes)
+  _prevLat:     null,
+  _prevLng:     null,
+};
 
 // Bearing from A to B in degrees [0-360]
 function _bearing(lat1,lon1,lat2,lon2){
@@ -6835,35 +7276,43 @@ function _drawStartLine(startPt, secondPt) {
   }).addTo(map);
 }
 
-// Start navigation to track start
+/**
+ * Startet die Navigation zum Startpunkt einer Strecke.
+ * Zeigt das HUD, aktiviert GPS, zeichnet die Verbindungslinie.
+ */
 async function startNavigation(trackId) {
   const t = trackStore.tracks.find(t => t.id === trackId);
   if (!t) return;
   const pts = _getGpxPoints(t.gpxLayer, t.gpxString);
   if (!pts.length) { toast('⚠️ Track hat keine Koordinaten'); return; }
 
-  // Stop previous navigation
-  stopNavigation(false);
+  stopNavigation(false); // Vorherige Navigation stoppen
 
-  NAV.active = true;
-  NAV.trackId = trackId;
-  NAV.startPt = pts[0];
+  // NAV-State initialisieren
+  Object.assign(NAV, {
+    active: true, trackId, startPt: pts[0], trackPts: pts,
+    mode: 'to-start', routeLine: null,
+    _prevDist: null, _offRouteCnt: 0, _lastBear: 0,
+    _heading: null, _prevLat: null, _prevLng: null,
+  });
 
-  // Google Maps link
+  // HUD befüllen und anzeigen
   const gmUrl = `https://www.google.com/maps/dir/?api=1&destination=${pts[0].lat},${pts[0].lng}&travelmode=bicycling`;
+  const hud = document.getElementById('nav-hud');
   document.getElementById('nh-gmaps').href = gmUrl;
-  document.getElementById('nh-title').textContent = `→ ${escHtml(t.name)}`;
+  document.getElementById('nh-title').textContent = escHtml(t.name);
   document.getElementById('nh-dist').textContent = '…';
   document.getElementById('nh-sub').textContent = 'GPS wird aktiviert…';
-  document.getElementById('nav-hud').classList.add('show');
+  document.getElementById('nh-mode-txt').textContent = 'Navigiere zum Start';
+  hud.className = ''; hud.classList.add('show');
 
-  // Fly to track start so user can see where to go
+  // Zur Strecken-Start-Position fliegen
   map.flyTo([pts[0].lat, pts[0].lng], 16, {animate:true, duration:1.5});
 
   try {
-    _gpsAutoFollow = false; // don't override the fly-to
+    _gpsAutoFollow = false;
     await ensureGpsActive();
-    toast('🧭 Navigation zum Start aktiviert');
+    speak('Navigation gestartet. Folge dem Pfeil zum Startpunkt.', false);
   } catch(e) {
     showGpsHint('GPS nötig', 'Erlaube Standortzugriff für die Navigation.');
     stopNavigation(false);
@@ -6871,32 +7320,163 @@ async function startNavigation(trackId) {
 }
 
 function stopNavigation(showToast=true) {
-  if (NAV.routeLine) { map.removeLayer(NAV.routeLine); NAV.routeLine = null; }
-  NAV.active = false; NAV.trackId = null; NAV.startPt = null;
-  document.getElementById('nav-hud').classList.remove('show');
+  if (NAV.routeLine) { try { map.removeLayer(NAV.routeLine); } catch(e){} NAV.routeLine = null; }
+  Object.assign(NAV, { active:false, trackId:null, startPt:null, trackPts:[], mode:'to-start',
+    _prevDist:null, _offRouteCnt:0, _heading:null, _prevLat:null, _prevLng:null });
+  const hud = document.getElementById('nav-hud');
+  if (hud) hud.classList.remove('show','nav-offroute','nav-close','nav-ontrack');
   if (showToast) toast('🛑 Navigation beendet');
 }
 
-// Called every GPS update when navigation is active
+/**
+ * GPS-Update-Hook — wird bei jedem Standort-Update aufgerufen wenn Navigation aktiv.
+ * Berechnet: Richtung, Distanz, Falsch-Richtungs-Warnung, Off-Route-Erkennung.
+ */
 function _onNavGpsUpdate(lat, lng, acc) {
   if (!NAV.active || !NAV.startPt) return;
-  const dist = _distM(lat, lng, NAV.startPt.lat, NAV.startPt.lng);
-  const bear = _bearing(lat, lng, NAV.startPt.lat, NAV.startPt.lng);
-  const arrow = _bearingArrow(bear);
 
-  document.getElementById('nh-arrow').textContent = arrow;
-  document.getElementById('nh-dist').textContent = _fmtDist(dist);
-  document.getElementById('nh-sub').textContent = `${Math.round(bear)}° · ±${Math.round(acc)}m`;
-
-  // Draw/update route line from user to start
-  if (NAV.routeLine) NAV.routeLine.setLatLngs([[lat,lng],[NAV.startPt.lat,NAV.startPt.lng]]);
-  else NAV.routeLine = L.polyline([[lat,lng],[NAV.startPt.lat,NAV.startPt.lng]],
-    {color:'var(--log)',weight:3,opacity:.7,dashArray:'8 10'}).addTo(map);
-
-  // Auto-transition: when very close to start, begin pre-race approach mode
-  if (dist < 50 && RACE.state === 'idle' && NAV.trackId) {
-    beginPreRace(NAV.trackId);
+  // ── Heading aus aufeinanderfolgenden Fixes berechnen ──────────
+  if (NAV._prevLat !== null && NAV._prevLng !== null) {
+    const moveDist = _distM(NAV._prevLat, NAV._prevLng, lat, lng);
+    if (moveDist > 3) { // nur wenn wirklich bewegt (kein GPS-Drift)
+      NAV._heading = _bearing(NAV._prevLat, NAV._prevLng, lat, lng);
+    }
   }
+  NAV._prevLat = lat; NAV._prevLng = lng;
+
+  // ── Modus: Zum Startpunkt navigieren ─────────────────────────
+  if (NAV.mode === 'to-start') {
+    const dist = _distM(lat, lng, NAV.startPt.lat, NAV.startPt.lng);
+    const bear = _bearing(lat, lng, NAV.startPt.lat, NAV.startPt.lng);
+
+    // Distanz-Anzeige
+    document.getElementById('nh-dist').textContent = _fmtDist(dist);
+    document.getElementById('nh-sub').textContent  = `${Math.round(bear)}°  ±${Math.round(acc)} m`;
+
+    // Animierter Pfeil — smooth rotation via transform
+    const arrowEl = document.getElementById('nh-arrow');
+    if (arrowEl) {
+      // Wähle Unicode-Pfeil basierend auf Bearing
+      const arrows = ['↑','↗','→','↘','↓','↙','←','↖'];
+      arrowEl.textContent = arrows[Math.round(bear/45)%8];
+    }
+
+    // Falsche-Richtungs-Warnung (Distanz nimmt zu & > 20m vom Start)
+    const isWrongWay = NAV._prevDist !== null && dist > NAV._prevDist + 8 && dist > 30;
+    NAV._prevDist = dist;
+
+    // Off-Route-Zähler
+    if (isWrongWay) NAV._offRouteCnt = Math.min(NAV._offRouteCnt + 1, 5);
+    else            NAV._offRouteCnt = Math.max(NAV._offRouteCnt - 1, 0);
+
+    const hud = document.getElementById('nav-hud');
+    const isOffRoute = NAV._offRouteCnt >= 3;
+    if (hud) {
+      hud.classList.toggle('nav-offroute', isOffRoute);
+      hud.classList.toggle('nav-close',    dist < 30 && !isOffRoute);
+      hud.classList.remove('nav-ontrack');
+    }
+    if (isOffRoute) {
+      document.getElementById('nh-sub').textContent = '⚠️ Falsche Richtung — umkehren!';
+      if (NAV._offRouteCnt === 3) speak('Falsche Richtung. Bitte umkehren.', true);
+    }
+    document.getElementById('nh-mode-txt').textContent =
+      dist < 30 ? '🎯 Fast da!' :
+      isOffRoute ? '⚠️ Falsche Richtung' :
+      'Navigiere zum Start';
+
+    // Verbindungslinie User → Start zeichnen/aktualisieren
+    if (NAV.routeLine) {
+      NAV.routeLine.setLatLngs([[lat,lng],[NAV.startPt.lat,NAV.startPt.lng]]);
+    } else {
+      NAV.routeLine = L.polyline([[lat,lng],[NAV.startPt.lat,NAV.startPt.lng]],
+        {color:'#38bdf8',weight:3,opacity:.75,dashArray:'8 8'}).addTo(map);
+    }
+
+    // Auto-Übergang: Am Start angekommen → Pre-Race
+    if (dist < 50 && RACE.state === 'idle' && NAV.trackId) {
+      beginPreRace(NAV.trackId);
+    }
+
+  } else if (NAV.mode === 'on-track') {
+    // ── Modus: Auf der Strecke fahren — nächsten Punkt anzeigen ──
+    if (!NAV.trackPts.length) return;
+
+    // Nächsten Track-Punkt finden (minimale Distanz)
+    let minDist = Infinity, nearestIdx = 0;
+    NAV.trackPts.forEach((p, i) => {
+      const d = _distM(lat, lng, p.lat, p.lng);
+      if (d < minDist) { minDist = d; nearestIdx = i; }
+    });
+
+    // Nächster Punkt in Fahrtrichtung (ca. 20m voraus)
+    let nextIdx = nearestIdx;
+    let cumDist = 0;
+    for (let i = nearestIdx + 1; i < NAV.trackPts.length; i++) {
+      cumDist += _distM(NAV.trackPts[i-1].lat, NAV.trackPts[i-1].lng, NAV.trackPts[i].lat, NAV.trackPts[i].lng);
+      if (cumDist >= 20) { nextIdx = i; break; }
+    }
+
+    const target = NAV.trackPts[nextIdx] || NAV.trackPts[NAV.trackPts.length-1];
+    const bear   = _bearing(lat, lng, target.lat, target.lng);
+    const distToTrack = minDist;
+
+    // Off-Route-Erkennung (> 25m von nächstem Track-Punkt)
+    const offTrack = distToTrack > 25;
+    if (offTrack) NAV._offRouteCnt = Math.min(NAV._offRouteCnt + 1, 6);
+    else          NAV._offRouteCnt = Math.max(NAV._offRouteCnt - 1, 0);
+    const isOffRoute = NAV._offRouteCnt >= 3;
+
+    const arrowEl = document.getElementById('nh-arrow');
+    if (arrowEl) {
+      const arrows = ['↑','↗','→','↘','↓','↙','←','↖'];
+      arrowEl.textContent = arrows[Math.round(bear/45)%8];
+    }
+
+    const remainingPts = NAV.trackPts.slice(nearestIdx);
+    let remainDist = 0;
+    for (let i = 1; i < remainingPts.length; i++) {
+      remainDist += _distM(remainingPts[i-1].lat, remainingPts[i-1].lng, remainingPts[i].lat, remainingPts[i].lng);
+    }
+
+    const pct = NAV.trackPts.length > 1
+      ? Math.round((nearestIdx / (NAV.trackPts.length - 1)) * 100)
+      : 0;
+
+    document.getElementById('nh-dist').textContent = _fmtDist(remainDist) + ' verbleibend';
+    document.getElementById('nh-sub').textContent  = isOffRoute
+      ? `⚠️ ${Math.round(distToTrack)}m von Strecke`
+      : `${pct}% · ±${Math.round(acc)}m`;
+    document.getElementById('nh-mode-txt').textContent = isOffRoute ? '⚠️ Neben Strecke' : '🟢 Auf Strecke';
+
+    const hud = document.getElementById('nav-hud');
+    if (hud) {
+      hud.classList.toggle('nav-offroute', isOffRoute);
+      hud.classList.toggle('nav-ontrack',  !isOffRoute);
+      hud.classList.remove('nav-close');
+    }
+    if (isOffRoute && NAV._offRouteCnt === 3) {
+      speak(`Achtung, du bist ${Math.round(distToTrack)} Meter von der Strecke entfernt.`, true);
+    }
+
+    // Finish erkennen
+    if (nearestIdx >= NAV.trackPts.length - 3) {
+      document.getElementById('nh-mode-txt').textContent = '🏁 Fast am Ziel!';
+    }
+  }
+}
+
+/** Wechselt zwischen "Zum Start" und "Auf Strecke"-Modus */
+function _switchNavMode(mode) {
+  if (!NAV.active) return;
+  NAV.mode = mode;
+  NAV._prevDist = null;
+  NAV._offRouteCnt = 0;
+  const hud = document.getElementById('nav-hud');
+  if (hud) hud.classList.remove('nav-offroute','nav-close','nav-ontrack');
+  const modeNames = { 'to-start':'Navigiere zum Start', 'on-track':'Strecke verfolgen' };
+  document.getElementById('nh-mode-txt').textContent = modeNames[mode] || mode;
+  if (NAV.routeLine) { try { map.removeLayer(NAV.routeLine); } catch(e){} NAV.routeLine = null; }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -7947,9 +8527,11 @@ function openSettings() {
   p.classList.add('open');
   _loadSettingsForm();
   _applyA11yUi();
+  _applyLangButtons();
   updateStorageInfo();
   renderAllMarkersList();
-  speak('Einstellungen geöffnet. Tabs: Allgemein, Strecken, Backup, Marker, QR-Scan, App, Profil.', false);
+  _loadProfileForm();
+  speak('Einstellungen geöffnet. Profil, Allgemein, Strecken, Backup, Marker, QR-Scan, App.', false);
   _ariaAnnounce('Einstellungen geöffnet');
 }
 
@@ -7982,7 +8564,7 @@ function switchSpTab(name, btn) {
   if (name === 'backup')  updateStorageInfo();
   if (name === 'markers') renderAllMarkersList();
   if (name === 'app')     _initAppInstallTab();
-  if (name === 'profile') _loadProfileForm();
+  if (name === 'profile') { _loadProfileForm(); _applyLangButtons(); }
   // A11Y: Tab-Name vorlesen
   const label = _SP_TAB_LABELS[name] || name;
   speak(`Tab ${label} geöffnet.`, false);
@@ -8049,10 +8631,15 @@ function saveProfile() {
     color:          (document.getElementById('pf-input-color')?.value     || '').trim(),
     brake:          (document.getElementById('pf-input-brake')?.value     || '').trim(),
     seatClampColor: (document.getElementById('pf-input-seatclamp')?.value || '').trim(),
-    special:        (document.getElementById('pf-input-special')?.value   || '').trim()
+    special:        (document.getElementById('pf-input-special')?.value   || '').trim(),
+    lang:           _appLang   // Aktuelle App-Sprache im Profil mitpersistieren
   };
   LS.set(LS.K.PROFILE, p);
   _refreshProfileDisplay(p);
+  // Sprach-Buttons aktualisieren
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === _appLang);
+  });
   toast('✅ Profil gespeichert');
 }
 
@@ -8074,7 +8661,10 @@ function _loadProfileForm() {
   set('pf-input-brake',     p.brake);
   set('pf-input-seatclamp', p.seatClampColor);
   set('pf-input-special',   p.special);
+  // Sprache aus gespeichertem Profil laden
+  if (p.lang && ['de','en','fr','es'].includes(p.lang)) _appLang = p.lang;
   _refreshProfileDisplay(p);
+  _applyLangButtons();
 }
 
 // ── RUN DETAIL MODAL ───────────────────────────────────────────
@@ -9979,6 +10569,546 @@ function _initQrTab() {
   }
 }
 
+// ── STRECKEN-TAB: Sub-Navigation ────────────────────────────────────────────
+function switchTrkSubTab(name, btn) {
+  ['load','notes','features'].forEach(n => {
+    const p = document.getElementById('trk-pane-'+n);
+    if (p) p.style.display = n === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.trk-sub-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.st === name);
+  });
+  if (name === 'notes')    _buildTrkRatingPanel();
+  if (name === 'features') _buildTrkFeaturesPanel();
+}
+
+// ── TRACK RATING SYSTEM ─────────────────────────────────────────────────────
+const _TRK_RATINGS_KEY = 'gmtw_trk_ratings_v1';
+let _trkRatings = {};
+
+function _loadTrkRatings() {
+  try { _trkRatings = JSON.parse(localStorage.getItem(_TRK_RATINGS_KEY)||'{}'); } catch(e) {}
+}
+function _saveTrkRatings() {
+  localStorage.setItem(_TRK_RATINGS_KEY, JSON.stringify(_trkRatings));
+}
+
+function _buildTrkRatingPanel() {
+  const el = document.getElementById('trk-rating-list');
+  if (!el) return;
+  _loadTrkRatings();
+  const tracks = trackStore.tracks;
+  if (!tracks.length) {
+    el.innerHTML = `<div style="text-align:center;padding:20px;color:var(--td);font-size:13px">
+      Keine Strecken geladen.<br>Lade zuerst eine Strecke im Tab "Strecken".
+    </div>`;
+    _buildTrkStatsSummary();
+    return;
+  }
+  el.innerHTML = tracks.map(t => {
+    const r = _trkRatings[t.id] || {};
+    const myDiff   = r.diff   || 0;
+    const myFun    = r.fun    || 0;
+    const myFlow   = r.flow   || 0;
+    const myStatus = r.status || 'unbefahren';
+    const note     = r.note   || '';
+    const catColor = t.color || '#888';
+    const statuses = [
+      { v:'unbefahren',  l:'🏁 Noch nicht',  c:'var(--td)' },
+      { v:'inprogress',  l:'🔥 In Arbeit',   c:'#f59e0b'   },
+      { v:'completed',   l:'✅ Geschafft',   c:'var(--ac)' },
+      { v:'wip',         l:'🎯 Fast!',        c:'#38bdf8'   },
+    ];
+    const stHtml = statuses.map(s =>
+      `<button onclick="_setTrkStatus('${t.id}','${s.v}',this)" data-status="${s.v}"
+        style="padding:5px 8px;border-radius:8px;border:1.5px solid var(--bd2);background:${myStatus===s.v?s.c:'var(--s3)'};
+        color:${myStatus===s.v?'#fff':'var(--td)'};font-size:10px;font-weight:700;cursor:pointer;transition:all .15s">${s.l}</button>`
+    ).join('');
+    const starRow = (label, key, cur) =>
+      `<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+        <span style="font-size:11px;color:var(--td);width:68px;flex-shrink:0">${label}</span>
+        <div style="display:flex;gap:3px">${[1,2,3,4,5].map(i =>
+          `<button onclick="_setTrkRating('${t.id}','${key}',${i})" data-k="${key}" data-v="${i}"
+            style="font-size:16px;background:none;border:none;cursor:pointer;opacity:${i<=cur?'1':'.2'};transition:opacity .1s">⭐</button>`
+        ).join('')}</div>
+      </div>`;
+    return `<div style="margin-bottom:12px;padding:12px;background:var(--s2);border-radius:12px;border:1px solid var(--bd2)" id="trk-r-${t.id}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <span style="width:10px;height:10px;border-radius:50%;background:${catColor};flex-shrink:0;display:inline-block"></span>
+        <span style="font-size:13px;font-weight:800;color:var(--tx)">${escHtml(t.name)}</span>
+        <span style="font-size:10px;color:var(--td);margin-left:auto">${t.stats?.dist||'?'} km</span>
+      </div>
+      ${starRow('Schwierigkeit', 'diff', myDiff)}
+      ${starRow('Spaßfaktor', 'fun', myFun)}
+      ${starRow('Flow-Gefühl', 'flow', myFlow)}
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px">${stHtml}</div>
+      <textarea data-trk="${t.id}" placeholder="Notizen (Beta, Schlüsselstellen, Ziele…)" maxlength="200"
+        style="width:100%;box-sizing:border-box;margin-top:8px;padding:8px;border-radius:8px;
+        border:1px solid var(--bd2);background:var(--s1);color:var(--tx);font-size:11px;
+        min-height:48px;resize:vertical;font-family:var(--fb)"
+        onchange="_setTrkNote('${t.id}',this.value)">${escHtml(note)}</textarea>
+    </div>`;
+  }).join('');
+  _buildTrkStatsSummary();
+}
+
+function _setTrkRating(trackId, key, val) {
+  _loadTrkRatings();
+  if (!_trkRatings[trackId]) _trkRatings[trackId] = {};
+  _trkRatings[trackId][key] = val;
+  _saveTrkRatings();
+  // Update star display
+  const card = document.getElementById('trk-r-'+trackId);
+  if (card) {
+    card.querySelectorAll(`[data-k="${key}"]`).forEach(b => {
+      b.style.opacity = parseInt(b.dataset.v) <= val ? '1' : '.2';
+    });
+  }
+  _buildTrkStatsSummary();
+}
+function _setTrkStatus(trackId, status, clickedBtn) {
+  _loadTrkRatings();
+  if (!_trkRatings[trackId]) _trkRatings[trackId] = {};
+  _trkRatings[trackId].status = status;
+  _saveTrkRatings();
+  const statColors = { unbefahren:'var(--td)',inprogress:'#f59e0b',completed:'var(--ac)',wip:'#38bdf8' };
+  const card = document.getElementById('trk-r-'+trackId);
+  if (card) {
+    card.querySelectorAll('[data-status]').forEach(b => {
+      const isThis = b.dataset.status === status;
+      b.style.background = isThis ? (statColors[status]||'var(--td)') : 'var(--s3)';
+      b.style.color = isThis ? '#fff' : 'var(--td)';
+    });
+  }
+  _buildTrkStatsSummary();
+}
+function _setTrkNote(trackId, note) {
+  _loadTrkRatings();
+  if (!_trkRatings[trackId]) _trkRatings[trackId] = {};
+  _trkRatings[trackId].note = note;
+  _saveTrkRatings();
+}
+
+function _buildTrkStatsSummary() {
+  const el = document.getElementById('trk-stats-summary');
+  if (!el) return;
+  _loadTrkRatings();
+  const total = trackStore.tracks.length;
+  const done  = trackStore.tracks.filter(t => _trkRatings[t.id]?.status === 'completed').length;
+  const inprog= trackStore.tracks.filter(t => _trkRatings[t.id]?.status === 'inprogress').length;
+  const allDiff = trackStore.tracks.map(t=>_trkRatings[t.id]?.diff||0).filter(v=>v>0);
+  const avgDiff = allDiff.length ? (allDiff.reduce((a,b)=>a+b,0)/allDiff.length).toFixed(1) : '—';
+  const allFun  = trackStore.tracks.map(t=>_trkRatings[t.id]?.fun||0).filter(v=>v>0);
+  const avgFun  = allFun.length ? (allFun.reduce((a,b)=>a+b,0)/allFun.length).toFixed(1) : '—';
+  const pct = total > 0 ? Math.round((done/total)*100) : 0;
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="padding:10px;background:var(--s2);border-radius:10px;border:1px solid var(--bd2);text-align:center">
+        <div style="font-size:24px;font-weight:800;color:var(--ac)">${done}/${total}</div>
+        <div style="font-size:10px;color:var(--td);margin-top:2px">Geschafft</div>
+      </div>
+      <div style="padding:10px;background:var(--s2);border-radius:10px;border:1px solid var(--bd2);text-align:center">
+        <div style="font-size:24px;font-weight:800;color:#f59e0b">${inprog}</div>
+        <div style="font-size:10px;color:var(--td);margin-top:2px">In Arbeit</div>
+      </div>
+      <div style="padding:10px;background:var(--s2);border-radius:10px;border:1px solid var(--bd2);text-align:center">
+        <div style="font-size:20px;font-weight:800;color:var(--tx)">${avgDiff} ⭐</div>
+        <div style="font-size:10px;color:var(--td);margin-top:2px">Ø Schwierigkeit</div>
+      </div>
+      <div style="padding:10px;background:var(--s2);border-radius:10px;border:1px solid var(--bd2);text-align:center">
+        <div style="font-size:20px;font-weight:800;color:var(--tx)">${avgFun} ⭐</div>
+        <div style="font-size:10px;color:var(--td);margin-top:2px">Ø Spaßfaktor</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;height:8px;background:var(--s3);border-radius:4px;overflow:hidden">
+      <div style="height:100%;width:${pct}%;background:var(--ac);border-radius:4px;transition:width .5s"></div>
+    </div>
+    <div style="font-size:11px;color:var(--td);text-align:center;margin-top:4px">${pct}% aller Strecken gemeistert</div>
+  `;
+}
+
+// ── TRAIL FEATURES (Sprünge, Drops, Stellen) ─────────────────────────────────
+const _TRK_FEATURES_KEY = 'gmtw_trk_features_v1';
+let _trkFeatures  = {};
+let _featTrackId  = null;
+let _featType     = 'drop';
+let _featDiff     = 1;
+
+function _loadTrkFeatures() {
+  try { _trkFeatures = JSON.parse(localStorage.getItem(_TRK_FEATURES_KEY)||'{}'); } catch(e) {}
+}
+function _saveTrkFeatures() {
+  localStorage.setItem(_TRK_FEATURES_KEY, JSON.stringify(_trkFeatures));
+}
+
+function _buildTrkFeaturesPanel() {
+  _loadTrkFeatures();
+  const sel = document.getElementById('trk-feat-select');
+  if (sel) {
+    sel.innerHTML = '<option value="">– Strecke auswählen –</option>'
+      + trackStore.tracks.map(t => `<option value="${t.id}">${escHtml(t.name)}</option>`).join('');
+    if (_featTrackId) sel.value = _featTrackId;
+  }
+  if (_featTrackId) openTrkEditor(_featTrackId);
+  else {
+    const empty = document.getElementById('trk-editor-empty');
+    const body  = document.getElementById('trk-editor-body');
+    if (empty) empty.style.display = 'block';
+    if (body)  body.style.display  = 'none';
+  }
+}
+
+function loadTrkFeatures(trackId) {
+  _featTrackId = trackId;
+  _loadTrkFeatures();
+  const el    = document.getElementById('trk-feat-list');
+  const addEl = document.getElementById('trk-feat-add');
+  if (!el) return;
+  if (!trackId) { el.innerHTML = ''; if (addEl) addEl.style.display = 'none'; return; }
+  if (addEl) addEl.style.display = 'none';
+  const feats = (_trkFeatures[trackId] || []);
+  const ICONS = {
+    drop:'⬇️', steinfeld:'🪨', verblockt:'🪵', steil:'🏔', northshore:'🌉',
+    sprung:'🦘', flow:'🌊', aussicht:'👁', goal:'🎯', pause:'⛺',
+    // legacy compat
+    jump:'🦘', tech:'🪨', rest:'⛺'
+  };
+  const NAMES = {
+    drop:'Drop', steinfeld:'Steinfeld', verblockt:'Verblockt', steil:'Tech. Steil',
+    northshore:'Northshore', sprung:'Sprung', flow:'Flow-Sektion', aussicht:'Aussichtspunkt',
+    goal:'Ziel', pause:'Pause', jump:'Sprung', tech:'Technisch', rest:'Pause'
+  };
+  if (!feats.length) {
+    el.innerHTML = `<div style="padding:16px;background:var(--s2);border-radius:12px;border:1px dashed var(--bd2);text-align:center;color:var(--td)">
+      <div style="font-size:28px;margin-bottom:6px">📍</div>
+      <div style="font-size:12px;font-weight:700;color:var(--tx);margin-bottom:4px">Noch keine Schlüsselstellen</div>
+      <div style="font-size:10px;line-height:1.6;margin-bottom:10px">Drops, Steinfelder, Northshore-Elemente, Sprünge — alles was die Strecke ausmacht</div>
+      <button onclick="showFeatAdd()" class="sp-btn prim" style="width:100%;justify-content:center">➕ Schlüsselstelle hinzufügen</button>
+    </div>`;
+    return;
+  }
+  el.innerHTML = `<button onclick="showFeatAdd()" class="sp-btn prim" style="width:100%;justify-content:center;margin-bottom:8px">➕ Schlüsselstelle hinzufügen</button>`
+    + feats.map((f, idx) => {
+      const diff = f.diff || 1;
+      const stars = [1,2,3,4,5].map(i => `<span style="opacity:${i<=diff?'1':'.15'};font-size:12px">⭐</span>`).join('');
+      const ts = f.date ? new Date(f.date).toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit'}) : '';
+      return `<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--s2);border-radius:11px;border:1px solid var(--bd2);margin-bottom:6px">
+        <span style="font-size:24px;flex-shrink:0;line-height:1.1;margin-top:1px">${ICONS[f.type]||'📍'}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:var(--tx)">${escHtml(f.name)}</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap">
+            <span style="font-size:10px;padding:1px 5px;border-radius:4px;background:var(--s3);color:var(--td);font-weight:600">${NAMES[f.type]||f.type}</span>
+            <span>${stars}</span>
+            ${ts ? `<span style="font-size:9px;color:var(--td);margin-left:auto">${ts}</span>` : ''}
+          </div>
+        </div>
+        <button onclick="_deleteFeat('${escHtml(trackId)}',${idx})"
+          style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:7px;
+          font-size:13px;cursor:pointer;color:#ef4444;flex-shrink:0;padding:5px 7px;line-height:1;transition:all .15s"
+          title="Entfernen">🗑</button>
+      </div>`;
+    }).join('');
+}
+
+function showFeatAdd() {
+  const el = document.getElementById('trk-feat-add');
+  if (el) { el.style.display = 'block'; el.scrollIntoView({behavior:'smooth'}); }
+}
+function cancelFeatAdd() {
+  const el = document.getElementById('trk-feat-add');
+  if (el) el.style.display = 'none';
+}
+function selectFeatType(btn, type) {
+  _featType = type;
+  document.querySelectorAll('.trk-feat-type-btn').forEach(b => {
+    const on = b === btn;
+    b.style.background   = on ? 'var(--ac)18' : 'var(--s1)';
+    b.style.borderColor  = on ? 'var(--ac)'   : 'var(--bd2)';
+    b.style.color        = 'var(--tx)';
+    b.style.fontWeight   = on ? '900' : '700';
+  });
+}
+function setFeatDiff(val) {
+  _featDiff = val;
+  document.querySelectorAll('#trk-feat-diff-stars .feat-star').forEach(b => {
+    b.style.opacity = parseInt(b.dataset.v) <= val ? '1' : '.35';
+  });
+}
+function saveFeatAdd() {
+  if (!_featTrackId) { toast('⚠️ Keine Strecke gewählt'); return; }
+  const name = (document.getElementById('trk-feat-name')?.value||'').trim();
+  if (!name) { toast('⚠️ Bitte Bezeichnung eingeben'); return; }
+  _loadTrkFeatures();
+  if (!_trkFeatures[_featTrackId]) _trkFeatures[_featTrackId] = [];
+  const ICONS = { drop:'⬇️', steinfeld:'🪨', verblockt:'🪵', steil:'🏔', northshore:'🌉', sprung:'🦘', flow:'🌊', aussicht:'👁', goal:'🎯', pause:'⛺', jump:'🦘', tech:'🪨', rest:'⛺' };
+  const icon = ICONS[_featType] || '📍';
+  _trkFeatures[_featTrackId].push({ type:_featType, name, diff:_featDiff, date:Date.now() });
+  _saveTrkFeatures();
+  _saveTrkEdit(_featTrackId, 'feature_add', `${icon} Hinzugefügt: ${name}`, '', name);
+  const inp = document.getElementById('trk-feat-name');
+  if (inp) inp.value = '';
+  cancelFeatAdd();
+  loadTrkFeatures(_featTrackId);
+  _buildTrkVersionHistory(_featTrackId);
+  toast('✅ Schlüsselstelle gespeichert!');
+}
+function _deleteFeat(trackId, idx) {
+  _loadTrkFeatures();
+  if (_trkFeatures[trackId]) {
+    const deleted = _trkFeatures[trackId][idx];
+    const ICONS = { drop:'⬇️', steinfeld:'🪨', verblockt:'🪵', steil:'🏔', northshore:'🌉', sprung:'🦘', flow:'🌊', aussicht:'👁', goal:'🎯', pause:'⛺', jump:'🦘', tech:'🪨', rest:'⛺' };
+    const icon = ICONS[deleted?.type] || '📍';
+    _trkFeatures[trackId].splice(idx, 1);
+    _saveTrkFeatures();
+    if (deleted) _saveTrkEdit(trackId, 'feature_del', `${icon} Entfernt: ${deleted.name||'?'}`, deleted.name||'', '');
+    loadTrkFeatures(trackId);
+    _buildTrkVersionHistory(trackId);
+  }
+}
+
+function _buildTrkConditionList() {
+  const el = document.getElementById('trk-condition-list');
+  if (!el) return;
+  _loadTrkFeatures();
+  const tracks = trackStore.tracks;
+  if (!tracks.length) { el.innerHTML = '<div style="color:var(--td);font-size:12px">Keine Strecken geladen.</div>'; return; }
+  const CONDITIONS = [
+    { v:'unknown', l:'❓ Unbekannt', c:'var(--td)' },
+    { v:'dry',     l:'☀️ Trocken',  c:'#22c55e'  },
+    { v:'damp',    l:'💧 Feucht',   c:'#f59e0b'  },
+    { v:'muddy',   l:'🌧 Matschig', c:'#ef4444'  },
+    { v:'icy',     l:'❄️ Eisig',    c:'#38bdf8'  },
+  ];
+  el.innerHTML = tracks.map(t => {
+    const cur = (_trkFeatures[t.id+'_cond'] || {}).condition || 'unknown';
+    const condHtml = CONDITIONS.map(c =>
+      `<button onclick="_setCondition('${t.id}','${c.v}',this)" data-cv="${c.v}"
+        style="padding:5px 7px;border-radius:7px;border:1.5px solid var(--bd2);
+        background:${cur===c.v?c.c:'var(--s3)'};color:${cur===c.v?'#fff':'var(--td)'};
+        font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">${c.l}</button>`
+    ).join('');
+    return `<div style="padding:10px;background:var(--s2);border-radius:10px;border:1px solid var(--bd2);margin-bottom:8px">
+      <div style="font-size:12px;font-weight:700;color:var(--tx);margin-bottom:8px">${escHtml(t.name)}</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">${condHtml}</div>
+    </div>`;
+  }).join('');
+}
+function _setCondition(trackId, condition, btn) {
+  _loadTrkFeatures();
+  _trkFeatures[trackId+'_cond'] = { condition, updated: Date.now() };
+  _saveTrkFeatures();
+  const wrap = btn?.closest('div[style]');
+  if (wrap) {
+    const CONDITIONS = { unknown:'var(--td)',dry:'#22c55e',damp:'#f59e0b',muddy:'#ef4444',icy:'#38bdf8' };
+    wrap.querySelectorAll('[data-cv]').forEach(b => {
+      const isThis = b.dataset.cv === condition;
+      b.style.background = isThis ? (CONDITIONS[condition]||'var(--td)') : 'var(--s3)';
+      b.style.color = isThis ? '#fff' : 'var(--td)';
+    });
+  }
+  toast('✅ Zustand gespeichert');
+}
+
+// ── STRECKEN EINSTELLUNGEN — Editor & Version History ─────────────────────────
+const _TRK_EDITS_KEY = 'gmtw_trk_edits_v1';
+let _trkEdits     = {};
+let _trkDescTimer = null;
+
+function _loadTrkEdits() {
+  try { _trkEdits = JSON.parse(localStorage.getItem(_TRK_EDITS_KEY)||'{}'); } catch(e) { _trkEdits = {}; }
+}
+function _saveTrkEditsStore() {
+  localStorage.setItem(_TRK_EDITS_KEY, JSON.stringify(_trkEdits));
+}
+// Log an edit entry (unshifts to front, max 50 per track)
+function _saveTrkEdit(trackId, field, desc, oldVal, newVal) {
+  _loadTrkEdits();
+  if (!_trkEdits[trackId]) _trkEdits[trackId] = [];
+  _trkEdits[trackId].unshift({
+    ts: Date.now(), field, desc,
+    oldVal: String(oldVal||'').slice(0,80),
+    newVal: String(newVal||'').slice(0,80)
+  });
+  if (_trkEdits[trackId].length > 50) _trkEdits[trackId].length = 50;
+  _saveTrkEditsStore();
+}
+
+// Main entry point — called when user selects a track in the dropdown
+function openTrkEditor(trackId) {
+  _featTrackId = trackId;
+  const sel   = document.getElementById('trk-feat-select');
+  const empty = document.getElementById('trk-editor-empty');
+  const body  = document.getElementById('trk-editor-body');
+  if (sel) sel.value = trackId || '';
+  if (!trackId) {
+    if (empty) empty.style.display = 'block';
+    if (body)  body.style.display  = 'none';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  if (body)  body.style.display  = 'block';
+  const track = trackStore.tracks.find(t => t.id === trackId);
+  if (!track) return;
+
+  // Header
+  _buildTrkEditorHeader(track);
+
+  // Description
+  _loadTrkFeatures();
+  const meta   = _trkFeatures[trackId + '_meta'] || {};
+  const descEl = document.getElementById('trk-desc-inp');
+  const lenEl  = document.getElementById('trk-desc-len');
+  if (descEl) { descEl.value = meta.desc || ''; }
+  if (lenEl)  { lenEl.textContent = `${(meta.desc||'').length}/400`; }
+
+  // Features list
+  loadTrkFeatures(trackId);
+
+  // Condition
+  _buildTrkEditorCondition(trackId);
+
+  // Version history
+  _buildTrkVersionHistory(trackId);
+}
+
+function _buildTrkEditorHeader(track) {
+  const el = document.getElementById('trk-editor-header');
+  if (!el) return;
+  const CAT_COL   = { beginner:'#27AE60', mittel:'#D4A017', expert:'#ef4444' };
+  const CAT_LABEL = { beginner:'Anfänger', mittel:'Mittel', expert:'Expert' };
+  const col   = CAT_COL[track.cat] || track.color || '#888';
+  const label = CAT_LABEL[track.cat] || track.cat || '';
+  const dist  = track.stats?.dist || null;
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="width:14px;height:14px;border-radius:5px;background:${col};flex-shrink:0;display:inline-block;
+        box-shadow:0 0 0 3px ${col}33"></span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:900;color:var(--tx);font-family:var(--fh);
+          white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(track.name)}</div>
+        <div style="display:flex;gap:6px;align-items:center;margin-top:3px;flex-wrap:wrap">
+          <span style="font-size:10px;padding:2px 7px;border-radius:5px;background:${col}22;color:${col};font-weight:700">${label}</span>
+          ${dist ? `<span style="font-size:10px;color:var(--td)">📏 ${dist} km</span>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+// Debounced description save
+function _onTrkDescChange(val) {
+  const lenEl = document.getElementById('trk-desc-len');
+  if (lenEl) lenEl.textContent = `${val.length}/400`;
+  clearTimeout(_trkDescTimer);
+  _trkDescTimer = setTimeout(() => {
+    if (!_featTrackId) return;
+    _loadTrkFeatures();
+    const key = _featTrackId + '_meta';
+    const oldDesc = (_trkFeatures[key] || {}).desc || '';
+    if (!_trkFeatures[key]) _trkFeatures[key] = {};
+    _trkFeatures[key].desc        = val;
+    _trkFeatures[key].descUpdated = Date.now();
+    _saveTrkFeatures();
+    if (val.trim() !== oldDesc.trim()) {
+      _saveTrkEdit(_featTrackId, 'desc', '📝 Beschreibung bearbeitet',
+        oldDesc.slice(0,60) || '(leer)', val.slice(0,60) || '(leer)');
+      _buildTrkVersionHistory(_featTrackId);
+      toast('✅ Beschreibung gespeichert');
+    }
+  }, 900);
+}
+
+// Condition buttons for the editor (single track)
+function _buildTrkEditorCondition(trackId) {
+  const el = document.getElementById('trk-editor-condition');
+  if (!el) return;
+  _loadTrkFeatures();
+  const cur = (_trkFeatures[trackId + '_cond'] || {}).condition || 'unknown';
+  const CONDITIONS = [
+    { v:'unknown', l:'❓ Unbekannt', c:'var(--td)' },
+    { v:'dry',     l:'☀️ Trocken',  c:'#22c55e'   },
+    { v:'damp',    l:'💧 Feucht',   c:'#f59e0b'   },
+    { v:'muddy',   l:'🌧 Matschig', c:'#ef4444'   },
+    { v:'icy',     l:'❄️ Eisig',    c:'#38bdf8'   },
+  ];
+  el.innerHTML = CONDITIONS.map(c =>
+    `<button onclick="_setConditionEditor('${escHtml(trackId)}','${c.v}',this)" data-cv="${c.v}"
+      style="padding:7px 10px;border-radius:9px;border:1.5px solid ${cur===c.v ? c.c : 'var(--bd2)'};
+      background:${cur===c.v ? c.c : 'var(--s2)'};color:${cur===c.v ? '#fff' : 'var(--td)'};
+      font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap">${c.l}</button>`
+  ).join('');
+}
+
+function _setConditionEditor(trackId, condition, btn) {
+  _loadTrkFeatures();
+  const CKEY = trackId + '_cond';
+  const old  = (_trkFeatures[CKEY] || {}).condition || 'unknown';
+  _trkFeatures[CKEY] = { condition, updated: Date.now() };
+  _saveTrkFeatures();
+  const COL   = { unknown:'var(--td)', dry:'#22c55e', damp:'#f59e0b', muddy:'#ef4444', icy:'#38bdf8' };
+  const LABEL = { unknown:'Unbekannt', dry:'Trocken',  damp:'Feucht',  muddy:'Matschig', icy:'Eisig' };
+  const wrap = document.getElementById('trk-editor-condition');
+  if (wrap) {
+    wrap.querySelectorAll('[data-cv]').forEach(b => {
+      const on = b.dataset.cv === condition;
+      b.style.background  = on ? (COL[condition]||'var(--td)') : 'var(--s2)';
+      b.style.color       = on ? '#fff' : 'var(--td)';
+      b.style.borderColor = on ? (COL[condition]||'var(--bd2)') : 'var(--bd2)';
+    });
+  }
+  if (old !== condition) {
+    _saveTrkEdit(trackId, 'condition',
+      `🎽 Zustand: ${LABEL[old]||old} → ${LABEL[condition]||condition}`, old, condition);
+    _buildTrkVersionHistory(trackId);
+  }
+  toast('✅ Streckenzustand gespeichert');
+}
+
+// Render version history for selected track
+function _buildTrkVersionHistory(trackId) {
+  const el = document.getElementById('trk-version-history');
+  if (!el) return;
+  _loadTrkEdits();
+  const edits = (_trkEdits[trackId] || []);
+  if (!edits.length) {
+    el.innerHTML = `<div style="padding:14px 12px;background:var(--s2);border-radius:10px;border:1px solid var(--bd2);
+      text-align:center;font-size:12px;color:var(--td)">
+      <div style="font-size:20px;margin-bottom:5px">📋</div>
+      Noch keine Änderungen protokolliert.<br>
+      <span style="font-size:10px;opacity:.6">Jede Bearbeitung wird hier mit Zeitstempel geloggt.</span>
+    </div>`;
+    return;
+  }
+  el.innerHTML = edits.map((e, i) => {
+    const d       = new Date(e.ts);
+    const dateStr = d.toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'2-digit' });
+    const timeStr = d.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+    const isNew   = i === 0;
+    const preview = (e.field === 'desc' && e.newVal)
+      ? `<div style="font-size:10px;color:var(--td);margin-top:3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+          font-style:italic">"${escHtml(e.newVal.slice(0,55))}${e.newVal.length>55?'…':''}"</div>` : '';
+    return `<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 11px;margin-bottom:5px;border-radius:10px;
+        ${isNew ? 'background:rgba(200,255,0,.06);border:1px solid rgba(200,255,0,.25)' : 'background:var(--s2);border:1px solid var(--bd2)'}">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:700;color:var(--tx)">${escHtml(e.desc)}</div>
+        ${preview}
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:10px;font-weight:600;color:var(--td)">${timeStr}</div>
+        <div style="font-size:9px;color:var(--td);opacity:.65">${dateStr}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function _clearTrkHistory() {
+  if (!_featTrackId) return;
+  _loadTrkEdits();
+  _trkEdits[_featTrackId] = [];
+  _saveTrkEditsStore();
+  _buildTrkVersionHistory(_featTrackId);
+  toast('🗑 Verlauf geleert');
+}
+
 // Strecken-Tab: Alle offiziellen + eigene Tracks anzeigen
 function _initTracksTab() {
   const el = document.getElementById('sp-auto-tracks-list');
@@ -9990,7 +11120,7 @@ function _initTracksTab() {
   const autoHtml = AUTO_TRACKS.map(t => {
     const tr    = trackStore.tracks.find(tr => tr.sourceUrl === t.url || tr.name === t.name);
     const loaded = !!tr;
-    const catDot = { beginner:'#27AE60', mittel:'#D4A017', expert:'#8E44AD' }[t.cat] || '#888';
+    const catDot = { beginner:'#27AE60', mittel:'#D4A017', expert:'#ef4444' }[t.cat] || '#888';
     const btns = loaded
       ? `<button onclick="closeSettings();zoomTrack('${tr.id}')" title="Auf Karte" style="${btnStyle};background:var(--s3);color:var(--td)">📍</button>`
         + `<button onclick="openTrackQR('${tr.id}')" title="QR/Teilen" style="${btnStyle};background:var(--s3);color:var(--ac)">📤</button>`
@@ -10149,17 +11279,25 @@ function swPrefetchGpxTracks() {
 
 <!-- ══ NAVIGATION HUD ══════════════════════════════════════════ -->
 <div id="nav-hud" role="status" aria-live="polite">
-  <div class="nh-arrow" id="nh-arrow">↑</div>
+  <!-- Arrow: Big colored indicator -->
+  <div class="nh-arrow-wrap" id="nh-arrow-wrap">
+    <span class="nh-arrow" id="nh-arrow" aria-hidden="true">↑</span>
+  </div>
+  <!-- Info block -->
   <div class="nh-txt">
-    <div class="nh-title" id="nh-title">Zum Startpunkt</div>
+    <div class="nh-mode"><span class="nh-dot"></span><span id="nh-mode-txt">Navigiere zum Start</span></div>
+    <div class="nh-title" id="nh-title">–</div>
     <div class="nh-dist" id="nh-dist">—</div>
     <div class="nh-sub" id="nh-sub">GPS wird aktiviert…</div>
+    <div class="nh-offroute-warn" id="nh-offroute-warn">⚠️ Falsche Richtung!</div>
     <a class="nh-gmaps" id="nh-gmaps" href="#" target="_blank" rel="noopener noreferrer">
-      <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1C3.29 1 1.5 2.79 1.5 5c0 3.07 4 7 4 7s4-3.93 4-7c0-2.21-1.79-4-4-4zm0 5.4a1.4 1.4 0 110-2.8 1.4 1.4 0 010 2.8z" fill="currentColor"/></svg>
-      Google Maps öffnen
+      <svg width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M5.5 1C3.29 1 1.5 2.79 1.5 5c0 3.07 4 7 4 7s4-3.93 4-7c0-2.21-1.79-4-4-4zm0 5.4a1.4 1.4 0 110-2.8 1.4 1.4 0 010 2.8z" fill="currentColor"/></svg>
+      Google Maps
     </a>
   </div>
-  <button class="nh-close" onclick="stopNavigation()" aria-label="Navigation beenden">×</button>
+  <button class="nh-close" onclick="stopNavigation()" aria-label="Navigation beenden">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
 </div>
 
 <!-- ══ RACE OVERLAY ════════════════════════════════════════════ -->
@@ -10276,24 +11414,36 @@ function swPrefetchGpxTracks() {
 <!-- ══ SETTINGS PANEL ══════════════════════════════════════════ -->
 <div id="settings-panel" role="dialog" aria-modal="true" aria-label="Einstellungen">
   <!-- Header -->
-  <div style="display:flex;align-items:center;padding:14px 16px 0;gap:10px;flex-shrink:0">
-    <button onclick="closeSettings()" style="background:var(--s3);border:1px solid var(--bd2);border-radius:10px;color:var(--tx);width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;line-height:1;flex-shrink:0" aria-label="Schließen">←</button>
-    <span style="font-family:var(--fh);font-size:17px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--tx)">Einstellungen</span>
+  <div style="display:flex;align-items:center;padding:14px 16px 10px;gap:12px;flex-shrink:0;border-bottom:1px solid var(--bd2)">
+    <button onclick="closeSettings()"
+      style="background:var(--s2);border:1.5px solid var(--bd2);border-radius:11px;color:var(--tx);
+             width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+             cursor:pointer;flex-shrink:0;transition:all .15s"
+      aria-label="Schließen"
+      onmousedown="this.style.transform='scale(.88)'" onmouseup="this.style.transform=''" ontouchstart="this.style.transform='scale(.88)'" ontouchend="this.style.transform=''">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div style="display:flex;align-items:center;gap:8px;flex:1">
+      <span style="font-family:var(--fh);font-size:17px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--tx)">Einstellungen</span>
+    </div>
+    <div class="logobadge" style="flex-shrink:0">MUNI</div>
   </div>
 
   <!-- Tabs -->
   <div class="sp-tabs">
-    <button class="sp-tab active" data-t="general" onclick="switchSpTab('general',this)">Allgemein</button>
+    <button class="sp-tab active" data-t="profile" onclick="switchSpTab('profile',this)">👤 Profil</button>
+    <button class="sp-tab" data-t="general" onclick="switchSpTab('general',this)">Allgemein</button>
     <button class="sp-tab" data-t="tracks"  onclick="switchSpTab('tracks',this)">Strecken</button>
     <button class="sp-tab" data-t="backup"  onclick="switchSpTab('backup',this)">Backup</button>
     <button class="sp-tab" data-t="markers" onclick="switchSpTab('markers',this)">Marker</button>
     <button class="sp-tab" data-t="qr"      onclick="switchSpTab('qr',this)">QR-Scan</button>
     <button class="sp-tab" data-t="app"     onclick="switchSpTab('app',this)">📲 App</button>
-    <button class="sp-tab" data-t="profile" onclick="switchSpTab('profile',this)">👤 Profil</button>
   </div>
 
   <!-- Tab: Allgemein -->
-  <div class="sp-content on" id="sp-tab-general">
+  <div class="sp-content" id="sp-tab-general">
     <div class="sp-section">
       <div class="sp-label">GPS-Position Emoji</div>
       <div class="sp-hint">Wird auf der Karte als dein Standort-Symbol angezeigt</div>
@@ -10319,48 +11469,57 @@ function swPrefetchGpxTracks() {
     </div>
     <!-- Barrierefreiheit -->
     <div class="sp-section">
-      <div class="sp-label">♿ Barrierefreiheit (Vorlesen / A11Y)</div>
-      <div class="sp-hint">Liest Nachrichten, Karteninhalt und Navigation laut vor (Web Speech API, Deutsch)</div>
+      <div class="sp-label">♿ Barrierefreiheit &amp; Vorlesen</div>
+      <div class="sp-hint">Liest Karteninhalt, Toasts und Navigation laut vor — Steuerung über die Leiste am unteren Bildschirmrand</div>
 
-      <!-- TTS on/off -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
-        <label for="a11y-enabled" style="font-size:13px;color:var(--tx);cursor:pointer">Vorlesefunktion aktiv</label>
-        <input type="checkbox" id="a11y-enabled" onchange="onA11yToggle(this.checked)"
-          style="width:20px;height:20px;accent-color:var(--ac);cursor:pointer;flex-shrink:0">
-      </div>
+      <!-- BIG TTS Toggle Button -->
+      <button id="a11y-big-toggle" class="a11y-big-toggle" onclick="onA11yToggle(!_a11y.enabled)" aria-pressed="false">
+        <span class="a11y-big-toggle-icon">🔊</span>
+        <div class="a11y-big-toggle-text">
+          <span class="a11y-big-toggle-label">Vorlesefunktion</span>
+          <span id="a11y-toggle-state" class="a11y-big-toggle-state">AUS</span>
+        </div>
+        <div class="a11y-big-toggle-switch"></div>
+      </button>
 
       <!-- Sprechrate -->
-      <div style="margin-top:10px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--td);margin-bottom:4px">
-          <span>Sprechrate</span>
-          <span id="a11y-rate-val">1.0×</span>
+      <div style="margin-top:14px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--td);margin-bottom:6px;font-weight:600">
+          <span>🎚 Sprechgeschwindigkeit</span>
+          <span id="a11y-rate-val" style="color:var(--tx);font-weight:800">1.0×</span>
         </div>
         <input type="range" id="a11y-rate" min="0.5" max="2" step="0.1" value="1.0"
           style="width:100%;accent-color:var(--ac)"
           oninput="document.getElementById('a11y-rate-val').textContent=parseFloat(this.value).toFixed(1)+'×'"
           onchange="onA11yRate(this.value)">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--td);margin-top:3px">
+          <span>Langsam</span><span>Schnell</span>
+        </div>
       </div>
 
       <!-- Hoher Kontrast -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
-        <span style="font-size:13px;color:var(--tx)">Hoher Kontrast (Lichtmodus)</span>
-        <label style="cursor:pointer;display:flex;align-items:center;gap:6px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding:12px;background:var(--s2);border-radius:11px;border:1px solid var(--bd2)">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--tx)">🌓 Hoher Kontrast</div>
+          <div style="font-size:11px;color:var(--td);margin-top:2px">Stärkere Kontraste für bessere Lesbarkeit</div>
+        </div>
+        <label style="cursor:pointer;display:flex;align-items:center;gap:6px" aria-label="Hoher Kontrast">
           <input type="checkbox" id="a11y-hc" onchange="onA11yHc(this.checked)"
-            style="width:18px;height:18px;accent-color:var(--ac)">
+            style="width:22px;height:22px;accent-color:var(--ac);cursor:pointer">
         </label>
       </div>
 
-      <!-- Karte vorlesen -->
+      <!-- Schnellzugriff Vorlesen-Buttons -->
       <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="sp-btn sec" onclick="speakMapOverview()" style="flex:1;justify-content:center" title="Karteninhalt vorlesen (Shortcut: V)">
-          📢 Karte vorlesen <span style="font-size:10px;opacity:.7">[V]</span>
+        <button class="sp-btn sec" onclick="speakMapOverview()" style="flex:1;justify-content:center">
+          📢 Karte [V]
         </button>
-        <button class="sp-btn sec" onclick="speakNearestPoint()" style="flex:1;justify-content:center" title="Nächsten Punkt vorlesen (Shortcut: N)">
-          📍 Nächster Punkt <span style="font-size:10px;opacity:.7">[N]</span>
+        <button class="sp-btn sec" onclick="speakNearestPoint()" style="flex:1;justify-content:center">
+          📍 Nächster [N]
         </button>
       </div>
-      <div style="margin-top:6px;font-size:10px;color:var(--td);line-height:1.5">
-        Tastaturkürzel: <b>V</b> = Karte vorlesen · <b>N</b> = Nächster Punkt · <b>S</b> = Einstellungen · <b>Esc</b> = Schließen
+      <div style="margin-top:6px;font-size:10px;color:var(--td);line-height:1.7;padding:8px;background:var(--s2);border-radius:8px">
+        ⌨️ <b>V</b> = Karte · <b>N</b> = Nächster Punkt · <b>S</b> = Einstellungen · <b>Esc</b> = Schließen
       </div>
     </div>
 
@@ -10497,7 +11656,7 @@ function swPrefetchGpxTracks() {
   </div>
 
   <!-- Tab: Profil -->
-  <div class="sp-content" id="sp-tab-profile">
+  <div class="sp-content on" id="sp-tab-profile">
 
     <!-- Profil-Übersicht Karte -->
     <div class="sp-section">
@@ -10565,6 +11724,18 @@ function swPrefetchGpxTracks() {
       </div>
     </div>
 
+    <!-- App-Sprache -->
+    <div class="sp-section">
+      <div class="sp-label">🌐 App-Sprache / Language</div>
+      <div class="sp-hint">Bestimmt die Sprache der Vorlesefunktion (TTS) und zukünftiger Übersetzungen</div>
+      <div class="lang-grid">
+        <button class="lang-btn active" data-lang="de" onclick="setAppLang('de')">🇩🇪 Deutsch</button>
+        <button class="lang-btn" data-lang="en" onclick="setAppLang('en')">🇬🇧 English</button>
+        <button class="lang-btn" data-lang="fr" onclick="setAppLang('fr')">🇫🇷 Français</button>
+        <button class="lang-btn" data-lang="es" onclick="setAppLang('es')">🇪🇸 Español</button>
+      </div>
+    </div>
+
     <!-- Speichern -->
     <div class="sp-section" style="border-bottom:none">
       <button class="sp-btn prim" onclick="saveProfile()" style="width:100%;justify-content:center">
@@ -10603,23 +11774,159 @@ function swPrefetchGpxTracks() {
     </div>
   </div>
 
-  <!-- Tab: Strecken-Update -->
-  <div class="sp-content" id="sp-tab-tracks">
-    <div class="sp-section">
-      <div class="sp-label">Offizielle GMTW 2026 Strecken</div>
-      <div class="sp-hint">Quelle: <code style="background:var(--s3);padding:1px 4px;border-radius:3px;font-size:10px;font-family:monospace">Munimap / munimap.github.io</code></div>
-      <div id="sp-auto-tracks-list" style="margin-top:8px;font-size:12px;color:var(--td);display:flex;flex-direction:column;gap:4px">
-        <!-- wird per JS befüllt -->
+  <!-- Tab: Strecken-Update + Muni Trail Settings -->
+  <div class="sp-content" id="sp-tab-tracks" style="padding:0">
+
+    <!-- Sub-Navigation -->
+    <div style="display:flex;border-bottom:2px solid var(--bd2);flex-shrink:0;background:var(--s2)">
+      <button class="trk-sub-tab active" data-st="load" onclick="switchTrkSubTab('load',this)" style="flex:1;padding:10px 4px;font-size:11px;font-family:var(--fh);font-weight:700;border:none;background:transparent;color:var(--tx);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s">📥 Strecken</button>
+      <button class="trk-sub-tab" data-st="notes" onclick="switchTrkSubTab('notes',this)" style="flex:1;padding:10px 4px;font-size:11px;font-family:var(--fh);font-weight:700;border:none;background:transparent;color:var(--td);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s">📝 Mein Rating</button>
+      <button class="trk-sub-tab" data-st="features" onclick="switchTrkSubTab('features',this)" style="flex:1;padding:10px 4px;font-size:11px;font-family:var(--fh);font-weight:700;border:none;background:transparent;color:var(--td);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s">⚙️ Einstellungen</button>
+    </div>
+
+    <!-- Pane: Strecken laden -->
+    <div id="trk-pane-load" style="overflow-y:auto;flex:1;padding:0 16px">
+      <div class="sp-section">
+        <div class="sp-label">🗂 Offizielle GMTW 2026 Strecken</div>
+        <div class="sp-hint">Quelle: <code style="background:var(--s3);padding:1px 4px;border-radius:3px;font-size:10px;font-family:monospace">munimap.github.io</code></div>
+        <div id="sp-auto-tracks-list" style="margin-top:8px;font-size:12px;color:var(--td);display:flex;flex-direction:column;gap:4px">
+          <!-- wird per JS befüllt -->
+        </div>
+      </div>
+      <div class="sp-section" style="border-bottom:none">
+        <div class="sp-label">🔄 Updates suchen</div>
+        <div class="sp-hint">Prüft das Repository auf neue GPX-Dateien</div>
+        <button class="sp-btn prim" id="sp-update-btn" onclick="checkForTrackUpdates()" style="width:100%;margin-top:10px;justify-content:center">
+          🔄 Nach Updates suchen
+        </button>
+        <div id="sp-update-result" style="margin-top:10px"></div>
       </div>
     </div>
-    <div class="sp-section" style="border-bottom:none">
-      <div class="sp-label">Nach neuen Strecken suchen</div>
-      <div class="sp-hint">Prüft das Repository auf GPX-Dateien, die noch nicht geladen wurden</div>
-      <button class="sp-btn prim" id="sp-update-btn" onclick="checkForTrackUpdates()" style="width:100%;margin-top:10px;justify-content:center">
-        🔄 Nach Updates suchen
-      </button>
-      <div id="sp-update-result" style="margin-top:10px"></div>
+
+    <!-- Pane: Mein Rating (persönliches Strecken-Profil) -->
+    <div id="trk-pane-notes" style="display:none;overflow-y:auto;flex:1;padding:0 16px">
+      <div class="sp-section">
+        <div class="sp-label">⭐ Mein persönliches Strecken-Rating</div>
+        <div class="sp-hint">Deine eigene Einschätzung — unabhängig vom offiziellen Schwierigkeitsgrad</div>
+        <div id="trk-rating-list" style="margin-top:10px">
+          <!-- per JS befüllt -->
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--td);line-height:1.6;padding:8px;background:var(--s2);border-radius:8px">
+          💡 Tip: Rate deine Strecken — du siehst auf einen Blick wo du noch Gas geben kannst!
+        </div>
+      </div>
+      <div class="sp-section" style="border-bottom:none">
+        <div class="sp-label">📊 Meine Statistik</div>
+        <div id="trk-stats-summary" style="margin-top:8px"></div>
+      </div>
     </div>
+
+    <!-- Pane: Strecken Einstellungen (vollständig) -->
+    <div id="trk-pane-features" style="display:none;overflow-y:auto;flex:1">
+
+      <!-- Strecken-Auswahl (sticky header) -->
+      <div style="padding:10px 16px;background:var(--s2);border-bottom:1px solid var(--bd2);position:sticky;top:0;z-index:10">
+        <div style="font-size:10px;font-weight:700;color:var(--td);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Strecke auswählen</div>
+        <select id="trk-feat-select" class="sp-input" style="width:100%;box-sizing:border-box" onchange="openTrkEditor(this.value)">
+          <option value="">– Strecke auswählen –</option>
+        </select>
+      </div>
+
+      <!-- Empty state -->
+      <div id="trk-editor-empty" style="padding:40px 24px;text-align:center;color:var(--td)">
+        <div style="font-size:48px;margin-bottom:14px">⚙️</div>
+        <div style="font-size:15px;font-weight:800;color:var(--tx);font-family:var(--fh);margin-bottom:8px">Strecken Einstellungen</div>
+        <div style="font-size:12px;line-height:1.7;max-width:260px;margin:0 auto">
+          Wähle eine Strecke um sie zu bearbeiten, Schlüsselstellen zu markieren und alle Änderungen mit Zeitstempel zu protokollieren.
+        </div>
+      </div>
+
+      <!-- Editor body (hidden until track selected) -->
+      <div id="trk-editor-body" style="display:none">
+
+        <!-- Track info header -->
+        <div id="trk-editor-header" style="padding:12px 16px;border-bottom:1px solid var(--bd2);background:var(--s1)"></div>
+
+        <!-- Section: Beschreibung -->
+        <div class="sp-section">
+          <div class="sp-label">📝 Streckenbeschreibung</div>
+          <div class="sp-hint">Persönliche Notiz für dich und andere Fahrer — wird lokal gespeichert</div>
+          <textarea id="trk-desc-inp" class="sp-input"
+            style="width:100%;box-sizing:border-box;min-height:82px;resize:vertical;margin-top:8px;font-family:var(--fb);font-size:12px;line-height:1.6"
+            placeholder="z.B. 'Flowige Expert-Linie mit großem Drop am Ende. Beste Zeit: trocken. Besonders anspruchsvoll: der Steinfeld-Abschnitt nach der ersten Kurve.'"
+            maxlength="400"
+            oninput="document.getElementById('trk-desc-len').textContent=this.value.length+'/400'"
+            onchange="_onTrkDescChange(this.value)"></textarea>
+          <div style="display:flex;justify-content:flex-end;margin-top:3px">
+            <span id="trk-desc-len" style="font-size:10px;color:var(--td)">0/400</span>
+          </div>
+        </div>
+
+        <!-- Section: Schlüsselstellen -->
+        <div class="sp-section">
+          <div class="sp-label">📍 Schlüsselstellen & Hindernisse</div>
+          <div class="sp-hint">Drops, Northshore, Steinfelder, technische Stellen — alles an einem Ort</div>
+          <div id="trk-feat-list" style="margin-top:10px"></div>
+
+          <!-- Add form -->
+          <div id="trk-feat-add" style="display:none;margin-top:8px;padding:14px;background:var(--s2);border-radius:14px;border:1.5px solid var(--bd2)">
+            <div style="font-size:12px;font-weight:800;color:var(--tx);font-family:var(--fh);margin-bottom:10px">➕ Schlüsselstelle hinzufügen</div>
+
+            <!-- Type grid — 2 columns, 5 rows -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px">
+              <button class="trk-feat-type-btn active" data-type="drop"       onclick="selectFeatType(this,'drop')"       style="padding:8px 4px;border-radius:9px;border:1.5px solid var(--ac);background:var(--ac)18;color:var(--tx);font-size:11px;cursor:pointer;font-weight:700;transition:all .15s">⬇️ Drop</button>
+              <button class="trk-feat-type-btn"        data-type="steinfeld"   onclick="selectFeatType(this,'steinfeld')"   style="padding:8px 4px;border-radius:9px;border:1.5px solid var(--bd2);background:var(--s1);color:var(--tx);font-size:11px;cursor:pointer;font-weight:700;transition:all .15s">🪨 Steinfeld</button>
+              <button class="trk-feat-type-btn"        data-type="verblockt"   onclick="selectFeatType(this,'verblockt')"   style="padding:8px 4px;border-radius:9px;border:1.5px solid var(--bd2);background:var(--s1);color:var(--tx);font-size:11px;cursor:pointer;font-weight:700;transition:all .15s">🪵 Verblockt</button>
+              <button class="trk-feat-type-btn"        data-type="steil"       onclick="selectFeatType(this,'steil')"       style="padding:8px 4px;border-radius:9px;border:1.5px solid var(--bd2);background:var(--s1);color:var(--tx);font-size:11px;cursor:pointer;font-weight:700;transition:all .15s">🏔 Tech.Steil</button>
+              <button class="trk-feat-type-btn"        data-type="northshore"  onclick="selectFeatType(this,'northshore')"  style="padding:8px 4px;border-radius:9px;border:1.5px solid var(--bd2);background:var(--s1);color:var(--tx);font-size:11px;cursor:pointer;font-weight:700;transition:all .15s">🌉 Northshore</button>
+              <button class="trk-feat-type-btn"        data-type="sprung"      onclick="selectFeatType(this,'sprung')"      style="padding:8px 4px;border-radius:9px;border:1.5px solid var(--bd2);background:var(--s1);color:var(--tx);font-size:11px;cursor:pointer;font-weight:700;transition:all .15s">🦘 Sprung</button>
+              <button class="trk-feat-type-btn"        data-type="flow"        onclick="selectFeatType(this,'flow')"        style="padding:8px 4px;border-radius:9px;border:1.5px solid var(--bd2);background:var(--s1);color:var(--tx);font-size:11px;cursor:pointer;font-weight:700;transition:all .15s">🌊 Flow</button>
+              <button class="trk-feat-type-btn"        data-type="aussicht"    onclick="selectFeatType(this,'aussicht')"    style="padding:8px 4px;border-radius:9px;border:1.5px solid var(--bd2);background:var(--s1);color:var(--tx);font-size:11px;cursor:pointer;font-weight:700;transition:all .15s">👁 Aussicht</button>
+              <button class="trk-feat-type-btn"        data-type="goal"        onclick="selectFeatType(this,'goal')"        style="padding:8px 4px;border-radius:9px;border:1.5px solid var(--bd2);background:var(--s1);color:var(--tx);font-size:11px;cursor:pointer;font-weight:700;transition:all .15s">🎯 Ziel</button>
+              <button class="trk-feat-type-btn"        data-type="pause"       onclick="selectFeatType(this,'pause')"       style="padding:8px 4px;border-radius:9px;border:1.5px solid var(--bd2);background:var(--s1);color:var(--tx);font-size:11px;cursor:pointer;font-weight:700;transition:all .15s">⛺ Pause</button>
+            </div>
+
+            <input id="trk-feat-name" class="sp-input" type="text"
+              placeholder="Bezeichnung (z.B. 'Wurzel-Drop am Feldweg')"
+              maxlength="60" style="width:100%;box-sizing:border-box;margin-bottom:8px">
+
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+              <span style="font-size:11px;color:var(--td);white-space:nowrap;flex-shrink:0">Schwierigkeit:</span>
+              <div style="display:flex;gap:2px" id="trk-feat-diff-stars">
+                <button class="feat-star" data-v="1" onclick="setFeatDiff(1)" style="font-size:19px;background:none;border:none;cursor:pointer;opacity:1;padding:0">⭐</button>
+                <button class="feat-star" data-v="2" onclick="setFeatDiff(2)" style="font-size:19px;background:none;border:none;cursor:pointer;opacity:.25;padding:0">⭐</button>
+                <button class="feat-star" data-v="3" onclick="setFeatDiff(3)" style="font-size:19px;background:none;border:none;cursor:pointer;opacity:.25;padding:0">⭐</button>
+                <button class="feat-star" data-v="4" onclick="setFeatDiff(4)" style="font-size:19px;background:none;border:none;cursor:pointer;opacity:.25;padding:0">⭐</button>
+                <button class="feat-star" data-v="5" onclick="setFeatDiff(5)" style="font-size:19px;background:none;border:none;cursor:pointer;opacity:.25;padding:0">⭐</button>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:7px">
+              <button class="sp-btn sec" style="flex:1;justify-content:center" onclick="cancelFeatAdd()">Abbrechen</button>
+              <button class="sp-btn prim" style="flex:1;justify-content:center" onclick="saveFeatAdd()">✓ Speichern</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Streckenzustand -->
+        <div class="sp-section">
+          <div class="sp-label">🎽 Aktueller Streckenzustand</div>
+          <div class="sp-hint">Untergrundverhältnisse — hilft dir und anderen bei der Planung</div>
+          <div id="trk-editor-condition" style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"></div>
+        </div>
+
+        <!-- Section: Änderungshistorie -->
+        <div class="sp-section" style="border-bottom:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <div class="sp-label" style="margin:0">🕐 Änderungshistorie</div>
+            <button onclick="_clearTrkHistory()" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--bd2);background:var(--s2);color:var(--td);cursor:pointer">Leeren</button>
+          </div>
+          <div class="sp-hint">Jede Änderung automatisch mit Zeitstempel protokolliert</div>
+          <div id="trk-version-history" style="margin-top:10px"></div>
+        </div>
+
+      </div><!-- /trk-editor-body -->
+    </div><!-- /trk-pane-features -->
   </div>
 
   <!-- Tab: QR-Scanner -->

@@ -19,7 +19,7 @@
 //   • Robusteres ACTIVATE: alle ungültigen Caches löschen
 // =========================================================
 
-const SW_VERSION  = 'gmtw-v6';
+const SW_VERSION  = 'gmtw-v7';
 const SHELL_CACHE = SW_VERSION + '-shell';
 const TILE_CACHE  = SW_VERSION + '-tiles';
 const DATA_CACHE  = SW_VERSION + '-data';
@@ -35,11 +35,20 @@ const SHELL_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  // App-Icons (für Installierbarkeit & Offline-Icon)
+  // App-Icons — alle Größen (korrekte Dateinamen icon-{w}x{h}.png)
+  './icons/icon-16x16.png',
+  './icons/icon-32x32.png',
+  './icons/icon-48x48.png',
+  './icons/icon-72x72.png',
+  './icons/icon-96x96.png',
+  './icons/icon-128x128.png',
+  './icons/icon-144x144.png',
+  './icons/icon-152x152.png',
+  './icons/icon-180x180.png',
   './icons/icon-192x192.png',
+  './icons/icon-256x256.png',
+  './icons/icon-384x384.png',
   './icons/icon-512x512.png',
-  './icons/icon-maskable-192.png',
-  './icons/icon-maskable-512.png',
   // Leaflet (Karten-Engine — kritisch)
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
