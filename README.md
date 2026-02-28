@@ -1,13 +1,26 @@
 <div align="center">
 
-# 🦄 GMTW Muni Map
+# 🦄 GMTW Muni Map 🌲
 **Die serverlose Offline-PWA für das German Muni Trail Weekend**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status: 100% Offline](https://img.shields.io/badge/Status-100%25_Offline_Ready-success)](#)
-[![Tech: Vanilla JS](https://img.shields.io/badge/Tech-Vanilla_JS-f7df1e?logo=javascript&logoColor=black)](#)
-[![Geospatial: Turf.js](https://img.shields.io/badge/Geospatial-Turf.js-green)](#)
-[![Storage: IndexedDB](https://img.shields.io/badge/Storage-IndexedDB_Unlimited-blueviolet)](#)
+<a href="https://opensource.org/licenses/MIT">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" height="30">
+</a>
+<a href="#">
+  <img src="https://img.shields.io/badge/Status-100%25_Offline_Ready-success" alt="Status" height="30">
+</a>
+<a href="#">
+  <img src="https://img.shields.io/badge/Tech-Vanilla_JS-f7df1e?logo=javascript&logoColor=black" alt="Tech: Vanilla JS" height="30">
+</a>
+<a href="https://leafletjs.com">
+  <img src="https://img.shields.io/badge/Map-Leaflet-199900?logo=leaflet&logoColor=white" alt="Map: Leaflet" height="30">
+</a>
+<a href="#">
+  <img src="https://img.shields.io/badge/Geospatial-Turf.js-green" alt="Geospatial: Turf.js" height="30">
+</a>
+<a href="#">
+  <img src="https://img.shields.io/badge/Storage-IndexedDB_Unlimited-blueviolet" alt="Storage: IndexedDB" height="30">
+</a>
 
 Ein technologisches Meisterwerk, verpackt in **einer einzigen HTML-Datei**. Entwickelt von Muni-Fahrern für Muni-Fahrer. Diese Web-App bringt Muni-Zeitmessung, Sturzerkennung, kryptografisch gesicherte Leaderboards und QR-basierte Datenübertragung in die tiefsten Wälder – **komplett ohne Handynetz, Cloud oder App-Store.**
 
@@ -24,7 +37,7 @@ Ein technologisches Meisterwerk, verpackt in **einer einzigen HTML-Datei**. Entw
 ---
 
 ## 📖 Das große Munimap-Handbuch (Bedienung)
-*Damit am Renntag oder bei der Freeride-Tour alles perfekt läuft, hier die lückenlose Erklärung aller Funktionen.*
+*Damit auf der Tour alles perfekt läuft, hier die lückenlose Erklärung aller Funktionen.*
 
 ### 1. Installation & Offline-Vorbereitung (WICHTIG!)
 Da es im Wald kein Internet gibt, muss die App vorher "scharf" gemacht werden.
@@ -50,7 +63,7 @@ Tippe auf das **Ordner-Symbol (GPX)** unten in der Mitte. Es hat 3 Tabs:
 * **Tracks:** Hier siehst du alle Strecken. Klickst du auf eine Strecke, öffnet sich das **Höhenprofil**, die Distanz und die Bestenliste.
 * **Aufnahme:** Tracke deine eigene Freeride-Tour! Start drücken, Handy einstecken. Es speichert Distanz, Zeit und sogar Top-Speed. (Kann danach als GPX geteilt werden).
 
-### 5. Das Herzstück: Der Enduro-Race-Modus ⏱️
+### 5. Das Herzstück: Der Race-Modus ⏱️
 Das Handy in deiner Tasche ist die Zeitmessanlage. So fährst du ein Rennen:
 1. Wähle in der Track-Liste die Rennstrecke und tippe auf `⏱ Timing`.
 2. **Annäherung:** Die App navigiert dich zur Startlinie.
@@ -117,7 +130,7 @@ Die App nutzt <b>Turf.js</b>: Sie misst das <i>Bearing</i> (den Winkel) der erst
 ---
 
 ## 🛡️ Hardcore Offline-Resilienz
-*Auf einem Muni-Event gibt es Schlamm, Stürze und leere Akkus. Die Software darf niemals der Grund für Datenverlust sein.*
+*Auf einem Muni Event gibt es Schlamm, Stürze und leere Akkus. Die Software darf niemals der Grund für Datenverlust sein.*
 
 | Feature | Wie es dich rettet |
 | :--- | :--- |
@@ -130,7 +143,7 @@ Die App nutzt <b>Turf.js</b>: Sie misst das <i>Bearing</i> (den Winkel) der erst
 
 ## 💻 Tech Stack & Architektur
 
-Der absolute Clou an diesem Projekt: Es ist eine **Single-File-App (SFA)**.
+Das besondere an diesem Projekt: Es ist eine **Single-File-App (SFA)**.
 Es gibt kein Node.js, kein Webpack, kein React, keine `.env` Dateien. 
 
 **Eingesetzte Open-Source Schwergewichte:**
