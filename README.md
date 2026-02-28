@@ -1,7 +1,7 @@
 <div align="center">
 
 # 🦄 GMTW Muni Map
-**serverlose Offline-PWA für das German Muni Trail Weekend**
+**Die serverlose Offline-PWA für das German Muni Trail Weekend**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Status: 100% Offline](https://img.shields.io/badge/Status-100%25_Offline_Ready-success)](#)
@@ -18,8 +18,8 @@ Ein technologisches Meisterwerk, verpackt in **einer einzigen HTML-Datei**. Entw
 <br>
 
 > [!IMPORTANT]  
-> **Warum existiert das?** 
-> Einrad-Enduro und Downhill finden dort statt, wo es keinen Empfang gibt. Klassische Timing-Systeme sind teuer, herkömmliche Apps versagen offline. Diese App dreht das Paradigma um: Dein Smartphone *ist* der Transponder, der Server und die Datenbank in einem.
+> **Warum existiert die Anwendung?** 
+> Einrad-Muni und Downhill finden dort statt, wo es oft keinen Empfang gibt. Klassische Timing-Systeme sind teuer, herkömmliche Apps versagen offline. Diese App dreht das Paradigma um: Dein Smartphone *ist* der Transponder, der Server und die Datenbank in einem.
 
 ---
 
