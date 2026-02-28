@@ -25,6 +25,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
     <!-- jsQR 1.4.0 — QR-Code-Lesebibliothek (kein Tracking, rein lokal) -->
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <!-- pako 2.1.0 — DEFLATE/INFLATE Komprimierung für QR-Track-Transfer (kein Tracking) -->
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
     <!-- leaflet-gpx 1.7.0 — inline (kein CDN, kein SRI-Risiko) -->
     <script>
 /**
@@ -2966,25 +2968,57 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
             --shadow:0 8px 24px rgba(0,0,0,.55);
             color-scheme: dark;
         }
-        /* ═══ LIGHT MODE ═══ */
+        /* ═══ LIGHT MODE — WCAG AA konform (alle Kontraste ≥ 4.5:1) ═══ */
         [data-theme=light]{
-            --bg:#f0f4f8; --s1:#ffffff; --s2:#e8ecf2; --s3:#dde2eb;
-            --bd:rgba(0,0,0,0.06); --bd2:rgba(0,0,0,0.13);
-            --tx:#1a2030; --td:#5a6478; --tm:#8a95a8;
-            --ac:#4a8500; --acd:#3a6800;
-            --shadow:0 4px 16px rgba(0,0,0,.14);
+            --bg:#edf1f7;         /* Karten-BG, warm-kühl */
+            --s1:#ffffff;         /* Panel-/Kartenfläche */
+            --s2:#f3f6fc;         /* Sekundäre Fläche */
+            --s3:#e5eaf5;         /* Tertiäre Fläche */
+            --bd:rgba(0,0,0,.10);
+            --bd2:rgba(0,0,0,.24);
+            /* Text — alle ≥ 4.5:1 auf weißem Hintergrund */
+            --tx:#0c1420;         /* Primär ≈ 17:1 auf #fff */
+            --td:#364255;         /* Sekundär ≈ 9:1 auf #fff */
+            --tm:#5a6878;         /* Gedimmt ≈ 5.1:1 auf #fff */
+            /* Akzent-Grün — dunkel genug für WCAG AA */
+            --ac:#236b00;         /* ≈ 7.5:1 auf #fff ✓ */
+            --acd:#174d00;
+            --shadow:0 4px 20px rgba(0,0,0,.18);
             color-scheme: light;
+        }
+        /* Hochkontrast-Modus (optional, via Barrierefreiheit-Einstellungen) */
+        [data-theme=light][data-a11y-hc]{
+            --bg:#ffffff; --s1:#ffffff; --s2:#f2f2f2; --s3:#e5e5e5;
+            --bd:rgba(0,0,0,.30); --bd2:rgba(0,0,0,.60);
+            --tx:#000000; --td:#111111; --tm:#2a2a2a;
+            --ac:#0f5200; --acd:#083800;
+            --shadow:0 2px 12px rgba(0,0,0,.35);
         }
         [data-theme=light] .leaflet-popup-content-wrapper,
         [data-theme=light] .leaflet-popup-content-wrapper *{
-            background:var(--s1)!important;
+            background:var(--s1)!important; color:var(--tx)!important;
         }
-        [data-theme=light] .leaflet-control-zoom a{background:var(--s1)!important;color:var(--tx)!important;}
-        [data-theme=light] .leaflet-control-attribution{background:rgba(240,244,248,.85)!important;color:var(--td)!important;}
-        [data-theme=light] .path-lbl{background:rgba(240,244,248,.92)!important;border-color:rgba(245,158,11,.5)!important;}
-        [data-theme=light] #legend{background:rgba(255,255,255,.92)!important;}
+        [data-theme=light] .leaflet-control-zoom a{
+            background:var(--s1)!important;color:var(--tx)!important;
+            border-color:var(--bd2)!important;
+        }
+        [data-theme=light] .leaflet-control-attribution{
+            background:rgba(237,241,247,.94)!important;color:var(--td)!important;
+        }
+        [data-theme=light] .path-lbl{
+            background:rgba(255,255,255,.97)!important;
+            border-color:rgba(160,90,0,.55)!important;
+            color:var(--tx)!important;
+        }
+        [data-theme=light] #legend{background:rgba(255,255,255,.97)!important;}
         [data-theme=light] .ibtn,[data-theme=light] #titlepill,[data-theme=light] .fab{
-            box-shadow:0 2px 8px rgba(0,0,0,.15)!important;
+            box-shadow:0 2px 10px rgba(0,0,0,.22)!important;
+        }
+        /* Sichtbarer Fokus-Ring für Tastaturnavigation */
+        :focus-visible{
+            outline:3px solid var(--ac)!important;
+            outline-offset:3px!important;
+            border-radius:4px!important;
         }
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         body,html{width:100%;height:100%;overflow:hidden;font-family:var(--fb);background:var(--bg);color:var(--tx);-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
@@ -3013,9 +3047,9 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         .ibtn{width:42px;height:42px;flex-shrink:0;background:var(--s1);border:1px solid var(--bd2);border-radius:var(--r);color:var(--tx);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4);transition:background .15s,transform .1s}
         .ibtn:active{background:var(--s2);transform:scale(.9)}
         #titlepill{flex:1;min-width:0;background:var(--s1);border:1px solid var(--bd2);border-radius:var(--r);padding:7px 12px;box-shadow:0 2px 8px rgba(0,0,0,.4);display:flex;align-items:center;gap:10px}
-        .logobadge{width:28px;height:28px;flex-shrink:0;background:var(--ac);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:11px;font-weight:800;color:var(--bg);letter-spacing:-.5px}
+        .logobadge{width:32px;height:32px;flex-shrink:0;background:var(--ac);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:12px;font-weight:900;color:var(--bg);letter-spacing:.5px}
         .ttl{font-family:var(--fh);font-size:15px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx);line-height:1.1}
-        .tsub{font-size:10px;color:var(--td)}
+        .tsub{font-size:11px;color:var(--td)}
 
         /* FILTER BAR */
         #fbar{position:fixed;top:max(66px,calc(env(safe-area-inset-top,0px) + 66px));left:0;right:0;z-index:499;display:flex;gap:6px;padding:4px 12px 8px;overflow-x:auto;scrollbar-width:none;pointer-events:none}
@@ -3580,6 +3614,16 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         .mk-slider-row{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--s2);border-radius:10px;margin:10px 16px 0;flex-shrink:0}
         .mk-slider-row input[type=range]{flex:1;accent-color:var(--ac);height:4px}
         .mk-slider-val{font-size:12px;font-weight:700;color:var(--ac);min-width:36px;text-align:right;font-family:var(--fh)}
+
+        /* ── ACCESSIBILITY ──────────────────────────────────── */
+        /* Screen-reader-only: visually hidden but announced */
+        .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+        /* High-contrast focus ring (active in hc mode or always for keyboard nav) */
+        [data-a11y-hc] *:focus-visible{outline:4px solid #ff0 !important;outline-offset:3px !important}
+        /* Speaker FAB — nur sichtbar wenn TTS aktiv ([data-a11y-on] auf <html>) */
+        #a11y-speak-fab{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 174px);right:12px;z-index:490;width:42px;height:42px;background:var(--ac);color:var(--bg);border-radius:50%;border:none;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;transition:transform .15s}
+        #a11y-speak-fab:active{transform:scale(.88)}
+        html[data-a11y-on] #a11y-speak-fab{display:flex}
     </style>
 </head>
 <body>
@@ -3609,6 +3653,9 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
   <button class="chip"    data-f="expert"   onclick="setFilter('expert',this)">🔴 Expert</button>
   <button class="chip"    data-f="logistik" aria-label="Logistik Filter" onclick="setFilter('logistik',this)">🔵 Logistik</button>
 </div>
+
+<!-- Speaker FAB: Vorlesen-Button (nur sichtbar wenn TTS aktiv) -->
+<button id="a11y-speak-fab" onclick="speakCurrentContext()" aria-label="Vorlesen" title="Aktuelle Ansicht vorlesen [V]">🔊</button>
 
 <!-- FABS -->
 <div class="fabs">
@@ -3768,6 +3815,12 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
 
   <!-- TAB: AUFNAHME -->
   <div class="gpx-content" id="gpx-tab-rec">
+    <!-- Fahrerprofil (geladen beim Starten) -->
+    <div id="rec-rider-bar" style="display:none;align-items:center;gap:8px;padding:7px 12px;background:var(--s3);border-radius:10px;margin:0 0 4px;font-size:12px;color:var(--td)">
+      <span style="font-size:18px">🚴</span>
+      <span id="rec-rider-info" style="flex:1;font-weight:700;color:var(--tx)">–</span>
+      <span style="font-size:10px;opacity:.6">aus Profil</span>
+    </div>
     <div class="gpx-section" style="text-align:center;padding-bottom:0;border-bottom:none">
       <div class="rec-timer" id="rec-timer">00:00:00</div>
       <div class="rec-status" id="rec-status-txt" style="color:var(--tm)">Bereit</div>
@@ -3785,17 +3838,26 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
       <button class="gpx-btn sec" id="rec-pause-btn" onclick="recPause()" style="display:none;flex:1">Pause</button>
       <button class="gpx-btn danger" id="rec-stop-btn" onclick="recStop()" style="display:none">Stop</button>
     </div>
+    <!-- Speichern-Bereich (nach Stop sichtbar) -->
     <div class="gpx-section" id="rec-save-section" style="display:none">
       <span class="gpx-label">Strecke speichern &amp; laden</span>
+      <!-- Zusammenfassung der Aufnahme -->
+      <div id="rec-summary" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;font-size:11px;color:var(--td);background:var(--s3);padding:8px 10px;border-radius:8px;line-height:1.7"></div>
       <div style="display:flex;flex-direction:column;gap:8px">
+        <!-- Name -->
         <div class="gpx-row">
           <input class="gpx-input" id="rec-name-inp" type="text" placeholder="Streckenname…">
         </div>
+        <!-- Kategorie -->
         <select class="gpx-select" id="rec-save-cat">
           <option value="beginner">🟢 Beginner</option>
           <option value="mittel" selected>🟡 Mittel</option>
           <option value="expert">🔴 Expert</option>
         </select>
+        <!-- Beschreibung / Notizen -->
+        <textarea class="gpx-input" id="rec-notes-inp" placeholder="Notizen zur Strecke (optional)…"
+          style="min-height:60px;resize:vertical;font-family:inherit;font-size:13px;line-height:1.4"></textarea>
+        <!-- Aktionen -->
         <button class="gpx-btn prim" onclick="recAddToMap()" style="width:100%;justify-content:center">
           ＋ In Karte laden &amp; anzeigen
         </button>
@@ -3819,11 +3881,27 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
   GPX Datei hier ablegen
 </div>
 <!-- TRACK QR MODAL -->
-<div id="trk-qrm" style="position:fixed;top:50%;left:50%;z-index:1100;transform:translate(-50%,-50%) scale(.88);background:var(--s1);border:1px solid var(--bd2);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.8);width:92%;max-width:340px;padding:20px;text-align:center;opacity:0;visibility:hidden;transition:all .25s cubic-bezier(.32,.72,0,1)">
+<div id="trk-qrm" style="position:fixed;top:50%;left:50%;z-index:1100;transform:translate(-50%,-50%) scale(.88);background:var(--s1);border:1px solid var(--bd2);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.8);width:92%;max-width:360px;padding:20px;text-align:center;opacity:0;visibility:hidden;transition:all .25s cubic-bezier(.32,.72,0,1)">
   <div style="font-family:var(--fh);font-size:17px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--tx);margin-bottom:2px" id="trk-qr-nm">Track</div>
   <div style="font-size:11px;color:var(--td);margin-bottom:12px" id="trk-qr-hint">GPX laden oder QR scannen</div>
-  <div style="width:180px;height:180px;margin:0 auto 12px;background:#fff;border-radius:12px;padding:8px;display:flex;align-items:center;justify-content:center">
-    <canvas id="trk-qr-canvas" width="164" height="164" style="display:block;border-radius:6px;image-rendering:pixelated;image-rendering:crisp-edges" aria-label="Track QR Code"></canvas>
+  <div style="width:228px;height:228px;margin:0 auto 10px;background:#fff;border-radius:12px;padding:8px;display:flex;align-items:center;justify-content:center">
+    <canvas id="trk-qr-canvas" width="212" height="212" style="display:block;border-radius:6px;image-rendering:pixelated;image-rendering:crisp-edges" aria-label="Track QR Code"></canvas>
+  </div>
+  <!-- Chunk-Navigation (nur bei Multi-QR sichtbar) -->
+  <div id="trk-qr-chunk-nav" style="display:none;margin-bottom:10px">
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:6px">
+      <button id="trk-qr-prev" onclick="trkQrPrevChunk()"
+        style="flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--bd2);background:var(--s2);color:var(--td);font-family:var(--fh);font-weight:700;font-size:12px;cursor:pointer">← Zurück</button>
+      <div style="text-align:center;min-width:64px">
+        <div style="font-family:var(--fh);font-weight:800;font-size:16px;color:var(--tx)" id="trk-qr-chunk-counter">1 / 1</div>
+        <div style="font-size:9px;color:var(--td);text-transform:uppercase;letter-spacing:.5px">QR-Code</div>
+      </div>
+      <button id="trk-qr-next" onclick="trkQrNextChunk()"
+        style="flex:1;padding:8px 4px;border-radius:8px;border:none;background:var(--ac);color:#000;font-family:var(--fh);font-weight:800;font-size:12px;cursor:pointer">Weiter →</button>
+    </div>
+    <!-- Fortschrittsbalken der Chunks -->
+    <div id="trk-qr-chunk-bar" style="display:flex;gap:3px;justify-content:center"></div>
+    <div style="font-size:10px;color:var(--td);margin-top:4px">Alle QR-Codes nacheinander scannen</div>
   </div>
   <div style="font-size:10px;color:var(--td);margin-bottom:12px;padding:8px;background:var(--s2);border-radius:8px;text-align:left;line-height:1.5" id="trk-qr-info"></div>
   <div style="display:flex;gap:8px;margin-bottom:8px">
@@ -3841,6 +3919,9 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
   </div>
 </div>
 <div id="toast"></div>
+<!-- Accessibility: ARIA live regions for screen reader announcements -->
+<div id="a11y-live-polite"    aria-live="polite"    aria-atomic="true" role="status"  class="sr-only"></div>
+<div id="a11y-live-assertive" aria-live="assertive" aria-atomic="true" role="alert"   class="sr-only"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
@@ -3861,7 +3942,7 @@ function escXml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt
 const LS = {
   K: { TRACKS:'gmtw_tracks_v2', RUNS:'gmtw_runs_v1', REC:'gmtw_rec_v2', VIEW:'gmtw_view_v1', THEME:'gmtw_theme',
        GPS_EMOJI:'gmtw_gps_emoji', HOME_REGION:'gmtw_home_region', INSTALL_DECLINE:'gmtw_install_decline',
-       CUSTOM_MARKERS:'gmtw_custom_markers_v1', PROFILE:'gmtw_profile_v1' },
+       CUSTOM_MARKERS:'gmtw_custom_markers_v1', PROFILE:'gmtw_profile_v1', A11Y:'gmtw_a11y_v1' },
   _ok: null,
 
   // Prüft ob localStorage verfügbar ist (Private Mode, iOS-Restrictions etc.)
@@ -3939,7 +4020,6 @@ const LOCS = [
   { id:"ein-mit",  name:"Einstieg Mittel",            lat:51.423421, lng:7.480829, color:"#f59e0b", emoji:"🟡", cat:"mittel",   desc:"Einstieg in die mittlere Strecke" },
   { id:"ziel-mit", name:"Ziel Mittel",                lat:51.419329, lng:7.511120, color:"#f59e0b", emoji:"🏆", cat:"mittel",   desc:"Ziel der mittleren Strecke — an der Ruhr" },
   // EXPERT
-  { id:"st-exp",   name:"Start Expert",               lat:51.418657, lng:7.477602, color:"#ef4444", emoji:"💀", cat:"expert",   desc:"Nur für erfahrene Fahrer!" },
   { id:"exp-zone", name:"Expert Zone",                lat:51.418692, lng:7.475410, color:"#ef4444", emoji:"⚠️", cat:"expert",   desc:"Hochanspruchsvolles Gelände" },
   { id:"exp-kurs", name:"Zerstörer",                  lat:51.416403, lng:7.453939, color:"#ef4444", emoji:"🎇", cat:"expert",   desc:"Links sehr schwer, rechts schwer" },
   // LOGISTIK
@@ -3950,6 +4030,8 @@ const LOCS = [
   { id:"sam-mit",  name:"Sammelpunkt Mittel",         lat:51.423371, lng:7.513606, color:"#f59e0b", emoji:"👥", cat:"logistik", desc:"Sammelpunkt — Auf dem Spielplatz" },
   { id:"sam-camp",  name:"Sammelpunkt → Camp",   lat:51.418164, lng:7.478552, color:"#38bdf8", emoji:"🔁", cat:"logistik", desc:"Treffpunkt für den Rückweg ins Camp" },
   { id:"wc",        name:"Dusche / WC",          lat:51.418808, lng:7.493754, color:"#a78bfa", emoji:"🚿", cat:"logistik", desc:"Sanitäreinrichtungen am Camp" },
+  // Rückweg ins Camp (Polyline + Mittelpunkt-Marker; standardmäßig ausgeblendet)
+  { id:"weg-camp",  name:"Weg zurück ins Camp",  lat:51.417784, lng:7.484588, color:"#f59e0b", emoji:"↩️", cat:"logistik", desc:"Rückweg vom Kurs zum Camp — ca. 1 km", line:true },
 ];
 
 const CATS = {
@@ -3961,7 +4043,7 @@ const CATS = {
 const WEG = [[51.418146,7.478490],[51.417422,7.490686]];
 
 // GPX Farben (spec-konform)
-const GPX_COLORS = { beginner:'#27AE60', mittel:'#D4A017', expert:'#8E44AD' };
+const GPX_COLORS = { beginner:'#27AE60', mittel:'#D4A017', expert:'#ef4444' };
 
 // ── KARTE ──────────────────────────────────────────────────────
 // Start-Koordinaten: Priorität: 1) gespeicherte View, 2) Home-Fokus, 3) Standard
@@ -4011,9 +4093,9 @@ map.on('moveend zoomend',()=>{
   LS.set(LS.K.VIEW,{lat:c.lat,lng:c.lng,zoom:map.getZoom()});
 });
 
-// Weg zurück
-L.polyline(WEG,{color:'#f59e0b',weight:3.5,dashArray:'8 10',lineCap:'round',opacity:.85})
-  .addTo(map).bindTooltip('Weg zurück ins Camp',{permanent:true,direction:'center',className:'path-lbl'});
+// Weg zurück ins Camp — standardmäßig NICHT auf der Karte, nur bei Logistik-Filter oder manuellem Toggle
+const _wegLayer = L.polyline(WEG,{color:'#f59e0b',weight:3.5,dashArray:'8 10',lineCap:'round',opacity:.85})
+  .bindTooltip('↩️ Weg zurück ins Camp',{permanent:false,direction:'center',className:'path-lbl'});
 
 // ── MARKER ─────────────────────────────────────────────────────
 const MKR={};
@@ -4026,8 +4108,11 @@ let _markerScale = Math.max(0.5, Math.min(2.0, parseFloat(LS.get('gmtw_marker_sc
 let _locsHidden   = new Set();
 let _locsOverrides= {};
 (function _initLocsState(){
-  try { const h = JSON.parse(localStorage.getItem('gmtw_locs_hidden') || '[]'); if(Array.isArray(h)) _locsHidden = new Set(h); } catch(e) {}
+  const rawHidden = localStorage.getItem('gmtw_locs_hidden');
+  try { const h = JSON.parse(rawHidden || '[]'); if(Array.isArray(h)) _locsHidden = new Set(h); } catch(e) {}
   try { _locsOverrides = JSON.parse(localStorage.getItem('gmtw_locs_overrides') || '{}'); } catch(e) {}
+  // 'weg-camp' standardmäßig ausgeblendet (neuer Marker — nur bei Logistik-Filter aktiv)
+  if (!rawHidden) _locsHidden.add('weg-camp');
 })();
 
 function _saveLocsState() {
@@ -4044,6 +4129,12 @@ function toggleLocsVisibility(id) {
     _locsHidden.add(id);
     if (MKR[id]) map.removeLayer(MKR[id].m);
     toast('🙈 Marker ausgeblendet');
+  }
+  // Weg-zurück-Layer mit weg-camp synchronisieren
+  if (id === 'weg-camp') {
+    const show = !_locsHidden.has('weg-camp');
+    if (show) { if (!map.hasLayer(_wegLayer)) _wegLayer.addTo(map); }
+    else      { if (map.hasLayer(_wegLayer))  map.removeLayer(_wegLayer); }
   }
   _saveLocsState();
   renderAllMarkersList();
@@ -4270,6 +4361,11 @@ function setFilter(f,el){
 
   // 4. POI-Liste aktualisieren
   buildList();
+
+  // 5. "Weg zurück ins Camp"-Layer: sichtbar wenn weg-camp LOCS-Marker sichtbar ist
+  const _showWeg = (f==='all'||f==='logistik') && !_locsHidden.has('weg-camp');
+  if (_showWeg) { if (!map.hasLayer(_wegLayer)) _wegLayer.addTo(map); }
+  else          { if (map.hasLayer(_wegLayer))  map.removeLayer(_wegLayer); }
 }
 
 function focusMarker(id){
@@ -4436,6 +4532,7 @@ function _onGpsPos(pos) {
     fab.style.borderWidth = '2px';
     if (_gpsAutoFollow) map.flyTo([lat,lng],17,{animate:true,duration:1});
     toast(`✅ Standort (±${Math.round(acc)}m)`);
+    speak(`GPS aktiv. Genauigkeit plus minus ${Math.round(acc)} Meter.`, false);
   }
 
   // Update user dot + accuracy circle
@@ -4467,6 +4564,7 @@ function _onGpsErr(err) {
   const msgs = {1:['Zugriff verweigert','Standortzugriff in Einstellungen erlauben.'],2:['Kein Signal','Ins Freie gehen oder WLAN aktivieren.'],3:['Zeitüberschreitung','GPS erneut versuchen.']};
   const [t,m] = msgs[err.code] || ['GPS Fehler',err.message];
   showGpsHint(t, m);
+  speak(`GPS Fehler: ${t}. ${m}`, true);
 }
 
 async function locateUser(){
@@ -4480,7 +4578,9 @@ async function locateUser(){
     if(userMkr){map.removeLayer(userMkr);userMkr=null}
     if(userAccCircle){map.removeLayer(userAccCircle);userAccCircle=null}
     gpsOn=false; _gpsAutoFollow=false; fab.classList.remove('spin'); fab.style.borderColor='';
-    toast('📍 GPS deaktiviert'); return;
+    toast('📍 GPS deaktiviert');
+    speak('GPS deaktiviert.', false);
+    return;
   }
   _gpsAutoFollow = true;
   fab.classList.add('spin'); toast('📡 GPS wird aktiviert…');
@@ -4507,7 +4607,371 @@ function hideGpsHint(){document.getElementById('gpshint').classList.remove('show
 
 // ── TOAST ──────────────────────────────────────────────────────
 let toastT;
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2700);}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),2700);
+  _ariaAnnounce(msg,'polite');
+  speak(msg, false); // TTS (nur wenn aktiviert)
+}
+
+// ══════════════════════════════════════════════════════════════
+// ── ACCESSIBILITY ENGINE (A11Y) ────────────────────────────────
+// Barrierefreiheit: TTS (Web Speech API), ARIA-Live-Regionen,
+// Tastaturnavigation, High-Contrast, Kartenvorlesung
+// ──────────────────────────────────────────────────────────────
+
+// Globaler A11Y-State (geladen aus localStorage via LS.K.A11Y)
+let _a11y = {
+  enabled:    false,  // TTS aktiv
+  rate:       1.0,    // Sprechrate 0.5–2.0
+  hc:         false,  // High-Contrast-Modus
+  autoAnnounce: true, // Toast / Tab-Wechsel automatisch vorlesen
+};
+
+/** Persistiert aktuelle A11Y-Einstellungen in localStorage */
+function _saveA11ySettings() {
+  LS.set(LS.K.A11Y, _a11y);
+  // High-Contrast auf <html> data-Attribut setzen
+  if (_a11y.hc) document.documentElement.setAttribute('data-a11y-hc','');
+  else           document.documentElement.removeAttribute('data-a11y-hc');
+}
+
+/** Lädt A11Y-Einstellungen beim App-Start */
+function _loadA11ySettings() {
+  const saved = LS.get(LS.K.A11Y, null);
+  if (saved && typeof saved === 'object') {
+    _a11y = { ..._a11y, ...saved };
+  }
+  // High-Contrast immer anwenden (auch ohne TTS)
+  if (_a11y.hc) document.documentElement.setAttribute('data-a11y-hc','');
+  // Speaker-FAB sichtbar wenn TTS aktiv
+  if (_a11y.enabled) document.documentElement.setAttribute('data-a11y-on','');
+  // Keyboard-Shortcuts immer initialisieren
+  _initKeyboardShortcuts();
+  // TTS-Stimmen vorladen (vermeidet Stille beim ersten speak()-Aufruf)
+  if (window.speechSynthesis) {
+    _ttsVoices = speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged = () => { _ttsVoices = speechSynthesis.getVoices(); };
+  }
+}
+
+// ── Text-to-Speech (TTS) ────────────────────────────────────────
+let _ttsQueue    = [];
+let _ttsSpeaking = false;
+let _ttsVoices   = [];          // Gecachte Stimmen (laden ist async in Chrome)
+let _ttsKeepalive = null;       // Chrome 15s-Timeout-Fix: periodisches resume()
+
+// Stimmen vorab laden (wird auch in _loadA11ySettings() gesetzt)
+if (window.speechSynthesis) {
+  _ttsVoices = speechSynthesis.getVoices();
+  speechSynthesis.onvoiceschanged = () => { _ttsVoices = speechSynthesis.getVoices(); };
+}
+
+/** Bereinigt Text für TTS: entfernt Emojis und HTML-Tags */
+function _cleanForSpeech(txt) {
+  if (!txt) return '';
+  return txt
+    .replace(/<[^>]*>/g,'')               // HTML-Tags
+    .replace(/[\u{1F300}-\u{1FFFF}]/gu,'') // Emojis (Unicode-Bereiche)
+    .replace(/[✅❌⚠⏳📍📦📲🔒💾📊📂⬇⬆←→↗🗑✓·↩]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+/**
+ * Spricht Text per TTS (Web Speech API), nur wenn A11Y aktiviert.
+ * @param {string} text  Zu sprechender Text
+ * @param {boolean} [interrupt=false]  Aktuell laufende Sprachausgabe unterbrechen
+ */
+function speak(text, interrupt = false) {
+  if (!_a11y.enabled) return;
+  if (!window.speechSynthesis) return;
+  const clean = _cleanForSpeech(text);
+  if (!clean) return;
+  if (interrupt) {
+    window.speechSynthesis.cancel();
+    _ttsQueue = [];
+    _ttsSpeaking = false;
+    clearInterval(_ttsKeepalive); _ttsKeepalive = null;
+  }
+  _ttsQueue.push(clean);
+  if (!_ttsSpeaking) _ttsFlush();
+}
+
+function _ttsFlush() {
+  if (_ttsQueue.length === 0) {
+    _ttsSpeaking = false;
+    clearInterval(_ttsKeepalive); _ttsKeepalive = null;
+    return;
+  }
+  _ttsSpeaking = true;
+  // Chrome 15s-Timeout-Workaround: speechSynthesis jede 10s aufwecken
+  if (!_ttsKeepalive) {
+    _ttsKeepalive = setInterval(() => {
+      if (!window.speechSynthesis) return;
+      if (speechSynthesis.paused) speechSynthesis.resume();
+    }, 10000);
+  }
+  const utt = new SpeechSynthesisUtterance(_ttsQueue.shift());
+  utt.lang  = 'de-DE';
+  utt.rate  = _a11y.rate;
+  utt.pitch = 1.0;
+  utt.onend = () => _ttsFlush();
+  utt.onerror = (e) => {
+    // 'canceled' ist kein echter Fehler (passiert beim interrupt)
+    if (e.error !== 'canceled') console.warn('[TTS] error:', e.error);
+    _ttsSpeaking = false;
+    clearInterval(_ttsKeepalive); _ttsKeepalive = null;
+    _ttsFlush(); // weiter mit nächstem in der Queue
+  };
+  // Deutschen Voice bevorzugen (gecacht, kein getVoices()-Aufruf)
+  const deVoice = _ttsVoices.find(v => v.lang.startsWith('de'));
+  if (deVoice) utt.voice = deVoice;
+  window.speechSynthesis.speak(utt);
+}
+
+/** Stoppt laufende TTS sofort */
+function speakStop() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  _ttsQueue    = [];
+  _ttsSpeaking = false;
+  clearInterval(_ttsKeepalive); _ttsKeepalive = null;
+}
+
+// ── ARIA Live-Regionen ──────────────────────────────────────────
+let _ariaPoliteTimer = null;
+/**
+ * Aktualisiert ARIA Live-Region für Screen Reader.
+ * @param {string} msg   Nachricht
+ * @param {'polite'|'assertive'} [priority='polite']
+ */
+function _ariaAnnounce(msg, priority = 'polite') {
+  const id = priority === 'assertive' ? 'a11y-live-assertive' : 'a11y-live-polite';
+  const el = document.getElementById(id);
+  if (!el) return;
+  // Kurz leeren damit Screen Reader auch gleiche Nachricht erneut ankündigt
+  el.textContent = '';
+  clearTimeout(_ariaPoliteTimer);
+  _ariaPoliteTimer = setTimeout(() => { el.textContent = _cleanForSpeech(msg); }, 80);
+}
+
+// ── Kartenüberblick vorlesen ────────────────────────────────────
+/** Liest den sichtbaren Karteninhalt vor: Tracks, Marker, Zoom */
+function speakMapOverview() {
+  if (!map) { speak('Karte noch nicht geladen.', true); return; }
+  const zoom  = map.getZoom();
+  const ctr   = map.getCenter();
+  const parts = [];
+  parts.push(`Karte, Zoom-Stufe ${zoom}.`);
+
+  // Sichtbare Strecken
+  const visTracks = trackStore.tracks.filter(t => t.gpxLayer && map.hasLayer(t.gpxLayer));
+  if (visTracks.length === 0) {
+    parts.push('Keine Strecken geladen.');
+  } else {
+    parts.push(`${visTracks.length} Strecke${visTracks.length>1?'n':''} sichtbar: ${visTracks.map(t=>t.name).join(', ')}.`);
+  }
+
+  // Eigene Marker
+  const cmCount = Object.keys(_cmLeafletLayers || {}).length;
+  if (cmCount > 0) parts.push(`${cmCount} eigene Marker auf der Karte.`);
+
+  // GPS Position
+  if (window._gpsMarker && window._gpsMarker.getLatLng) {
+    const gpos = window._gpsMarker.getLatLng();
+    const dist = ctr.distanceTo(gpos);
+    parts.push(`GPS-Position ${Math.round(dist)} Meter vom Kartenmittelpunkt entfernt.`);
+  } else {
+    parts.push('GPS nicht aktiv.');
+  }
+
+  speak(parts.join(' '), true);
+  _ariaAnnounce(parts.join(' '));
+}
+
+/** Sucht den nächsten Streckenpunkt oder Marker und liest ihn vor */
+function speakNearestPoint() {
+  if (!map) return;
+  const ctr = map.getCenter();
+  let best = null, bestD = Infinity;
+
+  // Streckenpunkte (Start/Ziel)
+  trackStore.tracks.forEach(t => {
+    if (!t.gpxLayer || !map.hasLayer(t.gpxLayer)) return;
+    if (t._startMkr) {
+      const d = ctr.distanceTo(t._startMkr.getLatLng());
+      if (d < bestD) { bestD = d; best = { type:'Start', name: t.name, d }; }
+    }
+    if (t._finishMkr) {
+      const d = ctr.distanceTo(t._finishMkr.getLatLng());
+      if (d < bestD) { bestD = d; best = { type:'Ziel', name: t.name, d }; }
+    }
+  });
+
+  // Eigene Marker
+  (_cmCache || []).forEach(cm => {
+    const d = ctr.distanceTo(L.latLng(cm.lat, cm.lng));
+    if (d < bestD) { bestD = d; best = { type:'Marker', name: cm.name, d }; }
+  });
+
+  // LOCS-Marker
+  (window.LOCS || []).forEach(loc => {
+    if (!MKR[loc.id]) return;
+    const d = ctr.distanceTo(MKR[loc.id].m.getLatLng());
+    if (d < bestD) { bestD = d; best = { type: loc.cat||'Punkt', name: loc.name, d }; }
+  });
+
+  let msg;
+  if (!best) {
+    msg = 'Kein Punkt in der Nähe gefunden.';
+  } else {
+    const dm = Math.round(best.d);
+    const unit = dm >= 1000 ? `${(dm/1000).toFixed(1)} Kilometer` : `${dm} Meter`;
+    msg = `Nächster Punkt: ${best.type} "${best.name}", ${unit} entfernt.`;
+  }
+  speak(msg, true);
+  _ariaAnnounce(msg);
+  toast('📢 ' + msg);
+}
+
+// ── Tastaturnavigation ──────────────────────────────────────────
+function _initKeyboardShortcuts() {
+  document.removeEventListener('keydown', _handleA11yKey);
+  document.addEventListener('keydown', _handleA11yKey);
+}
+
+function _handleA11yKey(e) {
+  // Kein Shortcut wenn ein Input-Feld oder Textarea fokussiert ist
+  const tag = document.activeElement ? document.activeElement.tagName : '';
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  if (document.activeElement && document.activeElement.isContentEditable) return;
+
+  switch(e.key) {
+    case 'v': case 'V':
+      e.preventDefault();
+      speakMapOverview();
+      break;
+    case 'n': case 'N':
+      e.preventDefault();
+      speakNearestPoint();
+      break;
+    case 's': case 'S':
+      // Nur wenn Settings nicht schon offen
+      if (!document.getElementById('settings-panel').classList.contains('open')) {
+        e.preventDefault();
+        openSettings();
+      }
+      break;
+    case 'g': case 'G':
+      e.preventDefault();
+      if (typeof startGps === 'function') startGps();
+      break;
+    case 'Escape':
+      // Schließt offene Overlays in Priorität
+      if (document.getElementById('settings-panel').classList.contains('open')) {
+        e.preventDefault(); closeSettings(); return;
+      }
+      if (document.getElementById('qrm') && document.getElementById('qrm').classList.contains('show')) {
+        e.preventDefault(); closeQrModal(); return;
+      }
+      break;
+  }
+}
+
+// A11Y-Einstellungen im Settings-Panel aktualisieren (UI ↔ State)
+function _applyA11yUi() {
+  const chk = document.getElementById('a11y-enabled');
+  const rng = document.getElementById('a11y-rate');
+  const hcc = document.getElementById('a11y-hc');
+  const rngVal = document.getElementById('a11y-rate-val');
+  if (chk)    chk.checked = _a11y.enabled;
+  if (rng)    rng.value   = _a11y.rate;
+  if (hcc)    hcc.checked = _a11y.hc;
+  if (rngVal) rngVal.textContent = _a11y.rate.toFixed(1) + '×';
+  // data-a11y-on auf <html> steuert Sichtbarkeit des Speaker-FAB
+  if (_a11y.enabled) document.documentElement.setAttribute('data-a11y-on','');
+  else               document.documentElement.removeAttribute('data-a11y-on');
+}
+
+function onA11yToggle(val) {
+  _a11y.enabled = !!val;
+  _saveA11ySettings();
+  // Speaker-FAB sofort anzeigen/verstecken
+  if (_a11y.enabled) {
+    document.documentElement.setAttribute('data-a11y-on','');
+    speak('Vorlesefunktion aktiviert.', true);
+  } else {
+    document.documentElement.removeAttribute('data-a11y-on');
+    speakStop();
+  }
+}
+function onA11yRate(val) {
+  _a11y.rate = parseFloat(val) || 1.0;
+  _saveA11ySettings();
+  speak('Sprechrate ' + _a11y.rate.toFixed(1), false);
+}
+function onA11yHc(val) {
+  _a11y.hc = !!val;
+  _saveA11ySettings();
+  toast(_a11y.hc ? '🔆 Hoher Kontrast aktiviert' : '🔅 Hoher Kontrast deaktiviert');
+}
+
+// ── Kontextbewusstes Vorlesen (Speaker-FAB + Shortcut V) ────────
+function speakCurrentContext() {
+  // 1. Settings-Panel offen?
+  const sp = document.getElementById('settings-panel');
+  if (sp && sp.classList.contains('open')) {
+    const active = document.querySelector('.sp-tab.active');
+    const tabName = active ? active.dataset.t : 'general';
+    _speakSettingsTab(tabName);
+    return;
+  }
+  // 2. Race-Overlay offen?
+  const ro = document.getElementById('race-overlay');
+  if (ro && ro.classList.contains('show')) {
+    const timerEl = document.getElementById('race-timer-display') || document.getElementById('r-time');
+    const posEl   = document.getElementById('r-pos');
+    const timer   = timerEl ? timerEl.textContent : '?';
+    const pos     = posEl   ? posEl.textContent   : '';
+    speak(`Rennen läuft. Zeit: ${timer}. ${pos}`, true);
+    return;
+  }
+  // 3. GPX-Sheet (Aufnahme/Strecken) offen?
+  const gs = document.getElementById('gpx-sheet');
+  if (gs && (gs.style.transform === 'translateY(0px)' || gs.classList.contains('open'))) {
+    const activeTab = document.querySelector('.gpx-tab.active');
+    const tabLbl = activeTab ? activeTab.textContent.trim() : 'GPX';
+    speak(`GPX-Panel offen: ${tabLbl}.`, true);
+    return;
+  }
+  // 4. QR-Modal offen?
+  const qrm = document.getElementById('qrm');
+  if (qrm && qrm.classList.contains('show')) {
+    const nm = document.getElementById('qrm-name');
+    speak(nm ? `QR-Code: ${nm.textContent}` : 'QR-Code anzeigen.', true);
+    return;
+  }
+  // 5. Standard: Karte vorlesen
+  speakMapOverview();
+}
+
+function _speakSettingsTab(tabName) {
+  const labels = {
+    general:  'Allgemein — GPS-Emoji, Home-Position, Barrierefreiheit, Einstellungen speichern.',
+    tracks:   'Strecken — geladene GPX-Strecken verwalten, teilen und löschen.',
+    backup:   'Backup — Alle Daten exportieren oder importieren.',
+    markers:  'Marker — eigene Punkte und Kartenmarker bearbeiten.',
+    qr:       'QR-Scanner — QR-Codes scannen für Strecken und Marker.',
+    app:      'App-Installation — App als PWA installieren und Offline-Cache verwalten.',
+    profile:  'Fahrerprofil — Name, Muni-Daten und persönliche Angaben.',
+  };
+  const tracks = trackStore.tracks.map(t=>t.name).join(', ') || 'Keine Strecken geladen';
+  const extra = tabName === 'tracks' ? ` Geladen: ${tracks}` : '';
+  speak((labels[tabName] || tabName) + extra, true);
+}
 
 // ── AUTO-DOWNLOAD: GMTW 2026 TRACKS ───────────────────────────
 // Offizielle Quelle: Munimap GitHub Repository (RAW-Links)
@@ -4657,6 +5121,8 @@ window.addEventListener('load', async ()=>{
   _initRunCache();
   // Eigene Custom-Marker laden und rendern
   _loadAndRenderCustomMarkers();
+  // A11Y-Einstellungen laden (High-Contrast, TTS-State, Keyboard-Shortcuts)
+  _loadA11ySettings();
   // iOS PWA-Hinweis prüfen
   _checkIosInstall();
 });
@@ -5270,76 +5736,397 @@ function showElevProfile(id){
   document.getElementById('elev-dist').textContent=t.stats.dist;
 }
 
-// ── TRACK QR-CODE ──────────────────────────────────────────────
-let curTrkQrId=null;
+// ═══════════════════════════════════════════════════════════════
+// TRACK QR-CODE — Chunked Compressed Offline Transfer v2
+// Architektur: Delta-Encode → pako DEFLATE → Base64url → Chunks
+// Format:  {v:1, T:'gmtw-chunk', id, i, n, z, d}
+//   z=1 → pako DEFLATE   z=0 → plain UTF-8 base64url (pako-Fallback)
+//   d   → Datenchunk (base64url)
+// Payload: {v:1, type:'gmtw-track', n, c, ts?, he?, ht?, p:[...]}
+//   p    → delta-codierte Punkte [[lat_e5,lon_e5,ele_dm?,t_s?],...]
+// ═══════════════════════════════════════════════════════════════
+let curTrkQrId = null;
+let _qrChunks  = [];  // Sender: aktuelle Chunks
+let _qrChunkIdx = 0;  // Sender: Index des angezeigten Chunks
 
-function openTrackQR(trackId){
-  const t=trackStore.tracks.find(t=>t.id===trackId);if(!t){toast('❌ Track nicht gefunden');return;}
-  curTrkQrId=trackId;
-  document.getElementById('trk-qr-nm').textContent=t.name;
+// ── Konstanten ─────────────────────────────────────────────────
+const _QR_CHUNK_SIZE = 1100; // chars/Chunk → QR-Version ~25–28, sicher scannbar
+const _QR_MAX_PTS    = 1000; // Max Punkte nach RDP-Vereinfachung
 
-  // GPX-Inhalt gewinnen
-  extractGpxFromLayer(t).then(gpxStr=>{
-    const gpxBytes=new Blob([gpxStr]).size;
-    const catLabel=t.cat.charAt(0).toUpperCase()+t.cat.slice(1);
-    document.getElementById('trk-qr-info').innerHTML=`<strong>${escHtml(t.name)}</strong><br>${escHtml(catLabel)} · ${t.stats.dist} km · ${Math.round(gpxBytes/1024)} KB`;
+// ── GPX-Punkte parsen ──────────────────────────────────────────
+// Gibt Array von {lat, lon, ele, time, _hasEle, _hasTime} zurück
+function _parseGpxPoints(gpxStr) {
+  try {
+    const doc = new DOMParser().parseFromString(gpxStr, 'text/xml');
+    // DOMParser liefert parseerror-Element bei fehlerhaftem XML
+    if (doc.querySelector('parsererror')) return [];
+    const pts = [];
+    doc.querySelectorAll('trkpt, rtept').forEach(pt => {
+      const lat = parseFloat(pt.getAttribute('lat'));
+      const lon = parseFloat(pt.getAttribute('lon'));
+      if (!isFinite(lat) || !isFinite(lon)) return;
+      const eleEl  = pt.querySelector('ele');
+      const timeEl = pt.querySelector('time');
+      const ele    = eleEl  ? (parseFloat(eleEl.textContent)  || 0) : 0;
+      const tRaw   = timeEl ? timeEl.textContent.trim() : '';
+      const tMs    = tRaw   ? (new Date(tRaw).getTime() || 0)       : 0;
+      pts.push({ lat, lon, ele, time: tMs, _hasEle: !!eleEl, _hasTime: tMs > 0 });
+    });
+    return pts;
+  } catch(e) { return []; }
+}
 
-    // QR-Strategie: URL > Data-URI (klein) > Google Maps Start/Ziel
-    let qrData,hintText;
-    if(t.sourceUrl&&!t.sourceUrl.startsWith('blob:')){
-      qrData=t.sourceUrl;
-      hintText='QR scannen → GPX-URL öffnen';
-    } else if(gpxBytes<=2800){
-      const b64=btoa(unescape(encodeURIComponent(gpxStr)));
-      qrData=`data:application/gpx+xml;base64,${b64}`;
-      hintText='QR scannen → GPX direkt laden';
+// ── Ramer-Douglas-Peucker (iterativ via Stack → kein Stack-Overflow) ──
+function _rdpPerp(pt, a, b) {
+  const dx = b.lon - a.lon, dy = b.lat - a.lat;
+  if (!dx && !dy) return Math.hypot(pt.lon - a.lon, pt.lat - a.lat);
+  const t = Math.max(0, Math.min(1, ((pt.lon-a.lon)*dx + (pt.lat-a.lat)*dy) / (dx*dx+dy*dy)));
+  return Math.hypot(pt.lon - a.lon - t*dx, pt.lat - a.lat - t*dy);
+}
+function _rdpIter(pts, eps) {
+  if (pts.length <= 2) return pts.slice();
+  const keep = new Uint8Array(pts.length); // 0 = wegwerfen, 1 = behalten
+  keep[0] = keep[pts.length - 1] = 1;
+  const stack = [[0, pts.length - 1]];  // [start, end] Paare
+  while (stack.length) {
+    const [s, e] = stack.pop();
+    let maxD = 0, idx = s;
+    for (let k = s + 1; k < e; k++) {
+      const d = _rdpPerp(pts[k], pts[s], pts[e]);
+      if (d > maxD) { maxD = d; idx = k; }
+    }
+    if (maxD > eps) {
+      keep[idx] = 1;
+      if (idx - s > 1) stack.push([s, idx]);
+      if (e - idx > 1) stack.push([idx, e]);
+    }
+  }
+  return pts.filter((_, i) => keep[i]);
+}
+function _simplifyPoints(pts, maxPts) {
+  if (pts.length <= maxPts) return pts;
+  // Vorab-Sampling für sehr große Tracks (>8000 Punkte)
+  let work = pts;
+  if (pts.length > 8000) {
+    const step = pts.length / 5000;
+    const s = [pts[0]];
+    for (let i = step; i < pts.length - 1; i += step) s.push(pts[Math.round(i)]);
+    s.push(pts[pts.length - 1]);
+    work = s;
+  }
+  // Binäre Suche auf optimalem Epsilon — 18 Schritte → Genauigkeit 1:2^18
+  let lo = 1e-8, hi = 2.0, best = work;
+  for (let it = 0; it < 18; it++) {
+    const mid = (lo + hi) / 2;
+    const r   = _rdpIter(work, mid);
+    if (r.length > maxPts) lo = mid;
+    else { hi = mid; best = r; }
+  }
+  // Sicherheitsnetz: wenn best leer (nur Start+Ende), gib mindestens die zurück
+  return best.length >= 2 ? best : [pts[0], pts[pts.length - 1]];
+}
+
+// ── Kompaktes Track-Format: Encode ────────────────────────────
+function _encodeTrackCompact(track, pts) {
+  if (!pts.length) return { v:1, type:'gmtw-track', n:track.name, c:track.cat, p:[] };
+  // Flags auf Basis der tatsächlich vorhandenen Daten entscheiden
+  const hasEle  = pts.some(p => p._hasEle);
+  const hasTime = pts.some(p => p._hasTime);
+  const t0 = hasTime ? (pts.find(p => p._hasTime) || pts[0]).time : 0;
+
+  let pLat=0, pLon=0, pEle=0, pT=0;
+  const p = pts.map((pt, i) => {
+    const la = Math.round(pt.lat * 1e5);
+    const lo = Math.round(pt.lon * 1e5);
+    const el = Math.round(pt.ele * 10);        // Dezimeter
+    const ts = pt._hasTime ? Math.round((pt.time - t0) / 1000) : 0; // Sekunden
+    let row;
+    if (i === 0) {
+      row = hasEle ? (hasTime ? [la,lo,el,ts] : [la,lo,el]) : [la,lo];
+      pLat=la; pLon=lo; pEle=el; pT=ts;
     } else {
-      const pts=extractWaypoints(t);
-      qrData=`https://www.google.com/maps/dir/?api=1&origin=${pts.start}&destination=${pts.end}&travelmode=bicycling`;
-      hintText='QR = Start/Ziel in Google Maps (GPX zu groß)';
-      document.getElementById('trk-qr-info').innerHTML+=`<br><span style="color:var(--mit);font-size:10px">⚠ GPX ${Math.round(gpxBytes/1024)} KB – zeigt Start/Ziel</span>`;
+      const dl=la-pLat, dn=lo-pLon, de=el-pEle, dt=ts-pT;
+      row = hasEle ? (hasTime ? [dl,dn,de,dt] : [dl,dn,de]) : [dl,dn];
+      pLat=la; pLon=lo; pEle=el; pT=ts;
+    }
+    return row;
+  });
+
+  const payload = { v:1, type:'gmtw-track', n:track.name, c:track.cat, p };
+  if (hasEle)  payload.he = 1;
+  if (hasTime) { payload.ht = 1; payload.ts = new Date(t0).toISOString(); }
+  return payload;
+}
+
+// ── Kompaktes Track-Format: Decode → GPX/1.1-XML ──────────────
+// Gibt Standard-GPX zurück, der sanitizeGpx() + L.GPX-Parser besteht
+function _decodeTrackCompactToGpx(payload) {
+  if (!payload || !Array.isArray(payload.p)) return null;
+  const pts = payload.p;
+  if (!pts.length) return null;
+
+  const name    = String(payload.n || 'Importierter Track').slice(0, 200);
+  const cat     = String(payload.c || 'mittel');
+  const hasEle  = !!payload.he;
+  const hasTime = !!payload.ht;
+  // Startzeit: ISO-String aus payload.ts oder aktuelle Zeit (für Elevationsberechnung nicht relevant)
+  const t0Ms = (hasTime && payload.ts)
+    ? (new Date(payload.ts).getTime() || Date.now()) : 0;
+
+  let aLat=0, aLon=0, aEle=0, aT=0;
+  const trkptLines = [];
+  let valid = 0;
+
+  for (let i = 0; i < pts.length; i++) {
+    const row = pts[i];
+    if (!Array.isArray(row) || row.length < 2) continue;
+    if (i === 0) {
+      aLat = row[0]; aLon = row[1];
+      aEle = hasEle  ? (row[2] || 0) : 0;
+      aT   = hasTime ? (row[hasEle ? 3 : 2] || 0) : 0;
+    } else {
+      aLat += row[0]; aLon += row[1];
+      aEle += hasEle  ? (row[2] || 0) : 0;
+      aT   += hasTime ? (row[hasEle ? 3 : 2] || 0) : 0;
+    }
+    const lat = aLat / 1e5;
+    const lon = aLon / 1e5;
+    // Sanity-Check: lat ∈ [-90,90], lon ∈ [-180,180]
+    if (lat < -90 || lat > 90 || lon < -180 || lon > 180) continue;
+    const latS = lat.toFixed(7);
+    const lonS = lon.toFixed(7);
+    const inner = [];
+    if (hasEle)  inner.push(`      <ele>${(aEle / 10).toFixed(1)}</ele>`);
+    if (hasTime) inner.push(`      <time>${new Date(t0Ms + aT * 1000).toISOString()}</time>`);
+    trkptLines.push(
+      `    <trkpt lat="${latS}" lon="${lonS}">`
+      + (inner.length ? '\n' + inner.join('\n') + '\n    ' : '')
+      + '</trkpt>'
+    );
+    valid++;
+  }
+
+  if (valid === 0) return null;
+
+  return `<?xml version="1.0" encoding="UTF-8"?>\n`
+    + `<gpx version="1.1" creator="GMTW Trail Map v2"\n`
+    + `     xmlns="http://www.topografix.com/GPX/1/1"\n`
+    + `     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n`
+    + `     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">\n`
+    + `  <metadata><name>${escXml(name)}</name></metadata>\n`
+    + `  <trk>\n`
+    + `    <name>${escXml(name)}</name>\n`
+    + `    <desc>Kat: ${escXml(cat)} · QR-Import GMTW</desc>\n`
+    + `    <trkseg>\n`
+    + trkptLines.join('\n') + '\n'
+    + `    </trkseg>\n`
+    + `  </trk>\n`
+    + `</gpx>`;
+}
+
+// ── Base64url encode/decode ────────────────────────────────────
+function _b64uEncode(u8) {
+  // Uint8Array → base64url (URL-safe, kein Padding)
+  let s = '';
+  for (let i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i]);
+  return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function _b64uDecode(str) {
+  // base64url → Uint8Array
+  const s   = (str + '==='.slice((str.length + 3) & 3)).replace(/-/g,'+').replace(/_/g,'/');
+  const raw = atob(s);
+  const u8  = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) u8[i] = raw.charCodeAt(i);
+  return u8;
+}
+
+// ── Fallback: Punkte aus Leaflet-Layer extrahieren ────────────
+function _ptsFromLayer(track) {
+  const pts = [];
+  try {
+    track.gpxLayer.eachLayer(layer => {
+      if (!layer.getLatLngs) return;
+      const lls = layer.getLatLngs();
+      const flat = (lls.length && Array.isArray(lls[0])) ? lls.flat() : lls;
+      flat.forEach(ll => {
+        if (typeof ll.lat === 'number' && typeof ll.lng === 'number')
+          pts.push({ lat: ll.lat, lon: ll.lng, ele: ll.alt || 0, time: 0, _hasEle: !!ll.alt, _hasTime: false });
+      });
+    });
+  } catch(e) { console.warn('_ptsFromLayer:', e); }
+  return pts;
+}
+
+// ── Track zu QR-Chunks aufbereiten (Sender) ───────────────────
+async function _buildTrackQrChunks(track, gpxStr) {
+  // 1. Punkte gewinnen
+  let rawPts = _parseGpxPoints(gpxStr);
+  if (!rawPts.length) rawPts = _ptsFromLayer(track); // Layer-Fallback
+  if (!rawPts.length) throw new Error('Keine GPS-Punkte gefunden');
+
+  // 2. RDP-Vereinfachung
+  const simplified = _simplifyPoints(rawPts, _QR_MAX_PTS);
+
+  // 3. Kompaktes Format
+  const payload = _encodeTrackCompact(track, simplified);
+  const jsonStr = JSON.stringify(payload);
+
+  // 4. Komprimierung: pako DEFLATE Level 9 → Base64url
+  let compressed, z;
+  if (window.pako) {
+    try {
+      compressed = _b64uEncode(pako.deflate(jsonStr, { level: 9 }));
+      z = 1; // pako DEFLATE
+    } catch(e) { /* Fallback unten */ }
+  }
+  if (!compressed) {
+    // Fallback: plain UTF-8 base64url (kein pako)
+    const bytes = new TextEncoder().encode(jsonStr);
+    compressed = _b64uEncode(bytes);
+    z = 0; // kein DEFLATE
+  }
+
+  // 5. In Chunks splitten
+  const n   = Math.ceil(compressed.length / _QR_CHUNK_SIZE);
+  const id  = Math.random().toString(36).slice(2, 9); // 7-Zeichen-ID
+  const chunks = [];
+  for (let i = 0; i < n; i++) {
+    const d = compressed.slice(i * _QR_CHUNK_SIZE, (i + 1) * _QR_CHUNK_SIZE);
+    // z-Flag im Chunk → Receiver weiß ob pako.inflate nötig
+    chunks.push(JSON.stringify({ v:1, T:'gmtw-chunk', id, i, n, z, d }));
+  }
+
+  return { chunks, rawPts, pts: simplified, compressed, jsonStr, z };
+}
+
+// ── Sender: QR-Chunk zeichnen + UI aktualisieren ──────────────
+function _drawQrChunk(idx) {
+  _qrChunkIdx = idx;
+  const canvas = document.getElementById('trk-qr-canvas');
+  drawQR(canvas, _qrChunks[idx], 212, '#0b0e14', '#ffffff');
+  // Counter
+  const ctr = document.getElementById('trk-qr-chunk-counter');
+  if (ctr) ctr.textContent = `${idx + 1} / ${_qrChunks.length}`;
+  // Segment-Fortschrittsbalken (welcher ist aktiv)
+  const bar = document.getElementById('trk-qr-chunk-bar');
+  if (bar) bar.innerHTML = _qrChunks.map((_, j) =>
+    `<div style="flex:1;height:4px;border-radius:2px;background:${
+      j === idx ? 'var(--ac)' : j < idx ? 'rgba(200,255,0,.45)' : 'var(--bd2)'
+    }"></div>`
+  ).join('');
+  // Navigations-Buttons
+  const prev = document.getElementById('trk-qr-prev');
+  const next = document.getElementById('trk-qr-next');
+  if (prev) prev.disabled = idx === 0;
+  if (next) {
+    const last = idx === _qrChunks.length - 1;
+    next.disabled = last;
+    next.textContent = last ? '✅ Fertig' : 'Weiter →';
+    next.style.background = last ? 'var(--s3)' : 'var(--ac)';
+  }
+}
+function trkQrPrevChunk() { if (_qrChunkIdx > 0) _drawQrChunk(_qrChunkIdx - 1); }
+function trkQrNextChunk() { if (_qrChunkIdx < _qrChunks.length - 1) _drawQrChunk(_qrChunkIdx + 1); }
+
+// ── Modal öffnen (intern, nach Chunk-Berechnung) ──────────────
+function _openTrkQrModal(gpxStr, track) {
+  const dlBtn = document.getElementById('trk-qr-dl-btn');
+  if (dlBtn) { dlBtn.dataset.gpx = gpxStr; dlBtn.dataset.name = track.name; }
+  closeAll();
+  _updateTrkQrShareBtn();
+  const m = document.getElementById('trk-qrm');
+  m.style.opacity = '0'; m.style.visibility = 'visible';
+  m.style.transform = 'translate(-50%,-50%) scale(.88)';
+  requestAnimationFrame(() => {
+    m.style.transition = 'all .25s cubic-bezier(.32,.72,0,1)';
+    m.style.opacity    = '1';
+    m.style.transform  = 'translate(-50%,-50%) scale(1)';
+  });
+  document.getElementById('backdrop').classList.add('show');
+}
+
+// ── Hauptfunktion: Track-QR öffnen ────────────────────────────
+function openTrackQR(trackId) {
+  const t = trackStore.tracks.find(tr => tr.id === trackId);
+  if (!t) { toast('❌ Track nicht gefunden'); return; }
+  curTrkQrId = trackId;
+  document.getElementById('trk-qr-nm').textContent = t.name;
+  const catLabel = t.cat.charAt(0).toUpperCase() + t.cat.slice(1);
+  // Vorläufige Info (wird nach Komprimierung aktualisiert)
+  document.getElementById('trk-qr-info').innerHTML =
+    `<strong>${escHtml(t.name)}</strong><br>${escHtml(catLabel)} · ${t.stats.dist} km<br>`
+    + `<span style="color:var(--td);font-size:10px">⏳ QR wird erstellt…</span>`;
+
+  extractGpxFromLayer(t).then(async gpxStr => {
+    const gpxKB = Math.round(new Blob([gpxStr]).size / 1024);
+
+    // ── Strategie 1: Online-URL → einfacher URL-QR ────────────
+    if (t.sourceUrl && !t.sourceUrl.startsWith('blob:')) {
+      _qrChunks = [t.sourceUrl]; _qrChunkIdx = 0;
+      document.getElementById('trk-qr-hint').textContent = 'QR scannen → GPX-URL laden';
+      document.getElementById('trk-qr-chunk-nav').style.display = 'none';
+      document.getElementById('trk-qr-info').innerHTML =
+        `<strong>${escHtml(t.name)}</strong><br>${escHtml(catLabel)} · ${t.stats.dist} km`
+        + ` · <span style="color:var(--ac)">🌐 Online-Link</span>`;
+      drawQR(document.getElementById('trk-qr-canvas'), t.sourceUrl, 212);
+      _openTrkQrModal(gpxStr, t);
+      return;
     }
 
-    document.getElementById('trk-qr-hint').textContent=hintText;
-    // QR lokal zeichnen
-    const canvas=document.getElementById('trk-qr-canvas');
-    drawQR(canvas,qrData,164,'#0b0e14','#ffffff');
-    // GPX für Download speichern
-    document.getElementById('trk-qr-dl-btn').dataset.gpx=gpxStr;
-    document.getElementById('trk-qr-dl-btn').dataset.name=t.name;
+    // ── Strategie 2: Lokaler Track → komprimierte Chunks ──────
+    try {
+      const res = await _buildTrackQrChunks(t, gpxStr);
+      _qrChunks  = res.chunks;
+      _qrChunkIdx = 0;
 
-    closeAll();
-    _updateTrkQrShareBtn();
-    const m=document.getElementById('trk-qrm');
-    m.style.opacity='0';m.style.visibility='visible';m.style.transform='translate(-50%,-50%) scale(.88)';
-    requestAnimationFrame(()=>{
-      m.style.transition='all .25s cubic-bezier(.32,.72,0,1)';
-      m.style.opacity='1';m.style.transform='translate(-50%,-50%) scale(1)';
-    });
-    document.getElementById('backdrop').classList.add('show');
+      const n       = res.chunks.length;
+      const origN   = res.rawPts.length;
+      const simN    = res.pts.length;
+      const compKB  = (res.compressed.length / 1024).toFixed(1);
+      const ratio   = origN ? Math.round((1 - res.compressed.length / (gpxKB * 1024)) * 100) : 0;
+      const zLabel  = res.z === 1 ? 'pako' : 'raw';
+
+      document.getElementById('trk-qr-info').innerHTML =
+        `<strong>${escHtml(t.name)}</strong> · ${escHtml(catLabel)}<br>`
+        + `${t.stats.dist} km · ${gpxKB} KB → `
+        + `<span style="color:var(--ac)">${compKB} KB (${zLabel}, ${ratio}%↓)</span><br>`
+        + `${simN}${simN < origN ? ' / ' + origN : ''} Pkte · `
+        + `<strong style="color:var(--ac)">📡 ${n} QR-Code${n > 1 ? 's' : ''}</strong>`;
+
+      document.getElementById('trk-qr-hint').textContent = n > 1
+        ? `Alle ${n} QR-Codes der Reihe nach scannen (Handy 2)`
+        : 'QR-Code scannen → Track vollständig übertragen';
+
+      const nav = document.getElementById('trk-qr-chunk-nav');
+      if (nav) nav.style.display = n > 1 ? '' : 'none';
+
+      _drawQrChunk(0);
+      _openTrkQrModal(gpxStr, t);
+    } catch(e) {
+      toast('❌ QR-Erstellung: ' + e.message);
+      console.error('openTrackQR Fehler:', e);
+    }
   });
 }
 
 async function extractGpxFromLayer(track){
-  // Wenn Original-GPX-String gespeichert: direkt verwenden
   if(track.gpxString) return track.gpxString;
-  // Sonst aus Layer-Geometrie rekonstruieren
   const lines=[];
   track.gpxLayer.eachLayer(layer=>{
     if(layer.getLatLngs){try{const c=layer.getLatLngs();if(c&&c.length)lines.push(Array.isArray(c[0])?c.flat():c);}catch(e){}}
   });
   const allPts=lines.flat();
-  if(!allPts.length) return buildSimpleGpx(track.name,[]);
+  if(!allPts.length) return buildSimpleGpx(track.name);
   const pts=allPts.map(ll=>`    <trkpt lat="${ll.lat.toFixed(7)}" lon="${ll.lng.toFixed(7)}">${ll.alt!=null?`\n      <ele>${ll.alt.toFixed(1)}</ele>`:''}\n    </trkpt>`).join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="GMTW Trail Map" xmlns="http://www.topografix.com/GPX/1/1">
-  <metadata><n>${escXml(track.name)}</n></metadata>
-  <trk><n>${escXml(track.name)}</n><desc>Kategorie: ${escXml(track.cat)} · ${track.stats.dist} km</desc>
+  <metadata><name>${escXml(track.name)}</name></metadata>
+  <trk><name>${escXml(track.name)}</name><desc>Kategorie: ${escXml(track.cat)} · ${track.stats.dist} km</desc>
     <trkseg>\n${pts}\n    </trkseg></trk>
 </gpx>`;
 }
 
-function buildSimpleGpx(name){return `<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="GMTW Trail Map"><trk><n>${escXml(name)}</n></trk></gpx>`;}
+function buildSimpleGpx(name){return `<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="GMTW Trail Map"><trk><name>${escXml(name)}</name></trk></gpx>`;}
 function extractWaypoints(track){
   try{const b=track.gpxLayer.getBounds();return{start:`${b.getSouthWest().lat.toFixed(5)},${b.getSouthWest().lng.toFixed(5)}`,end:`${b.getNorthEast().lat.toFixed(5)},${b.getNorthEast().lng.toFixed(5)}`};}
   catch(e){return{start:'0,0',end:'0,0'};}
@@ -5387,9 +6174,77 @@ const recorder={
   isRecording:false,isPaused:false,
   points:[],watchId:null,
   elapsed:0,_segStart:null,
-  _timerInt:null,_lastPos:null,_lastTime:null,
+  _timerInt:null,_persistInt:null,_lastPos:null,_lastTime:null,
   totalDist:0,previewLine:null,MIN_SPEED:0.5
 };
+
+// ── Aufnahme: Robustheitssystem ─────────────────────────────────
+let _recWakeLock  = null;   // Screen Wake Lock (verhindert Displayabschaltung)
+let _recGpsErrors = 0;      // Zähler GPS-Fehler für automatischen Retry
+
+async function _recAcquireWakeLock() {
+  if (!('wakeLock' in navigator)) return;
+  try {
+    _recWakeLock = await navigator.wakeLock.request('screen');
+    _recWakeLock.onrelease = () => { _recWakeLock = null; };
+  } catch(e) { console.warn('[Rec] WakeLock nicht verfügbar:', e.message); }
+}
+function _recReleaseWakeLock() {
+  if (_recWakeLock) { _recWakeLock.release().catch(()=>{}); _recWakeLock = null; }
+}
+
+// GPS-Fehler-Behandlung: bis zu 3 Versuche, dann Stopp
+function _recHandleGpsError(err) {
+  if (!recorder.isRecording) return;
+  _recGpsErrors++;
+  const msgs = {1:'GPS-Zugriff verweigert',2:'Kein GPS-Signal',3:'GPS-Timeout'};
+  const label = msgs[err.code] || 'GPS-Fehler';
+  if (_recGpsErrors >= 3) {
+    toast(`❌ ${label} — Aufnahme gestoppt (3 Fehler).`);
+    speak(`${label}. Aufnahme gestoppt.`, true);
+    recStop();
+    return;
+  }
+  toast(`⚠️ ${label} — Retry ${_recGpsErrors}/3…`);
+  speak(`${label}. Neuer Versuch.`, false);
+  // GPS-Watch neu starten mit leicht gelockerten Constraints
+  if (recorder.watchId !== null) {
+    navigator.geolocation.clearWatch(recorder.watchId);
+    recorder.watchId = null;
+  }
+  setTimeout(() => {
+    if (!recorder.isRecording) return;
+    recorder.watchId = navigator.geolocation.watchPosition(
+      pos => { _recGpsErrors = 0; recOnPosition(pos); },
+      _recHandleGpsError,
+      { enableHighAccuracy: _recGpsErrors < 2, timeout: 20000, maximumAge: 5000 }
+    );
+  }, 2000 * _recGpsErrors);
+}
+
+// Sichtbarkeitswechsel (Bildschirm aus/an)
+document.addEventListener('visibilitychange', async () => {
+  if (!recorder.isRecording) return;
+  if (document.visibilityState === 'hidden') {
+    persistRecorder(); // State sichern wenn Bildschirm aus geht
+  } else {
+    // Zurück aus Hintergrund: Wake Lock ggf. neu anfordern
+    persistRecorder();
+    if (!_recWakeLock) await _recAcquireWakeLock();
+    // GPS-Watch neu starten (kann im Hintergrund abgebrochen worden sein)
+    if (recorder.watchId !== null) {
+      navigator.geolocation.clearWatch(recorder.watchId);
+      recorder.watchId = null;
+    }
+    _recGpsErrors = 0;
+    recorder.watchId = navigator.geolocation.watchPosition(
+      pos => { _recGpsErrors = 0; recOnPosition(pos); },
+      _recHandleGpsError,
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 2000 }
+    );
+    toast('📡 GPS nach Bildschirmpause neu verbunden');
+  }
+});
 
 function haversine(lat1,lng1,lat2,lng2){
   const R=6371000,r=Math.PI/180;
@@ -5398,22 +6253,53 @@ function haversine(lat1,lng1,lat2,lng2){
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
-function recStart(){
+async function recStart(){
   if(!('geolocation'in navigator)){showGpsHint('GPS nicht verfügbar','Geolocation wird für die Aufnahme benötigt.');return;}
-  recorder.isRecording=true;recorder.isPaused=false;
-  recorder.points=[];recorder.elapsed=0;recorder.totalDist=0;
-  recorder._lastPos=null;recorder._lastTime=null;recorder._segStart=Date.now();
+
+  // Fahrerprofil laden und anzeigen
+  const prof = LS.get(LS.K.PROFILE, {});
+  const riderName = prof.name     || '';
+  const muniName  = prof.muniName || '';
+  const riderInfo = [riderName, muniName].filter(Boolean).join(' · ') || '(kein Profil)';
+  const riderBar  = document.getElementById('rec-rider-bar');
+  const riderInfoEl = document.getElementById('rec-rider-info');
+  if (riderBar)   { riderBar.style.display = 'flex'; }
+  if (riderInfoEl){ riderInfoEl.textContent = riderInfo; }
+
+  // Track-Name vorbelegen: "Name – Muni – YYYY-MM-DD"
+  const today = new Date().toISOString().slice(0,10);
+  const suggestedName = [riderName, muniName, today].filter(Boolean).join(' – ');
+  const nameInp = document.getElementById('rec-name-inp');
+  if (nameInp && !nameInp.value) nameInp.value = suggestedName;
+
+  // Status reset
+  recorder.isRecording=true; recorder.isPaused=false;
+  recorder.points=[];        recorder.elapsed=0;     recorder.totalDist=0;
+  recorder._lastPos=null;    recorder._lastTime=null; recorder._segStart=Date.now();
+  _recGpsErrors = 0;
+
   recUpdateUI();
+  document.getElementById('rec-save-section').style.display = 'none';
   toast('🔴 Aufnahme läuft…');
+  speak(`Aufnahme gestartet. Fahrer: ${riderName||'unbekannt'}. Muni: ${muniName||'unbekannt'}.`, true);
   document.getElementById('rec-bar').classList.add('show');
+
   if(recorder.previewLine){map.removeLayer(recorder.previewLine);recorder.previewLine=null;}
   recorder.previewLine=L.polyline([],{color:'#ef4444',weight:3,opacity:.85,dashArray:'6 4'}).addTo(map);
+
+  // GPS-Watch starten
   recorder.watchId=navigator.geolocation.watchPosition(
-    pos=>recOnPosition(pos),
-    err=>{toast('❌ GPS-Fehler bei Aufnahme');recStop();},
+    pos=>{ _recGpsErrors=0; recOnPosition(pos); },
+    _recHandleGpsError,
     {enableHighAccuracy:true,timeout:15000,maximumAge:1000}
   );
-  recorder._timerInt=setInterval(recTickDisplay,1000);
+
+  // Timer + Auto-Save
+  recorder._timerInt   = setInterval(recTickDisplay, 1000);
+  recorder._persistInt = setInterval(persistRecorder, 5000);
+
+  // Screen Wake Lock (verhindert Displayabschaltung während Aufnahme)
+  await _recAcquireWakeLock();
 }
 
 function recOnPosition(pos){
@@ -5453,31 +6339,56 @@ function recStop(){
   if(recorder._segStart!==null){recorder.elapsed+=(Date.now()-recorder._segStart);recorder._segStart=null;}
   recorder.isRecording=false;recorder.isPaused=false;
   if(recorder.watchId!==null){navigator.geolocation.clearWatch(recorder.watchId);recorder.watchId=null;}
-  clearInterval(recorder._timerInt);recorder._timerInt=null;
+  clearInterval(recorder._timerInt);   recorder._timerInt=null;
+  clearInterval(recorder._persistInt); recorder._persistInt=null;
+  _recReleaseWakeLock();
+
   document.getElementById('rec-bar').classList.remove('show');
   document.getElementById('rec-status-txt').textContent=`Beendet · ${recorder.points.length} Punkte`;
   document.getElementById('rec-status-txt').style.color='var(--ac)';
   document.getElementById('rec-start-btn').style.display='';
   document.getElementById('rec-pause-btn').style.display='none';
   document.getElementById('rec-stop-btn').style.display='none';
+
   if(!recorder.points.length){toast('⚠️ Keine GPS-Punkte aufgezeichnet');recReset();return;}
+
+  // Zusammenfassung befüllen
+  const totalSec = Math.floor(recorder.elapsed/1000);
+  const hh=Math.floor(totalSec/3600),mm=Math.floor((totalSec%3600)/60),ss=totalSec%60;
+  const durStr=`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+  const distKm=(recorder.totalDist/1000).toFixed(2);
+  const sumEl = document.getElementById('rec-summary');
+  if (sumEl) {
+    sumEl.innerHTML = [
+      `⏱ <b>${durStr}</b>`,
+      `📏 <b>${distKm} km</b>`,
+      `📍 <b>${recorder.points.length}</b> GPS-Punkte`,
+    ].map(s=>`<span style="margin-right:10px">${s}</span>`).join('');
+  }
+
   document.getElementById('rec-save-section').style.display='';
   // Share-Button nur anzeigen wenn Web Share API verfügbar
   const rsb=document.getElementById('rec-share-btn');
   if(rsb) rsb.style.display=(navigator.share||navigator.canShare)?'':'none';
-  LS.del(LS.K.REC); // Autosave löschen
+  LS.del(LS.K.REC); // Autosave löschen (erfolgreich beendet)
   toast(`✅ Aufnahme beendet · ${recorder.points.length} Punkte`);
+  speak(`Aufnahme beendet. ${recorder.points.length} GPS-Punkte. ${distKm} Kilometer. Dauer: ${durStr}.`, true);
 }
 
 function recReset(){
   if(recorder.watchId!==null){navigator.geolocation.clearWatch(recorder.watchId);recorder.watchId=null;}
-  clearInterval(recorder._timerInt);recorder._timerInt=null;
+  clearInterval(recorder._timerInt);   recorder._timerInt=null;
+  clearInterval(recorder._persistInt); recorder._persistInt=null;
+  _recReleaseWakeLock();
+  _recGpsErrors = 0;
   if(recorder.previewLine){map.removeLayer(recorder.previewLine);recorder.previewLine=null;}
   recorder.isRecording=false;recorder.isPaused=false;
   recorder.points=[];recorder.elapsed=0;recorder.totalDist=0;recorder._segStart=null;recorder._lastPos=null;
   document.getElementById('rec-bar').classList.remove('show');
   document.getElementById('rec-save-section').style.display='none';
   document.getElementById('rec-name-inp').value='';
+  const ni = document.getElementById('rec-notes-inp'); if(ni) ni.value='';
+  const rb = document.getElementById('rec-rider-bar'); if(rb) rb.style.display='none';
   document.getElementById('rec-timer').textContent='00:00:00';
   document.getElementById('rec-dist').textContent='0.0';
   document.getElementById('rec-pts').textContent='0';
@@ -5514,13 +6425,18 @@ function recTickDisplay(){
 }
 
 // ── AUFNAHME SPEICHERN ─────────────────────────────────────────
-function recBuildGpxString(name){
+function recBuildGpxString(name, notes){
   const pts=recorder.points.map(p=>`    <trkpt lat="${p.lat.toFixed(7)}" lon="${p.lng.toFixed(7)}">\n      <ele>${(p.ele||0).toFixed(1)}</ele>\n      <time>${p.time}</time>\n    </trkpt>`).join('\n');
+  const prof   = LS.get(LS.K.PROFILE, {});
+  const rider  = [prof.name, prof.muniName].filter(Boolean).join(' · ');
+  const km     = (recorder.totalDist/1000).toFixed(2);
+  const notesStr = notes ? `\n${escXml(notes)}` : '';
+  const descStr  = `Aufgezeichnet mit GMTW Trail Map · ${km} km${rider?' · '+escXml(rider):''}${notesStr}`;
   return `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="GMTW Trail Map" xmlns="http://www.topografix.com/GPX/1/1">
-  <metadata><n>${escXml(name)}</n><time>${new Date().toISOString()}</time></metadata>
-  <trk><n>${escXml(name)}</n>
-    <desc>Aufgezeichnet mit GMTW Trail Map · ${(recorder.totalDist/1000).toFixed(2)} km</desc>
+  <metadata><name>${escXml(name)}</name><time>${new Date().toISOString()}</time></metadata>
+  <trk><name>${escXml(name)}</name>
+    <desc>${descStr}</desc>
     <trkseg>\n${pts}\n    </trkseg>
   </trk>
 </gpx>`;
@@ -5528,16 +6444,22 @@ function recBuildGpxString(name){
 
 function recAddToMap(){
   if(!recorder.points.length){toast('⚠️ Keine Punkte aufgezeichnet');return;}
-  const name=document.getElementById('rec-name-inp').value.trim()||'GMTW Aufnahme';
-  const cat=document.getElementById('rec-save-cat').value;
-  const gpxStr=recBuildGpxString(name);
-  loadGpxFromString(gpxStr,name,cat);
+  const nameVal = document.getElementById('rec-name-inp').value.trim();
+  const today   = new Date().toISOString().slice(0,10);
+  const name    = nameVal || `GMTW Aufnahme ${today}`;
+  const cat     = document.getElementById('rec-save-cat').value;
+  const notesEl = document.getElementById('rec-notes-inp');
+  const notes   = notesEl ? notesEl.value.trim() : '';
+  const gpxStr  = recBuildGpxString(name, notes);
+  loadGpxFromString(gpxStr, name, cat);
   // Preview-Linie entfernen (wird durch GPX-Layer ersetzt)
   if(recorder.previewLine){map.removeLayer(recorder.previewLine);recorder.previewLine=null;}
   // Recorder zurücksetzen
   recorder.points=[];recorder.elapsed=0;recorder.totalDist=0;recorder._segStart=null;
   document.getElementById('rec-save-section').style.display='none';
   document.getElementById('rec-name-inp').value='';
+  if(notesEl) notesEl.value='';
+  const rb = document.getElementById('rec-rider-bar'); if(rb) rb.style.display='none';
   document.getElementById('rec-timer').textContent='00:00:00';
   document.getElementById('rec-dist').textContent='0.0';
   document.getElementById('rec-pts').textContent='0';
@@ -5551,8 +6473,10 @@ function recAddToMap(){
 
 function recExportGpx(){
   if(!recorder.points.length){toast('⚠️ Keine Punkte zum Speichern');return;}
-  const name=document.getElementById('rec-name-inp').value.trim()||'GMTW_Track';
-  dlFile(name+'.gpx',recBuildGpxString(name),'application/gpx+xml');
+  const name    = document.getElementById('rec-name-inp').value.trim()||'GMTW_Track';
+  const notesEl = document.getElementById('rec-notes-inp');
+  const notes   = notesEl ? notesEl.value.trim() : '';
+  dlFile(name+'.gpx',recBuildGpxString(name,notes),'application/gpx+xml');
   toast('⬇ GPX gespeichert!');
 }
 
@@ -5566,8 +6490,10 @@ function recExportJson(){
 // Web Share API — Aufgezeichnete Strecke als GPX-Datei teilen
 async function recShareGpx(){
   if(!recorder.points.length){toast('⚠️ Keine Punkte aufgezeichnet');return;}
-  const name=document.getElementById('rec-name-inp').value.trim()||'GMTW_Track';
-  const gpxStr=recBuildGpxString(name);
+  const name    = document.getElementById('rec-name-inp').value.trim()||'GMTW_Track';
+  const notesEl = document.getElementById('rec-notes-inp');
+  const notes   = notesEl ? notesEl.value.trim() : '';
+  const gpxStr  = recBuildGpxString(name, notes);
   await _shareGpxFile(gpxStr, name, `${recorder.points.length} Punkte · ${(recorder.totalDist/1000).toFixed(2)} km`);
 }
 
@@ -7020,16 +7946,30 @@ function openSettings() {
   const p = document.getElementById('settings-panel');
   p.classList.add('open');
   _loadSettingsForm();
+  _applyA11yUi();
   updateStorageInfo();
   renderAllMarkersList();
+  speak('Einstellungen geöffnet. Tabs: Allgemein, Strecken, Backup, Marker, QR-Scan, App, Profil.', false);
+  _ariaAnnounce('Einstellungen geöffnet');
 }
 
 function closeSettings() {
   document.getElementById('settings-panel').classList.remove('open');
   // Kamera freigeben wenn Settings geschlossen werden
   stopQrScanner();
+  speak('Einstellungen geschlossen.', false);
+  _ariaAnnounce('Einstellungen geschlossen');
 }
 
+const _SP_TAB_LABELS = {
+  general:  'Allgemein',
+  tracks:   'Strecken',
+  backup:   'Backup',
+  markers:  'Marker',
+  qr:       'QR-Scanner',
+  app:      'App-Installation',
+  profile:  'Fahrerprofil',
+};
 function switchSpTab(name, btn) {
   document.querySelectorAll('.sp-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.sp-content').forEach(c => c.classList.remove('on'));
@@ -7043,6 +7983,10 @@ function switchSpTab(name, btn) {
   if (name === 'markers') renderAllMarkersList();
   if (name === 'app')     _initAppInstallTab();
   if (name === 'profile') _loadProfileForm();
+  // A11Y: Tab-Name vorlesen
+  const label = _SP_TAB_LABELS[name] || name;
+  speak(`Tab ${label} geöffnet.`, false);
+  _ariaAnnounce(`Tab ${label}`);
 }
 
 // Emoji-Grid befüllen
@@ -7344,6 +8288,8 @@ async function exportFullBackup() {
       locsOverrides:  JSON.parse(localStorage.getItem('gmtw_locs_overrides') || '{}'),
       // Fahrerprofil (v5)
       profile:        LS.get(LS.K.PROFILE, {}),
+      // Barrierefreiheit (v6)
+      a11y:           LS.get(LS.K.A11Y, {}),
     };
 
     // Aktuell geladene Tracks mit vollständigen GPX-Daten sichern
@@ -7358,7 +8304,7 @@ async function exportFullBackup() {
     }));
 
     const backup = {
-      _version:  5,
+      _version:  6,
       _app:      'GMTW Trail Map',
       _exported: new Date().toISOString(),
       tracks:    mergedTracks,
@@ -7475,6 +8421,8 @@ async function importFullBackup(input) {
         }
         // Fahrerprofil (v5+)
         if (s.profile && typeof s.profile === 'object') LS.set(LS.K.PROFILE, s.profile);
+        // Barrierefreiheit (v6+)
+        if (s.a11y && typeof s.a11y === 'object') LS.set(LS.K.A11Y, s.a11y);
       }
 
       const imported = `${tracksN} Strecken · ${markersN} Marker`;
@@ -8601,6 +9549,8 @@ let _qrVideoStream   = null;   // MediaStream
 let _qrScanInterval  = null;   // setInterval handle
 let _qrLastResult    = '';     // Letztes erkanntes QR-Ergebnis (Deduplizierung)
 let _qrPendingData   = null;   // Geparster Payload für onclick-Handler (kein JSON.stringify in HTML-Attr)
+// Multi-QR Chunk-Puffer: { [chunkId]: { chunks: string[], total: number, received: Set } }
+const _qrChunkBuffer = {};
 
 function onQrScanToggle(enabled) {
   LS.set(LS_QR_ENABLED, enabled);
@@ -8697,7 +9647,13 @@ async function _processQrPayload(raw) {
     // Geparsten Payload sichern (für onclick-Handler — kein JSON.stringify im HTML-Attribut!)
     _qrPendingData = data || raw;
 
-    // Fall 1: GMTW Vollständiges Backup
+    // ── Fall 0: GMTW Multi-QR Chunk ─────────────────────────────
+    if (data && data.T === 'gmtw-chunk' && data.v === 1) {
+      await _handleQrChunk(data, resultEl);
+      return;
+    }
+
+    // ── Fall 1: GMTW Vollständiges Backup ───────────────────────
     if (data && data._app && data._app.includes('GMTW')) {
       const exported = data._exported ? new Date(data._exported).toLocaleDateString('de') : '?';
       if (resultEl) resultEl.innerHTML =
@@ -8707,7 +9663,7 @@ async function _processQrPayload(raw) {
       return;
     }
 
-    // Fall 2: GPX-Bündel (mehrere Tracks)
+    // ── Fall 2: GPX-Bündel (mehrere Tracks via URL) ─────────────
     if (data && data.type === 'gmtw-gpx-bundle' && Array.isArray(data.tracks)) {
       const count = data.tracks.length;
       const list  = data.tracks.map(t => `<div>• ${escHtml(t.name || t.url)}</div>`).join('');
@@ -8718,7 +9674,7 @@ async function _processQrPayload(raw) {
       return;
     }
 
-    // Fall 3: Einzel-Custom-Marker
+    // ── Fall 3: Einzel-Custom-Marker ────────────────────────────
     if (data && data.type === 'gmtw-marker') {
       const latStr = typeof data.lat === 'number' ? data.lat.toFixed(5) : String(data.lat);
       const lngStr = typeof data.lng === 'number' ? data.lng.toFixed(5) : String(data.lng);
@@ -8729,7 +9685,7 @@ async function _processQrPayload(raw) {
       return;
     }
 
-    // Fall 4: Direkte URL (GPX)
+    // ── Fall 4: Direkte GPX-URL ──────────────────────────────────
     const url = raw.trim();
     if (url.startsWith('http') && url.toLowerCase().includes('.gpx')) {
       if (resultEl) resultEl.innerHTML =
@@ -8740,7 +9696,7 @@ async function _processQrPayload(raw) {
       return;
     }
 
-    // Fall 5: Unbekannter Inhalt
+    // ── Fall 5: Unbekannter Inhalt ───────────────────────────────
     if (resultEl) resultEl.innerHTML =
       `<strong>QR-Inhalt:</strong><br>
        <code style="font-size:10px;word-break:break-all;color:var(--td)">${escHtml(raw.slice(0,200))}${raw.length>200?'…':''}</code>`;
@@ -8748,6 +9704,185 @@ async function _processQrPayload(raw) {
   } catch(e) {
     if (resultEl) resultEl.innerHTML = `<div style="color:var(--tm)">❌ Fehler: ${escHtml(e.message)}</div>`;
   }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EMPFÄNGER-SEITE: Chunk-Sammlung, Dekomprimierung, GPX-Import
+// ═══════════════════════════════════════════════════════════════
+
+// ── Chunk-Empfang (aufgerufen von _processQrPayload) ──────────
+// buf-Struktur: { chunks[], total, received:Set, z, ts }
+async function _handleQrChunk(data, resultEl) {
+  const { id, i, n, d, z } = data;
+
+  // Validierung aller Pflichtfelder
+  if (typeof id !== 'string' || id.length < 1 ||
+      typeof i  !== 'number' || i  < 0 ||
+      typeof n  !== 'number' || n  < 1 ||
+      typeof d  !== 'string' || !d.length) {
+    if (resultEl) resultEl.innerHTML =
+      `<div style="color:var(--tm)">❌ Ungültiger Chunk-Header</div>`;
+    return;
+  }
+
+  // Puffer anlegen (bei erstem Chunk dieser Transfer-ID)
+  if (!_qrChunkBuffer[id]) {
+    _qrChunkBuffer[id] = {
+      chunks:   new Array(n).fill(null),
+      total:    n,
+      received: new Set(),
+      z:        typeof z === 'number' ? z : 1, // z-Flag: 1=pako, 0=raw
+      ts:       Date.now()                     // Zeitstempel für Auto-Cleanup
+    };
+    // Auto-Cleanup nach 15 Minuten (verhindert Speicherlecks)
+    setTimeout(() => { delete _qrChunkBuffer[id]; }, 15 * 60 * 1000);
+  }
+
+  const buf = _qrChunkBuffer[id];
+
+  // Chunk einlagern — Set verhindert Duplikate
+  if (!buf.received.has(i)) {
+    buf.chunks[i] = d;
+    buf.received.add(i);
+  }
+
+  const recv = buf.received.size;
+
+  // ── Noch nicht vollständig: Fortschritt zeigen ────────────
+  if (recv < n) {
+    // Welche Chunks fehlen noch?
+    const missing = [];
+    for (let k = 0; k < n; k++) if (!buf.received.has(k)) missing.push(k + 1);
+    const missingTxt = missing.length <= 5
+      ? `Noch fehlen: Nr. ${missing.join(', ')}`
+      : `Noch ${missing.length} fehlen`;
+
+    // Segment-Balken: grün = erhalten, grau = ausstehend
+    const bars = Array.from({length: n}, (_, j) =>
+      `<div style="flex:1;height:8px;border-radius:3px;background:${
+        buf.received.has(j) ? 'var(--ac)' : 'var(--bd2)'
+      };transition:background .2s"></div>`
+    ).join('');
+
+    if (resultEl) resultEl.innerHTML =
+      `<strong style="font-family:var(--fh)">📡 QR-Track Transfer</strong>`
+      + `<div style="font-size:11px;color:var(--td);margin:4px 0">`
+      +   `Transfer-ID: <code>${escHtml(id)}</code></div>`
+      + `<div style="display:flex;gap:3px;margin:8px 0">${bars}</div>`
+      + `<div style="font-size:13px;color:var(--tx);font-weight:700">`
+      +   `${recv} / ${n} gescannt ✅</div>`
+      + `<div style="font-size:11px;color:var(--td);margin-top:4px">${escHtml(missingTxt)}</div>`
+      + `<div style="font-size:11px;color:var(--td);margin-top:6px">`
+      +   `→ Nächsten QR-Code in die Kamera halten…</div>`;
+    return;
+  }
+
+  // ── Alle Chunks empfangen: Import starten ─────────────────
+  if (resultEl) resultEl.innerHTML =
+    `<div style="color:var(--td);text-align:center;padding:8px 0">`
+    + `<div style="font-size:20px">⏳</div>Dekomprimiere & importiere…</div>`;
+
+  const fullData = buf.chunks.join('');
+  const compressionFlag = buf.z;
+  delete _qrChunkBuffer[id]; // Puffer sofort freigeben
+
+  await _importGmtwTrackData(fullData, compressionFlag, resultEl);
+}
+
+// ── Vollständige Daten dekodieren und als Track importieren ───
+// b64uData: zusammengesetzter base64url-String
+// z:        1 = pako DEFLATE, 0 = plain UTF-8
+async function _importGmtwTrackData(b64uData, z, resultEl) {
+  try {
+    if (!b64uData || !b64uData.length) throw new Error('Leere Daten empfangen');
+
+    // ── Schritt 1: Dekomprimieren / Dekodieren ─────────────
+    let jsonStr = null;
+    const bytes = _b64uDecode(b64uData);
+
+    if (z === 1 && window.pako) {
+      // Primärer Pfad: pako DEFLATE
+      try { jsonStr = pako.inflate(bytes, { to: 'string' }); }
+      catch(e) { /* Fehler → Fallbacks unten */ }
+    }
+
+    if (!jsonStr && window.pako) {
+      // Fallback 1: Vielleicht doch DEFLATE trotz z=0?
+      try { jsonStr = pako.inflate(bytes, { to: 'string' }); } catch(e) {}
+    }
+
+    if (!jsonStr) {
+      // Fallback 2: plain UTF-8 (z=0 oder kein pako)
+      try { jsonStr = new TextDecoder('utf-8', { fatal: true }).decode(bytes); }
+      catch(e) {}
+    }
+
+    if (!jsonStr) {
+      // Fallback 3: legacy decodeURIComponent-Methode
+      try {
+        const b64std = b64uData.replace(/-/g,'+').replace(/_/g,'/');
+        jsonStr = decodeURIComponent(escape(atob(b64std)));
+      } catch(e) {}
+    }
+
+    if (!jsonStr) throw new Error('Dekomprimierung fehlgeschlagen (alle Methoden)');
+
+    // ── Schritt 2: JSON parsen ────────────────────────────
+    let payload;
+    try { payload = JSON.parse(jsonStr); }
+    catch(e) { throw new Error('JSON ungültig: ' + e.message.slice(0, 60)); }
+
+    // ── Schritt 3: Payload-Typ erkennen und verarbeiten ───
+    if (payload && payload.type === 'gmtw-track' && Array.isArray(payload.p)) {
+      await _finishTrackImport(payload, resultEl);
+    } else if (payload && payload._app && payload._app.includes('GMTW')) {
+      // Vollständiges Backup im Chunk (selten, aber möglich)
+      _qrPendingData = payload;
+      if (resultEl) resultEl.innerHTML =
+        `<button class="sp-btn prim" onclick="importFullBackup_fromObj()"
+           style="width:100%;margin-top:8px;justify-content:center">⬇ Backup importieren</button>`;
+    } else {
+      throw new Error('Unbekanntes Payload-Format (type=' + (payload && payload.type || '?') + ')');
+    }
+
+  } catch(e) {
+    console.error('_importGmtwTrackData:', e);
+    if (resultEl) resultEl.innerHTML =
+      `<div style="color:var(--tm);padding:8px 0">❌ Import fehlgeschlagen<br>`
+      + `<small style="font-size:10px">${escHtml(e.message)}</small></div>`;
+    toast('❌ QR-Import: ' + e.message.slice(0, 80));
+  }
+}
+
+// ── GPX aus kompaktem Payload aufbauen und in App laden ───────
+async function _finishTrackImport(payload, resultEl) {
+  const name = String(payload.n || 'QR-Track').slice(0, 200);
+  const cat  = ['beginner','mittel','expert'].includes(payload.c) ? payload.c : 'mittel';
+
+  // GPX rekonstruieren
+  const gpxStr = _decodeTrackCompactToGpx(payload);
+  if (!gpxStr) throw new Error(`Leere Strecke (0 gültige Punkte in ${payload.p.length} Einträgen)`);
+
+  // GPX sanity-check (wie beim normalen Import)
+  const san = sanitizeGpx(gpxStr);
+  if (!san || !san.startsWith('<')) throw new Error('Rekonstruiertes GPX ungültig');
+
+  // Settings schließen → Map wird sichtbar
+  closeSettings();
+
+  // Kurze Verzögerung damit Map den Close-Übergang rendern kann
+  await new Promise(r => setTimeout(r, 120));
+
+  // In App importieren — silent=false → Toast + Karte zoomed
+  loadGpxXml(san, name, cat, null, null, false);
+
+  // Erfolgs-Feedback im (jetzt geschlossenen) resultEl
+  if (resultEl) resultEl.innerHTML =
+    `<div style="text-align:center;padding:8px 0">`
+    + `<div style="font-size:26px">✅</div>`
+    + `<strong style="color:var(--ac);font-family:var(--fh)">${escHtml(name)}</strong><br>`
+    + `<span style="font-size:11px;color:var(--td)">`
+    +   `${payload.p.length} Punkte · ${escHtml(cat)}</span></div>`;
 }
 
 // Import-Helper für QR-Inhalte
@@ -9182,6 +10317,53 @@ function swPrefetchGpxTracks() {
         <button class="sp-btn sec" onclick="clearHomeRegion()" style="flex:1">🗑 Löschen</button>
       </div>
     </div>
+    <!-- Barrierefreiheit -->
+    <div class="sp-section">
+      <div class="sp-label">♿ Barrierefreiheit (Vorlesen / A11Y)</div>
+      <div class="sp-hint">Liest Nachrichten, Karteninhalt und Navigation laut vor (Web Speech API, Deutsch)</div>
+
+      <!-- TTS on/off -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <label for="a11y-enabled" style="font-size:13px;color:var(--tx);cursor:pointer">Vorlesefunktion aktiv</label>
+        <input type="checkbox" id="a11y-enabled" onchange="onA11yToggle(this.checked)"
+          style="width:20px;height:20px;accent-color:var(--ac);cursor:pointer;flex-shrink:0">
+      </div>
+
+      <!-- Sprechrate -->
+      <div style="margin-top:10px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--td);margin-bottom:4px">
+          <span>Sprechrate</span>
+          <span id="a11y-rate-val">1.0×</span>
+        </div>
+        <input type="range" id="a11y-rate" min="0.5" max="2" step="0.1" value="1.0"
+          style="width:100%;accent-color:var(--ac)"
+          oninput="document.getElementById('a11y-rate-val').textContent=parseFloat(this.value).toFixed(1)+'×'"
+          onchange="onA11yRate(this.value)">
+      </div>
+
+      <!-- Hoher Kontrast -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <span style="font-size:13px;color:var(--tx)">Hoher Kontrast (Lichtmodus)</span>
+        <label style="cursor:pointer;display:flex;align-items:center;gap:6px">
+          <input type="checkbox" id="a11y-hc" onchange="onA11yHc(this.checked)"
+            style="width:18px;height:18px;accent-color:var(--ac)">
+        </label>
+      </div>
+
+      <!-- Karte vorlesen -->
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="sp-btn sec" onclick="speakMapOverview()" style="flex:1;justify-content:center" title="Karteninhalt vorlesen (Shortcut: V)">
+          📢 Karte vorlesen <span style="font-size:10px;opacity:.7">[V]</span>
+        </button>
+        <button class="sp-btn sec" onclick="speakNearestPoint()" style="flex:1;justify-content:center" title="Nächsten Punkt vorlesen (Shortcut: N)">
+          📍 Nächster Punkt <span style="font-size:10px;opacity:.7">[N]</span>
+        </button>
+      </div>
+      <div style="margin-top:6px;font-size:10px;color:var(--td);line-height:1.5">
+        Tastaturkürzel: <b>V</b> = Karte vorlesen · <b>N</b> = Nächster Punkt · <b>S</b> = Einstellungen · <b>Esc</b> = Schließen
+      </div>
+    </div>
+
     <div class="sp-section" style="border-bottom:none">
       <button class="sp-btn prim" onclick="saveSettings()" style="width:100%;justify-content:center">
         ✓ Einstellungen speichern
@@ -9199,7 +10381,7 @@ function swPrefetchGpxTracks() {
         ✅ GPX-Strecken &amp; Rennzeiten &nbsp;·&nbsp; ✅ Eigene Marker<br>
         ✅ Karten-Marker-Anpassungen &nbsp;·&nbsp; ✅ Marker-Größe<br>
         ✅ GPS-Emoji &nbsp;·&nbsp; ✅ Home-Position &nbsp;·&nbsp; ✅ Theme<br>
-        ✅ Fahrerprofil (Name, Muni, Radgröße, …)
+        ✅ Fahrerprofil (Name, Muni, Radgröße, …) &nbsp;·&nbsp; ✅ Barrierefreiheits-Einstellungen
       </div>
       <button class="sp-btn prim" onclick="exportFullBackup()" style="width:100%;margin-top:10px;justify-content:center">
         ⬇ GMTW_Backup.json erstellen
