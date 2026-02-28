@@ -163,3 +163,31 @@ Es ist so einfach, wie Software nur sein kann:
 1. Lade dieses Repository als `.zip` herunter oder klone es:
    ```bash
    git clone https://github.com/Munimap/munimap.github.io.git
+
+
+     Gehe in den Ordner.
+
+    Starte einen lokalen Webserver. (WICHTIG: Moderne APIs wie Kamera, Bluetooth und ServiceWorker benötigen zwingend einen localhost oder HTTPS-Kontext. Ein Doppelklick auf die HTML-Datei reicht nicht aus).
+    code Bash
+
+    # Mit Python (Mac/Linux)
+    python3 -m http.server 8080
+
+    # Oder mit Node.js
+    npx serve
+
+    Öffne http://localhost:8080 im Browser. Fertig.
+
+📜 Lizenz
+
+Dieses Projekt steht unter der MIT Lizenz.
+
+Du bist völlig frei, diesen Code zu forken, ihn in Stücke zu reißen, das Design zu ändern und die "Muni"-Begriffe durch Mountainbike-, Trailrunning- oder Geocaching-Begriffe zu ersetzen.
+
+Baue darauf dein eigenes, komplett kostenloses, hardware-unabhängiges und serverloses Zeitmesssystem für dein nächstes lokales Offroad-Event!.
+<div align="center">
+<b>Built with ☕, 🦄 and raw Vanilla JavaScript.</b><br>
+<i>"Where we're going, we don't need servers."</i>
+</div>  
+
+   
