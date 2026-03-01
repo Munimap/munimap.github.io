@@ -3735,6 +3735,32 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         /* override section to not have its own background (use inside sp-content) */
         #sp-tab-general .sp-section,#sp-tab-backup .sp-section{background:var(--s2);border-radius:12px;padding:14px;border-bottom:1px solid var(--bd2);border:1px solid var(--bd2);margin-bottom:4px}
 
+        /* ── LEAFLET TILE RENDERING: flüssig & kein Flicker ──────── */
+        /* Tiles beim Laden sanft einblenden (verhindert weißes Aufblitzen) */
+        .leaflet-tile{
+          will-change:opacity;
+          /* GPU-Layer promotion für ruckelfreies Einblenden */
+        }
+        .leaflet-tile-loaded{
+          /* Leaflet setzt opacity=1 direkt — wir überschreiben mit CSS-Transition */
+          transition:opacity 180ms ease-in!important;
+        }
+        /* Kartenpane: GPU-Compositing aktivieren */
+        .leaflet-map-pane,.leaflet-tile-pane{
+          transform:translateZ(0);
+          backface-visibility:hidden;
+        }
+        /* Tiles scharf rendern — verhindert Browser-Weichzeichnung */
+        .leaflet-tile-container img{
+          image-rendering:-webkit-optimize-contrast;
+          image-rendering:crisp-edges;
+          border:0!important;
+        }
+        /* Zoom-Animation: flüssiger Übergang beim Pinch-Zoom */
+        .leaflet-zoom-anim .leaflet-zoom-animated{
+          transition:transform 220ms cubic-bezier(.25,.46,.45,.94)!important;
+        }
+
         /* ── CUSTOM MARKER MODAL (md-overlay) ──────────────────── */
         #md-overlay.show{display:flex!important}
         #md-overlay.show .md-sheet{transform:translateY(0)}
@@ -3776,10 +3802,10 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         [data-a11y-hc] *:focus-visible{outline:4px solid #ff0 !important;outline-offset:3px !important}
         /* ── TTS CONTROL BAR — kompakt, unten-links, sichtbar wenn [data-a11y-on] ── */
         #tts-ctrl-bar{
-          position:fixed;bottom:calc(env(safe-area-inset-bottom, 0px) + 40px);
-          left:12px;width:auto;max-width:256px;z-index:492;
-          background:var(--s1);border:1.5px solid var(--bd2);border-radius:14px;
-          padding:5px 8px;display:none;align-items:center;gap:5px;
+          position:fixed;bottom:calc(env(safe-area-inset-bottom, 0px) + 45px);
+          left:12px;width:auto;max-width:300px;z-index:492;
+          background:var(--s1);border:1.5px solid var(--bd2);border-radius:16px;
+          padding:6px 10px;display:none;align-items:center;gap:4px;
           box-shadow:0 4px 20px rgba(0,0,0,.6);pointer-events:none;
         }
         html[data-a11y-on] #tts-ctrl-bar{display:flex !important;pointer-events:all}
@@ -3803,19 +3829,20 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
         #sheet-tts-btn.active{background:var(--ac);color:var(--bg);border-color:var(--ac)}
         /* Primary speak button — kompakt, accent */
         #tts-speak-btn{
-          width:34px;height:34px;border-radius:9px;border:none;
-          background:var(--ac);color:var(--bg);font-size:17px;
+          width:44px;height:44px;border-radius:12px;border:none;
+          background:var(--ac);color:var(--bg);font-size:20px;
           cursor:pointer;display:flex;align-items:center;justify-content:center;
           flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.4);transition:transform .12s;
+          touch-action:manipulation;
         }
         #tts-speak-btn:active{transform:scale(.85)}
         /* Secondary control buttons */
         .tts-ctrl-btn{
-          width:28px;height:28px;border-radius:7px;
+          width:44px;height:44px;border-radius:10px;
           border:1.5px solid var(--bd2);background:var(--s2);
-          color:var(--tx);font-size:13px;cursor:pointer;
+          color:var(--tx);font-size:15px;cursor:pointer;
           display:flex;align-items:center;justify-content:center;
-          flex-shrink:0;transition:all .12s;
+          flex-shrink:0;transition:all .12s;touch-action:manipulation;
         }
         .tts-ctrl-btn:active{transform:scale(.85);background:var(--s3)}
         /* Status text */
@@ -3825,6 +3852,81 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
           overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
           min-width:0;
         }
+        /* ── PROJEKT DROPDOWN ───────────────────────────────────── */
+        #proj-bar{position:relative;display:inline-flex;align-items:center;flex-shrink:0}
+        #proj-toggle-btn{
+          background:var(--s2);border:1.5px solid var(--bd2);border-radius:10px;
+          padding:5px 10px 5px 12px;display:flex;align-items:center;gap:6px;
+          cursor:pointer;font-family:var(--fh);font-size:12px;font-weight:700;
+          color:var(--tx);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;
+          touch-action:manipulation;
+        }
+        #proj-toggle-btn svg{flex-shrink:0;transition:transform .15s}
+        #proj-toggle-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+        #proj-dropdown{
+          position:absolute;top:calc(100% + 6px);left:0;min-width:220px;max-height:340px;
+          background:var(--s1);border:1.5px solid var(--bd2);border-radius:14px;
+          box-shadow:0 8px 32px rgba(0,0,0,.55);z-index:600;overflow:hidden;
+          display:flex;flex-direction:column;
+        }
+        #proj-dropdown[hidden]{display:none!important}
+        #proj-search-inp{
+          width:100%;box-sizing:border-box;padding:9px 12px;border:none;
+          border-bottom:1px solid var(--bd2);background:var(--s2);
+          color:var(--tx);font-size:14px;outline:none;
+        }
+        #proj-list-inner{overflow-y:auto;flex:1;overscroll-behavior:contain}
+        .proj-item{
+          padding:10px 14px;cursor:pointer;display:flex;align-items:center;
+          gap:8px;font-size:14px;color:var(--tx);touch-action:manipulation;
+        }
+        .proj-item:hover,.proj-item:active{background:var(--s2)}
+        .proj-item.active{color:var(--ac);font-weight:700}
+        .proj-item.active::before{content:'✓ ';font-weight:900}
+        .proj-new-btn{
+          width:100%;padding:10px 14px;background:transparent;border:none;
+          border-top:1px solid var(--bd2);color:var(--ac);font-weight:700;
+          font-size:13px;cursor:pointer;text-align:left;touch-action:manipulation;
+        }
+        /* ── PROJEKT KARTEN (Settings Übersicht) ──────────────── */
+        .proj-card{background:var(--s2);border:1.5px solid var(--bd2);border-radius:12px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+        .proj-card.is-focus{border-color:var(--ac);box-shadow:0 0 0 2px rgba(200,255,0,.15)}
+        .proj-card-header{display:flex;align-items:center;gap:10px;padding:10px 12px}
+        .proj-card-info{flex:1;min-width:0;cursor:pointer}
+        .proj-card-name{font-size:14px;font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .15s}
+        .proj-card-name.is-focus{color:var(--ac)}
+        .proj-card-stats{font-size:11px;color:var(--td);margin-top:2px}
+        .proj-card-actions{display:flex;gap:4px;flex-shrink:0}
+        .proj-card-act{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--bd2);background:var(--s3);color:var(--tx);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:background .1s,border-color .1s}
+        .proj-card-act.focus-btn.is-focus{background:rgba(200,255,0,.15);border-color:var(--ac);color:var(--ac)}
+        .proj-card-act.del-btn{color:#ef4444;border-color:rgba(239,68,68,.25)}
+        /* Projekt-Toggle-Switch */
+        .proj-sw{position:relative;width:44px;height:24px;flex-shrink:0;cursor:pointer}
+        .proj-sw input{opacity:0;width:0;height:0;position:absolute}
+        .proj-sw-track{position:absolute;inset:0;background:var(--bd2);border-radius:12px;transition:background .2s;cursor:pointer}
+        .proj-sw-track::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .2s}
+        .proj-sw input:checked+.proj-sw-track{background:var(--ac)}
+        .proj-sw input:checked+.proj-sw-track::after{transform:translateX(20px)}
+        /* Karten-Erstellmodus Cursor */
+        body.proj-create-mode,body.proj-create-mode .leaflet-container{cursor:crosshair!important}
+        /* Hint-Banner beim Karten-Doppelklick-Modus */
+        #proj-create-hint{
+          position:fixed;top:62px;left:50%;transform:translateX(-50%);
+          background:var(--s1);border:2px solid var(--ac);border-radius:14px;
+          padding:10px 14px;z-index:650;font-size:13px;color:var(--tx);
+          box-shadow:0 4px 20px rgba(0,0,0,.45);display:none;
+          align-items:center;gap:10px;max-width:calc(100vw - 32px);
+        }
+        #proj-create-hint.show{display:flex}
+        /* Schritt-2 Modal: Neues Projekt nach Doppelklick */
+        #proj-step2-modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:710;display:none;align-items:flex-end;justify-content:center}
+        #proj-step2-modal.show{display:flex}
+        #proj-step2-sheet{background:var(--s1);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding-bottom:env(safe-area-inset-bottom,16px);animation:slideUp .22s ease;max-height:90vh;overflow-y:auto}
+        .proj-s2-opt{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;border-top:1px solid var(--bd2);touch-action:manipulation;font-size:14px;color:var(--tx);transition:background .1s}
+        .proj-s2-opt:active{background:var(--s2)}
+        .proj-s2-icon{width:40px;height:40px;border-radius:10px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+        /* VERALTET – compat */
+        #proj-create-modal{display:none!important}
         /* ── FEATURE LOCATION PICKER MODAL ─────────────────────── */
         #feat-pos-modal{
           position:fixed;inset:0;z-index:9000;display:none;
@@ -3948,13 +4050,91 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
   </div>
 </div>
 
-<!-- FILTER -->
+<!-- FILTER + PROJEKT-AUSWAHL -->
 <div id="fbar">
   <button class="chip on" data-f="all"      onclick="setFilter('all',this)">Alle</button>
   <button class="chip"    data-f="beginner" aria-label="Beginner Filter" onclick="setFilter('beginner',this)">🟢 Beginner</button>
   <button class="chip"    data-f="mittel"   onclick="setFilter('mittel',this)">🟡 Mittel</button>
   <button class="chip"    data-f="expert"   onclick="setFilter('expert',this)">🔴 Expert</button>
   <button class="chip"    data-f="logistik" aria-label="Logistik Filter" onclick="setFilter('logistik',this)">🔵 Logistik</button>
+  <!-- Projekt-Dropdown -->
+  <div id="proj-bar">
+    <button id="proj-toggle-btn" onclick="toggleProjDropdown()"
+      aria-haspopup="listbox" aria-expanded="false" aria-label="Aktives Projekt wechseln">
+      <span id="proj-curr-name">Standard</span>
+      <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+        <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div id="proj-dropdown" role="listbox" hidden aria-label="Projekte">
+      <input id="proj-search-inp" type="search" placeholder="Projekt suchen…"
+        oninput="_filterProjList(this.value)" autocomplete="off" aria-label="Projekte filtern">
+      <div id="proj-list-inner" role="group"></div>
+      <button class="proj-new-btn" onclick="startNewProjMode()">➕ Neues Projekt</button>
+    </div>
+  </div>
+</div>
+
+<!-- Projekt Erstellen: Hinweisbanner (zeigt sich während Map-Doppelklick-Modus) -->
+<div id="proj-create-hint" role="status" aria-live="polite">
+  <span style="font-size:18px">🗺️</span>
+  <span style="font-weight:700;font-size:14px">Doppelklick auf die Karte, um den Fokuspunkt des neuen Projekts zu setzen</span>
+  <button onclick="_cancelProjCreateMode()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation;white-space:nowrap">Abbrechen</button>
+</div>
+
+<!-- Projekt Erstellen: Schritt 2 — Optionen-Sheet (nach Doppelklick) -->
+<div id="proj-step2-modal" role="dialog" aria-modal="true" aria-labelledby="proj-s2-ttl">
+  <div id="proj-step2-sheet">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px">
+      <div>
+        <div id="proj-s2-ttl" style="font-family:var(--fh);font-size:17px;font-weight:900;color:var(--tx)">Neues Projekt</div>
+        <div id="proj-s2-sub" style="font-size:12px;color:var(--td);margin-top:2px">Fokuspunkt gesetzt · Was möchtest du tun?</div>
+      </div>
+      <button onclick="closeProjStep2()" style="width:32px;height:32px;border-radius:8px;border:none;background:var(--s2);color:var(--tx);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation" aria-label="Schließen">✕</button>
+    </div>
+    <!-- Name-Eingabe -->
+    <div style="padding:0 16px 12px">
+      <label style="font-size:12px;color:var(--td);font-weight:700;display:block;margin-bottom:4px">Projektname</label>
+      <input id="proj-s2-name" type="text" placeholder="z.B. Sauerland 2026" maxlength="40"
+        class="sp-inp" style="width:100%;box-sizing:border-box"
+        onkeydown="if(event.key==='Enter')saveProjStep2('only')">
+    </div>
+    <!-- Aktions-Optionen -->
+    <div style="border-top:1px solid var(--bd2)">
+      <button class="proj-s2-opt" onclick="saveProjStep2('marker')" style="width:100%;background:none;border:none;text-align:left">
+        <div class="proj-s2-icon">📍</div>
+        <div>
+          <div style="font-weight:700">Marker setzen</div>
+          <div style="font-size:12px;color:var(--td);margin-top:2px">Erstelle das Projekt und setze direkt einen Marker</div>
+        </div>
+      </button>
+      <button class="proj-s2-opt" onclick="saveProjStep2('gpx')" style="width:100%;background:none;border:none;text-align:left">
+        <div class="proj-s2-icon">🗺️</div>
+        <div>
+          <div style="font-weight:700">GPX-Strecke laden</div>
+          <div style="font-size:12px;color:var(--td);margin-top:2px">Erstelle das Projekt und importiere eine GPX-Datei</div>
+        </div>
+      </button>
+      <button class="proj-s2-opt" onclick="saveProjStep2('import')" style="width:100%;background:none;border:none;text-align:left">
+        <div class="proj-s2-icon">📥</div>
+        <div>
+          <div style="font-weight:700">Projekt importieren</div>
+          <div style="font-size:12px;color:var(--td);margin-top:2px">Lade ein vorhandenes Projekt-JSON (Strecken, Marker, Daten)</div>
+        </div>
+      </button>
+      <button class="proj-s2-opt" onclick="saveProjStep2('only')" style="width:100%;background:none;border:none;text-align:left">
+        <div class="proj-s2-icon">✅</div>
+        <div>
+          <div style="font-weight:700">Nur Projekt erstellen</div>
+          <div style="font-size:12px;color:var(--td);margin-top:2px">Leeres Projekt anlegen, Inhalte später hinzufügen</div>
+        </div>
+      </button>
+    </div>
+    <!-- Versteckter File-Picker für GPX / Projekt-Import -->
+    <input id="proj-s2-gpx-inp"    type="file" accept=".gpx"  style="display:none" onchange="_onProjS2GpxPick(this)">
+    <input id="proj-s2-import-inp" type="file" accept=".json" style="display:none" onchange="_onProjS2ImportPick(this);this.value=''">
+  </div>
 </div>
 
 <!-- TTS Control Bar — persistent, sichtbar wenn Vorlesefunktion aktiv -->
@@ -4296,7 +4476,8 @@ function escXml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt
 const LS = {
   K: { TRACKS:'gmtw_tracks_v2', RUNS:'gmtw_runs_v1', REC:'gmtw_rec_v2', VIEW:'gmtw_view_v1', THEME:'gmtw_theme',
        GPS_EMOJI:'gmtw_gps_emoji', HOME_REGION:'gmtw_home_region', INSTALL_DECLINE:'gmtw_install_decline',
-       CUSTOM_MARKERS:'gmtw_custom_markers_v1', PROFILE:'gmtw_profile_v1', A11Y:'gmtw_a11y_v1' },
+       CUSTOM_MARKERS:'gmtw_custom_markers_v1', PROFILE:'gmtw_profile_v1', A11Y:'gmtw_a11y_v1',
+       PROJECTS:'gmtw_projects_v1', ACTIVE_PROJECT:'gmtw_active_project_v1' },
   _ok: null,
 
   // Prüft ob localStorage verfügbar ist (Private Mode, iOS-Restrictions etc.)
@@ -4430,10 +4611,13 @@ L.control.zoom({position:'bottomright'}).addTo(map);
 
 const TOPO = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{
   maxNativeZoom:17,maxZoom:26,
+  keepBuffer:4,updateWhenIdle:false,updateWhenZooming:false,
   attribution:'<a href="https://opentopomap.org">© OpenTopoMap</a> (CC-BY-SA) · <a href="https://www.openstreetmap.org/copyright">© OSM</a>'
 }).addTo(map);
 const SAT = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
-  maxNativeZoom:19,maxZoom:26,attribution:'© Esri'
+  maxNativeZoom:19,maxZoom:26,
+  keepBuffer:4,updateWhenIdle:false,updateWhenZooming:false,
+  attribution:'© Esri'
 });
 let isSat=false;
 function toggleLayer(){
@@ -4447,6 +4631,105 @@ map.on('moveend zoomend',()=>{
   LS.set(LS.K.VIEW,{lat:c.lat,lng:c.lng,zoom:map.getZoom()});
 });
 
+// ══════════════════════════════════════════════════════════════
+// PROFESSIONELLES TILE-PRE-CACHING
+// Prinzip: Wenn die Karte ruhig ist, alle Tiles des sichtbaren
+// Bereichs + Puffer in allen relevanten Zoomstufen vorab cachen.
+// Nutzt requestIdleCallback → blockiert NICHT den Hauptthread.
+// Der SW verwaltet ein Konkurrenz-Limit, kein Browser-Hang.
+// ══════════════════════════════════════════════════════════════
+const _TPC = {
+  _tid:   null,  // debounce timer
+  _idle:  null,  // idle callback handle
+  DEBOUNCE:  1400, // ms nach letztem move/zoom
+  PAD:       0.5,  // Viewport-Puffer (50 % pro Seite)
+  ZOOM_BELOW: 2,   // Zoomstufen unter aktuellem Zoom cachen
+  ZOOM_ABOVE: 1,   // Zoomstufen über aktuellem Zoom cachen
+  MAX_TILES:  600, // Limit pro Prefetch-Batch (verhindert Speicher-Overflow)
+
+  // Geographische Koordinate → OSM-Tile-Index (Leaflet-Kachelsystem)
+  _ll2tile(lat, lng, z) {
+    const n   = 1 << z; // 2^z
+    const latR = lat * Math.PI / 180;
+    return {
+      x: Math.floor((lng + 180) / 360 * n),
+      y: Math.floor((1 - Math.log(Math.tan(latR) + 1 / Math.cos(latR)) / Math.PI) / 2 * n)
+    };
+  },
+
+  // Tile-URLs für ein Bounds-Rechteck bei gegebenem Zoom berechnen.
+  // Sortiert nach Manhattan-Distanz vom Mittelpunkt → wichtigste Tiles zuerst.
+  _urlsForBounds(bounds, z, tplFn) {
+    const nw = this._ll2tile(bounds.getNorth(), bounds.getWest(), z);
+    const se = this._ll2tile(bounds.getSouth(), bounds.getEast(), z);
+    const cx = (nw.x + se.x) / 2, cy = (nw.y + se.y) / 2;
+    const cells = [];
+    for (let x = nw.x; x <= se.x; x++)
+      for (let y = nw.y; y <= se.y; y++)
+        cells.push({ x, y, d: Math.abs(x - cx) + Math.abs(y - cy) });
+    cells.sort((a, b) => a.d - b.d);
+    return cells.map(c => tplFn(c.x, c.y, z));
+  },
+
+  // Tile-URL-Template-Funktion für OpenTopoMap (aktive Schicht)
+  _topoUrl(x, y, z) {
+    return `https://${'abc'[(x + y) % 3]}.tile.opentopomap.org/${z}/${x}/${y}.png`;
+  },
+  // Tile-URL-Template-Funktion für Esri Satellite
+  _satUrl(x, y, z) {
+    return `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`;
+  },
+
+  // Prefetch-Lauf: Tiles berechnen und per SW-Message cachen
+  _run() {
+    if (!map || !navigator.serviceWorker?.controller) return;
+    const zoom = Math.round(map.getZoom());
+    if (zoom < 7 || zoom > 19) return; // Sinnlose Zoom-Extrema überspringen
+
+    const padded   = map.getBounds().pad(this.PAD);
+    const zMin     = Math.max(7,  zoom - this.ZOOM_BELOW);
+    const zMax     = Math.min(19, zoom + this.ZOOM_ABOVE);
+    const tplFn    = isSat ? this._satUrl : this._topoUrl;
+    const allUrls  = [];
+
+    for (let z = zMin; z <= zMax; z++)
+      allUrls.push(...this._urlsForBounds(padded, z, tplFn));
+
+    // Hard-Limit: verhindert absurde Requests bei zu großem Viewport
+    const urls = allUrls.slice(0, this.MAX_TILES);
+    if (!urls.length) return;
+
+    const send = () => {
+      if (!navigator.serviceWorker?.controller) return;
+      const ch = new MessageChannel();
+      ch.port1.onmessage = e => {
+        const d = e.data;
+        if (d?.fetched > 0) console.log(`[TPC] ${d.fetched} neue Tiles gecacht (${d.already} bereits vorhanden)`);
+      };
+      navigator.serviceWorker.controller.postMessage({ type: 'PREFETCH_TILES', urls }, [ch.port2]);
+    };
+
+    // requestIdleCallback: warte auf Browser-Idle → kein Haupt-Thread-Block
+    if (this._idle) { try { cancelIdleCallback(this._idle); } catch {} this._idle = null; }
+    if ('requestIdleCallback' in window) {
+      this._idle = requestIdleCallback(send, { timeout: 6000 });
+    } else {
+      setTimeout(send, 600);
+    }
+  },
+
+  // Debounced schedule: nur nach Ruhe auslösen, nicht bei jeder Tile-Bewegung
+  schedule() {
+    clearTimeout(this._tid);
+    this._tid = setTimeout(() => this._run(), this.DEBOUNCE);
+  }
+};
+
+// Tile-Prefetch nach jeder Karten-Bewegung (debounced)
+map.on('moveend zoomend', () => _TPC.schedule());
+// Einmalig 2,5 s nach App-Start (wenn Karte sich stabilisiert hat)
+setTimeout(() => _TPC.schedule(), 2500);
+
 // Weg zurück ins Camp — standardmäßig NICHT auf der Karte, nur bei Logistik-Filter oder manuellem Toggle
 const _wegLayer = L.polyline(WEG,{color:'#f59e0b',weight:3.5,dashArray:'8 10',lineCap:'round',opacity:.85})
   .bindTooltip('↩️ Weg zurück ins Camp',{permanent:false,direction:'center',className:'path-lbl'});
@@ -4457,6 +4740,10 @@ let curFilter='all';
 
 // Globale Marker-Größen-Skalierung (1.0 = Standard, 0.7–2.0)
 let _markerScale = Math.max(0.5, Math.min(2.0, parseFloat(LS.get('gmtw_marker_scale','1.0')) || 1.0));
+
+// ── MULTI-PROJEKT ────────────────────────────────────────────
+let _projects        = [];   // Array von {id, name, centerLat, centerLng, zoom, createdAt}
+let _activeProjectId = '';   // ID des aktiven Projekts
 
 // LOCS-Sichtbarkeit und Überschreibungen (pro Marker)
 let _locsHidden   = new Set();
@@ -4652,7 +4939,7 @@ function buildList(){
           <button class="lbtn nav" aria-label="Navigation zu ${escHtml(effName)}" onclick="event.stopPropagation();navTo(${loc.lat},${loc.lng},'${esc(effName)}')">${_navSvg}</button>
           <button class="lbtn" aria-label="QR-Code für ${escHtml(effName)}" onclick="event.stopPropagation();openQR('${esc(loc.id)}')">${_qrSvg}</button>
         </div>`;
-      r.addEventListener('click',()=>{ closeAll(); focusMarker(loc.id); });
+      r.addEventListener('click',()=>{ if(_a11y.enabled) speak(effEmoji+' '+effName,true); closeAll(); focusMarker(loc.id); });
       c.appendChild(r);
     });
   });
@@ -4660,6 +4947,7 @@ function buildList(){
   // ── 2. Strecken-Marker (Start / Ziel der geladenen GPX-Tracks) ─────────
   const trkRows=[];
   trackStore.tracks.forEach(t=>{
+    if(_activeProjectId&&t.projectId!==_activeProjectId) return;
     if(curFilter!=='all'&&curFilter!==t.cat) return;
     if(t._startMkr){
       const p=t._startMkr.getLatLng();
@@ -4692,6 +4980,7 @@ function buildList(){
           <button class="lbtn" aria-label="QR-Code für ${escHtml(track.name)}" onclick="event.stopPropagation();openTrackQR('${track.id}')">${_qrSvg}</button>
         </div>`;
       r.addEventListener('click',()=>{
+        if(_a11y.enabled) speak(emoji+' '+label+': '+track.name,true);
         closeAll();
         map.setView([lat,lng],17);
         setTimeout(()=>{
@@ -4704,7 +4993,10 @@ function buildList(){
   }
 
   // ── 3. Eigene Marker ────────────────────────────────────────────────────
-  const visCm=_cmMarkers.filter(()=>curFilter==='all'); // Custom markers always in "all" view
+  // Marker aller aktivierten Projekte in der Liste anzeigen
+  const _enabledProjIds=new Set(_projects.filter(p=>p.enabled!==false).map(p=>p.id));
+  if(_activeProjectId) _enabledProjIds.add(_activeProjectId);
+  const visCm=_cmMarkers.filter(m=>_enabledProjIds.has(m.projectId)||!m.projectId);
   if(visCm.length>0){
     const hd=document.createElement('div'); hd.className='cat-head'; hd.textContent='Eigene Marker'; c.appendChild(hd);
     visCm.forEach(cm=>{
@@ -4719,7 +5011,7 @@ function buildList(){
           <button class="lbtn nav" onclick="event.stopPropagation();navTo(${cm.lat},${cm.lng},'${esc(cm.name)}')">${_navSvg}</button>
           <button class="lbtn" onclick="event.stopPropagation();openCmShareQr('${cm.id}')">${_qrSvg}</button>
         </div>`;
-      r.addEventListener('click',()=>{ closeAll(); map.setView([cm.lat,cm.lng],17); setTimeout(()=>{ if(_cmLeafletLayers[cm.id]) _cmLeafletLayers[cm.id].openPopup(); },350); });
+      r.addEventListener('click',()=>{ if(_a11y.enabled) speak((cm.emoji||'📍')+' '+cm.name,true); closeAll(); map.setView([cm.lat,cm.lng],17); setTimeout(()=>{ if(_cmLeafletLayers[cm.id]) _cmLeafletLayers[cm.id].openPopup(); },350); });
       c.appendChild(r);
     });
   }
@@ -4730,7 +5022,20 @@ function buildList(){
 function toggleSheet(){
   const s=document.getElementById('sheet'),b=document.getElementById('backdrop');
   if(s.classList.contains('open')){s.classList.remove('open');b.classList.remove('show')}
-  else{buildList();s.classList.add('open');b.classList.add('show');s.focus();}
+  else{
+    buildList();s.classList.add('open');b.classList.add('show');s.focus();
+    setTimeout(()=>{ if(map) map.invalidateSize(); },300);
+    if(_a11y.enabled){
+      const cats=[];
+      ['beginner','mittel','expert','logistik'].forEach(cat=>{
+        const n=LOCS.filter(l=>l.cat===cat&&!l.line&&!_locsHidden.has(l.id)&&(curFilter==='all'||curFilter===cat)).length;
+        if(n) cats.push(CATS[cat].label+': '+n);
+      });
+      const cmN=(_cmMarkers||[]).filter(m=>!_activeProjectId||m.projectId===_activeProjectId).length;
+      if(cmN) cats.push('Eigene Marker: '+cmN);
+      speak('Menü geöffnet. '+(cats.length?cats.join(', '):'Keine Einträge')+'.',true);
+    }
+  }
 }
 
 function closeAll(){
@@ -4804,9 +5109,39 @@ function focusMarker(id){
   setTimeout(()=>m.openPopup(),1250);
 }
 function fitAll(){
-  const vis=LOCS.filter(l=>curFilter==='all'||l.cat===curFilter);
-  if(!vis.length)return;
-  map.flyToBounds(L.latLngBounds(vis.map(l=>[l.lat,l.lng])),{padding:[55,55],maxZoom:17,animate:true,duration:1.3});
+  if(!map) return;
+  const lb = L.latLngBounds([]);
+
+  // Aktive Projekt-IDs ermitteln (enabled oder Fokus-Projekt)
+  const enabledIds = new Set(_projects.filter(p => p.enabled !== false).map(p => p.id));
+  if (_activeProjectId) enabledIds.add(_activeProjectId); // Fokus-Projekt immer einbeziehen
+
+  // 1. Alle aktivierten Projekte – Strecken (mit Bounds)
+  trackStore.tracks
+    .filter(t => enabledIds.has(t.projectId) && t.bounds)
+    .forEach(t => lb.extend(L.latLngBounds(t.bounds)));
+
+  // 2. Alle aktivierten Projekte – Custom Marker
+  (_cmMarkers || [])
+    .filter(m => enabledIds.has(m.projectId))
+    .forEach(m => lb.extend([m.lat, m.lng]));
+
+  // 3. LOCS-Marker IMMER einbeziehen (sichtbar + zu aktuellem Filter passend)
+  //    → so zeigt "Übersicht" IMMER die gesamte Trail-Region
+  LOCS
+    .filter(l => !_locsHidden.has(l.id) && (curFilter === 'all' || l.cat === curFilter) && !l.line)
+    .forEach(l => lb.extend([l.lat, l.lng]));
+
+  if (lb.isValid()) {
+    map.flyToBounds(lb, { padding:[52,52], maxZoom:16, animate:true, duration:1.3 });
+    return;
+  }
+
+  // Fallback: Projekt-Zentrum
+  const proj = _projects.find(p => p.id === _activeProjectId);
+  if (proj && proj.centerLat != null) {
+    map.flyTo([proj.centerLat, proj.centerLng], proj.zoom || 15, { animate:true, duration:1.2 });
+  }
 }
 
 // ── NAVIGATION ─────────────────────────────────────────────────
@@ -4931,6 +5266,337 @@ function toggleTheme(){
   LS.set(LS.K.THEME, isDark?'dark':'light');
   toast(isDark?'🌙 Dunkel Modus':'☀️ Hell Modus');
 }
+// ── PROJEKT INITIALISIERUNG ─────────────────────────────────────
+// State für Karten-Erstellungsmodus
+let _projCreateMode    = false;
+let _projCreateDblHndl = null;
+let _projCreateTempLL  = null; // { lat, lng, zoom }
+
+function _initProjects() {
+  _projects = LS.get(LS.K.PROJECTS, []);
+  if (!_projects.length) {
+    // Erster Start: Standard-Projekt erstellen, bestehende Home-Region übernehmen
+    const hr = LS.get(LS.K.HOME_REGION);
+    _projects = [{
+      id: 'proj_' + Date.now(),
+      name: 'GMTW',
+      centerLat: hr ? (parseFloat(hr.lat)||null) : null,
+      centerLng: hr ? (parseFloat(hr.lng)||null) : null,
+      zoom: 16, enabled: true,
+      createdAt: new Date().toISOString()
+    }];
+    LS.set(LS.K.PROJECTS, _projects);
+  }
+  // Migration: fehlende Felder ergänzen
+  let migrated = false;
+  _projects.forEach(p => { if (p.enabled === undefined) { p.enabled = true; migrated = true; } });
+  if (migrated) LS.set(LS.K.PROJECTS, _projects);
+  _activeProjectId = LS.get(LS.K.ACTIVE_PROJECT, '') || _projects[0].id;
+  // Sicherstellen dass die gespeicherte ID noch existiert
+  if (!_projects.find(p => p.id === _activeProjectId)) _activeProjectId = _projects[0].id;
+  LS.set(LS.K.ACTIVE_PROJECT, _activeProjectId);
+  // Dropdown-Label aktualisieren
+  const proj = _projects.find(p => p.id === _activeProjectId);
+  const nameEl = document.getElementById('proj-curr-name');
+  if (nameEl && proj) nameEl.textContent = proj.name;
+}
+
+function _migrateToProjects() {
+  const defaultId = _projects[0]?.id || '';
+  if (!defaultId) return;
+  let changed = false;
+  trackStore.tracks.forEach(t => {
+    if (!t.projectId) { t.projectId = defaultId; changed = true; }
+  });
+  if (changed) persistTracks();
+}
+
+// ── FOKUS-PROJEKT SETZEN (Ziel für neue Inhalte + Übersicht-Zoom) ────────────
+function setFocusProject(id) {
+  const proj = _projects.find(p => p.id === id);
+  if (!proj) return;
+  _activeProjectId = id;
+  LS.set(LS.K.ACTIVE_PROJECT, id);
+  const nameEl = document.getElementById('proj-curr-name');
+  if (nameEl) nameEl.textContent = proj.name;
+  renderTrackList();
+  buildList();
+  _ariaAnnounce('Fokus-Projekt: ' + proj.name);
+}
+
+// ── PROJEKT AKTIVIEREN / DEAKTIVIEREN (Layer-Sichtbarkeit) ──────────────────
+function toggleProjectEnabled(id, enabled) {
+  const proj = _projects.find(p => p.id === id);
+  if (!proj) return;
+  proj.enabled = !!enabled;
+  LS.set(LS.K.PROJECTS, _projects);
+  // Tracks ein-/ausblenden
+  trackStore.tracks.filter(t => t.projectId === id).forEach(t => {
+    const show = enabled && t.visible;
+    if (t.gpxLayer) {
+      if (show) { if (!map.hasLayer(t.gpxLayer)) t.gpxLayer.addTo(map); }
+      else       { if  (map.hasLayer(t.gpxLayer)) map.removeLayer(t.gpxLayer); }
+    }
+    if (t._startMkr) {
+      if (show) t._startMkr.addTo(map);
+      else if (map.hasLayer(t._startMkr)) map.removeLayer(t._startMkr);
+    }
+    if (t._finishMkr) {
+      if (show) t._finishMkr.addTo(map);
+      else if (map.hasLayer(t._finishMkr)) map.removeLayer(t._finishMkr);
+    }
+  });
+  // Custom Markers ein-/ausblenden
+  (_cmMarkers||[]).filter(m => m.projectId === id).forEach(m => {
+    const layer = _cmLeafletLayers?.[m.id];
+    if (!layer) return;
+    if (enabled) { if (!map.hasLayer(layer)) layer.addTo(map); }
+    else         { if  (map.hasLayer(layer)) map.removeLayer(layer); }
+  });
+}
+
+// ── PROJEKT-VERWALTUNG FUNKTIONEN ──────────────────────────────
+
+// Dropdown öffnen / schließen
+function toggleProjDropdown() {
+  const dd  = document.getElementById('proj-dropdown');
+  const btn = document.getElementById('proj-toggle-btn');
+  if (!dd) return;
+  const willOpen = dd.hidden;
+  dd.hidden = !willOpen;
+  btn.setAttribute('aria-expanded', String(willOpen));
+  if (!willOpen) return;
+  _renderProjList();
+  setTimeout(() => document.getElementById('proj-search-inp')?.focus(), 50);
+}
+function closeProjDropdown() {
+  const dd = document.getElementById('proj-dropdown');
+  if (!dd || dd.hidden) return;
+  dd.hidden = true;
+  document.getElementById('proj-toggle-btn')?.setAttribute('aria-expanded','false');
+}
+// Schließen bei Klick außerhalb (capture phase)
+document.addEventListener('click', e => {
+  const bar = document.getElementById('proj-bar');
+  if (bar && !bar.contains(e.target)) closeProjDropdown();
+}, true);
+// Schließen bei Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { const dd = document.getElementById('proj-dropdown'); if (dd && !dd.hidden) { closeProjDropdown(); document.getElementById('proj-toggle-btn')?.focus(); } }
+});
+
+// Projektliste rendern
+function _renderProjList(filter='') {
+  const inner = document.getElementById('proj-list-inner');
+  if (!inner) return;
+  inner.innerHTML = '';
+  const q = filter.toLowerCase();
+  const list = _projects.filter(p => !q || p.name.toLowerCase().includes(q));
+  if (!list.length) {
+    inner.innerHTML = '<div style="padding:12px 14px;font-size:13px;color:var(--td)">Keine Projekte gefunden</div>';
+    return;
+  }
+  list.forEach(p => {
+    const isFocus   = p.id === _activeProjectId;
+    const isEnabled = p.enabled !== false;
+    const item = document.createElement('div');
+    item.className = 'proj-item' + (isFocus ? ' active' : '');
+    item.setAttribute('role','option');
+    item.setAttribute('aria-selected', isFocus ? 'true' : 'false');
+    item.style.cssText = 'display:flex;align-items:center;gap:6px';
+    // Grüner/grauer Aktivitätspunkt
+    const dot = document.createElement('span');
+    dot.style.cssText = 'display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0;background:' + (isEnabled ? 'var(--ac)' : 'var(--td)');
+    dot.title = isEnabled ? 'Aktiv' : 'Deaktiviert';
+    item.appendChild(dot);
+    item.appendChild(document.createTextNode('\u00a0' + p.name));
+    item.addEventListener('click', () => { switchProject(p.id); closeProjDropdown(); });
+    inner.appendChild(item);
+  });
+}
+function _filterProjList(val) { _renderProjList(val); }
+
+// ── PROJEKT WECHSELN (Fokus + sicherstellen aktiviert + Karte zoomen) ────────
+function switchProject(id) {
+  const proj = _projects.find(p => p.id === id);
+  if (!proj) return;
+  // Fokus-Projekt aktivieren falls deaktiviert
+  if (!proj.enabled) {
+    proj.enabled = true;
+    LS.set(LS.K.PROJECTS, _projects);
+    toggleProjectEnabled(id, true);
+  }
+  setFocusProject(id);
+  fitAll();
+  speak('Projekt: ' + proj.name + '.', true);
+  toast('📁 ' + proj.name);
+}
+
+// ── NEUES PROJEKT — KARTEN-DOPPELKLICK-MODUS ────────────────────────────────
+function startNewProjMode() {
+  closeProjDropdown();
+  closeSettings();
+  _projCreateMode = true;
+  document.body.classList.add('proj-create-mode');
+  document.getElementById('proj-create-hint')?.classList.add('show');
+  _projCreateDblHndl = function(e) {
+    _cancelProjCreateMode(false); // Modus beenden ohne Abbrechen-Meldung
+    _openProjStep2(e.latlng.lat, e.latlng.lng, map.getZoom());
+  };
+  map.once('dblclick', _projCreateDblHndl);
+  speak('Doppelklick auf die Karte, um den Fokuspunkt des neuen Projekts zu setzen.', true);
+}
+
+function _cancelProjCreateMode(showMsg) {
+  _projCreateMode = false;
+  document.body.classList.remove('proj-create-mode');
+  document.getElementById('proj-create-hint')?.classList.remove('show');
+  if (_projCreateDblHndl && map) { map.off('dblclick', _projCreateDblHndl); _projCreateDblHndl = null; }
+  if (showMsg !== false) speak('Abgebrochen.', true);
+}
+
+function _openProjStep2(lat, lng, zoom) {
+  _projCreateTempLL = { lat, lng, zoom: zoom || (map ? map.getZoom() : 15) };
+  const nameEl = document.getElementById('proj-s2-name');
+  if (nameEl) nameEl.value = '';
+  const sub = document.getElementById('proj-s2-sub');
+  if (sub) sub.textContent = 'Fokuspunkt: ' + lat.toFixed(5) + ', ' + lng.toFixed(5) + ' · Was möchtest du tun?';
+  document.getElementById('proj-step2-modal')?.classList.add('show');
+  setTimeout(() => document.getElementById('proj-s2-name')?.focus(), 150);
+}
+
+function closeProjStep2() {
+  document.getElementById('proj-step2-modal')?.classList.remove('show');
+  _projCreateTempLL = null;
+}
+
+async function saveProjStep2(action) {
+  if (action === 'import') {
+    document.getElementById('proj-s2-import-inp')?.click();
+    return;
+  }
+  const name = document.getElementById('proj-s2-name')?.value.trim();
+  if (!name) { document.getElementById('proj-s2-name')?.focus(); toast('⚠️ Bitte Projektname eingeben'); return; }
+  const ll = _projCreateTempLL;
+  const proj = {
+    id: 'proj_' + Date.now(), name,
+    centerLat: ll ? ll.lat  : null,
+    centerLng: ll ? ll.lng  : null,
+    zoom:      ll ? ll.zoom : 15,
+    enabled: true,
+    createdAt: new Date().toISOString()
+  };
+  _projects.push(proj);
+  LS.set(LS.K.PROJECTS, _projects);
+  closeProjStep2();
+  switchProject(proj.id);
+  _renderSettingsProjList();
+  speak('Neues Projekt erstellt: ' + name + '.', false);
+  if (action === 'marker') {
+    setTimeout(() => { if (ll) map.setView([ll.lat, ll.lng], ll.zoom || 15); toggleMarkerMode(); }, 400);
+  } else if (action === 'gpx') {
+    setTimeout(() => document.getElementById('proj-s2-gpx-inp')?.click(), 300);
+  }
+}
+
+// File-Picker-Handler für Schritt 2
+function _onProjS2GpxPick(input) {
+  const file = input?.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => loadGpxXml(e.target.result, file.name.replace(/\.gpx$/i,''));
+  reader.readAsText(file);
+  input.value = '';
+}
+function _onProjS2ImportPick(input) {
+  closeProjStep2(); // Sheet schließen bevor Import-Verarbeitung startet
+  importProjectJson(input);
+}
+
+// Projekt-Fokus auf aktuelle Kartenposition setzen
+function projSetCenterFromMap(id) {
+  const proj = _projects.find(p => p.id === id);
+  if (!proj || !map) return;
+  const c = map.getCenter();
+  proj.centerLat = c.lat; proj.centerLng = c.lng; proj.zoom = map.getZoom();
+  LS.set(LS.K.PROJECTS, _projects);
+  toast('📍 Fokus für "' + proj.name + '" gespeichert');
+}
+
+// ── PROJEKT LÖSCHEN ──────────────────────────────────────────────────────────
+function deleteProject(id) {
+  if (_projects.length <= 1) { toast('⚠️ Mindestens ein Projekt erforderlich'); return; }
+  const proj = _projects.find(p => p.id === id);
+  if (!proj) return;
+  if (!confirm('Projekt "' + proj.name + '" löschen?\n\nStrecken und Marker werden dem ersten verbleibenden Projekt zugewiesen.')) return;
+  const remaining  = _projects.filter(p => p.id !== id);
+  const fallbackId = remaining[0].id;
+  // Tracks re-zuweisen
+  let tChanged = false;
+  trackStore.tracks.forEach(t => { if (t.projectId === id) { t.projectId = fallbackId; tChanged = true; } });
+  if (tChanged) persistTracks();
+  // Custom Markers re-zuweisen
+  if (Array.isArray(_cmMarkers)) {
+    let mChanged = false;
+    _cmMarkers.forEach(m => { if (m.projectId === id) { m.projectId = fallbackId; mChanged = true; } });
+    if (mChanged) localforage.setItem(LS.K.CUSTOM_MARKERS, _cmMarkers).catch(()=>{});
+  }
+  _projects = remaining;
+  LS.set(LS.K.PROJECTS, _projects);
+  if (_activeProjectId === id) switchProject(fallbackId);
+  else _renderSettingsProjList();
+  speak('Projekt gelöscht: ' + proj.name + '.', true);
+}
+
+// ── EINSTELLUNGS-KARTEN-LISTE (Card-Design mit Toggle-Switch) ────────────────
+function _renderSettingsProjList() {
+  const c = document.getElementById('sp-proj-list');
+  if (!c) return;
+  c.innerHTML = '';
+  if (!_projects.length) {
+    c.innerHTML = '<div style="font-size:13px;color:var(--td);padding:6px 0">Keine Projekte vorhanden</div>';
+    return;
+  }
+  _projects.forEach(p => {
+    const isFocus   = p.id === _activeProjectId;
+    const isEnabled = p.enabled !== false;
+    const trkN = trackStore.tracks.filter(t => t.projectId === p.id).length;
+    const mkrN = (_cmMarkers||[]).filter(m => m.projectId === p.id).length;
+    const statsStr = [
+      trkN ? trkN + ' Strecke' + (trkN !== 1 ? 'n' : '') : '',
+      mkrN ? mkrN + ' Marker' : ''
+    ].filter(Boolean).join(' · ') || 'Leer';
+
+    const card = document.createElement('div');
+    card.className = 'proj-card' + (isFocus ? ' is-focus' : '');
+    card.innerHTML =
+      '<div class="proj-card-header">'
+        + '<label class="proj-sw" title="' + (isEnabled ? 'Deaktivieren' : 'Aktivieren') + '" onclick="event.stopPropagation()">'
+            + '<input type="checkbox"' + (isEnabled ? ' checked' : '') + ' onchange="toggleProjectEnabled(\'' + p.id + '\',this.checked);_renderSettingsProjList()">'
+            + '<span class="proj-sw-track"></span>'
+          + '</label>'
+        + '<div class="proj-card-info"'
+            + (isFocus ? '' : ' role="button" tabindex="0" onclick="setFocusProject(\'' + p.id + '\');fitAll();_renderSettingsProjList()"')
+            + ' aria-label="' + escHtml(p.name) + (isFocus ? ' (Fokus)' : '') + '">'
+            + '<div class="proj-card-name' + (isFocus ? ' is-focus' : '') + '">'
+                + (isFocus ? '⭐ ' : '') + escHtml(p.name)
+              + '</div>'
+            + '<div class="proj-card-stats">' + escHtml(statsStr)
+                + (isFocus ? ' · <span style="color:var(--ac);font-weight:700">Fokus</span>' : '')
+              + '</div>'
+          + '</div>'
+        + '<div class="proj-card-actions">'
+            + '<button class="proj-card-act focus-btn' + (isFocus ? ' is-focus' : '') + '" '
+                + 'onclick="setFocusProject(\'' + p.id + '\');fitAll();_renderSettingsProjList()" '
+                + 'title="' + (isFocus ? 'Ist Fokus-Projekt' : 'Als Fokus setzen') + '" aria-label="Fokus">⭐</button>'
+            + '<button class="proj-card-act" onclick="exportProjectJson(\'' + p.id + '\')" title="Exportieren" aria-label="Exportieren">📤</button>'
+            + '<button class="proj-card-act del-btn" onclick="deleteProject(\'' + p.id + '\')" title="Löschen" aria-label="Löschen">🗑</button>'
+          + '</div>'
+      + '</div>';
+    c.appendChild(card);
+  });
+}
+
 function initTheme(){
   const saved=LS.get(LS.K.THEME,'dark');
   if(saved==='light'){
@@ -5683,6 +6349,8 @@ async function importNewTracks(fileNames) {
 // ── DEEP LINK ──────────────────────────────────────────────────
 window.addEventListener('load', async ()=>{
   initTheme();
+  // Projekte initialisieren (vor Track-Restore, damit projectId-Migration möglich)
+  _initProjects();
   const params=new URLSearchParams(window.location.search);
   const locId=params.get('loc');
   if(locId&&MKR[locId]) setTimeout(()=>focusMarker(locId),700);
@@ -5697,6 +6365,8 @@ window.addEventListener('load', async ()=>{
   // Gespeicherte Daten wiederherstellen (await: Auto-Download erst danach prüfen)
   restoreRecorder();
   await restoreTracks();
+  // Migration: bestehende Tracks dem Standard-Projekt zuweisen
+  _migrateToProjects();
   // Fehlende Official-Tracks im Hintergrund laden (silent, offline-safe)
   autoDownloadTracks();
   // Run-Cache für sync renderTrackList befüllen
@@ -5960,7 +6630,8 @@ function loadGpxXml(gpxStr, name, cat, existingId=null, sourceUrl=null, silent=f
       startPt:  pts.length > 0 ? pts[0]              : null,
       finishPt: pts.length > 1 ? pts[pts.length - 1] : null,
       stats: { dist, dur },
-      elevData: extractElevData(gl)
+      elevData: extractElevData(gl),
+      projectId: _activeProjectId || (_projects[0]?.id || '')
     };
 
     trackStore.tracks.push(track);
@@ -6080,9 +6751,9 @@ function filterTracks(cat, btn) {
 
 function renderTrackList() {
   const cont = document.getElementById('trk-list'); if(!cont) return;
-  const list = gpxFilter==='all'
-    ? trackStore.tracks
-    : trackStore.tracks.filter(t => t.cat===gpxFilter);
+  // Tracks des Fokus-Projekts anzeigen (im Tracks-Panel)
+  const base = trackStore.tracks.filter(t => !_activeProjectId || t.projectId===_activeProjectId);
+  const list = gpxFilter==='all' ? base : base.filter(t => t.cat===gpxFilter);
 
   if (!list.length) {
     cont.innerHTML = `<div style="padding:20px 16px;text-align:center;color:var(--td);`
@@ -6184,7 +6855,8 @@ async function persistTracks() {
       visible:   t.visible,
       stats:     t.stats,
       gpxString: t.gpxString || null,
-      sourceUrl: t.sourceUrl || null
+      sourceUrl: t.sourceUrl || null,
+      projectId: t.projectId || (_projects[0]?.id || '')
     }));
     await localforage.setItem(LS.K.TRACKS, rows);
   } catch(e) {
@@ -6236,10 +6908,12 @@ async function restoreTracks() {
           bounds, stats:{ dist, dur }, elevData:extractElevData(gl),
           startPt:  rPts.length > 0 ? rPts[0]               : null,
           finishPt: rPts.length > 1 ? rPts[rPts.length - 1] : null,
+          projectId: t.projectId || ''
         };
         trackStore.tracks.push(track);
-        // Sichtbarkeit: user-Präferenz UND aktiver Kategorie-Filter
-        const shouldBeOnMap = track.visible && (gpxFilter === 'all' || track.cat === gpxFilter);
+        // Sichtbarkeit: user-Präferenz + Kategorie-Filter + Projekt enabled
+        const projEnabled = _projects.find(p => p.id === track.projectId)?.enabled !== false;
+        const shouldBeOnMap = track.visible && (gpxFilter === 'all' || track.cat === gpxFilter) && projEnabled;
         if (!shouldBeOnMap) map.removeLayer(gl);
         // Start- und Ziel-Marker
         _addStartMarker(track);
@@ -8784,8 +9458,10 @@ function openSettings() {
   updateStorageInfo();
   renderAllMarkersList();
   _loadProfileForm();
+  _renderSettingsProjList();
   speak('Einstellungen geöffnet. Profil, Allgemein, Strecken, Backup, Marker, QR-Scan, App.', false);
   _ariaAnnounce('Einstellungen geöffnet');
+  setTimeout(()=>{ if(map) map.invalidateSize(); },300);
 }
 
 function closeSettings() {
@@ -8794,6 +9470,7 @@ function closeSettings() {
   stopQrScanner();
   speak('Einstellungen geschlossen.', false);
   _ariaAnnounce('Einstellungen geschlossen');
+  setTimeout(()=>{ if(map) map.invalidateSize(); },300);
 }
 
 const _SP_TAB_LABELS = {
@@ -8812,6 +9489,7 @@ function switchSpTab(name, btn) {
   const tab = document.getElementById('sp-tab-' + name);
   if (tab) tab.classList.add('on');
   // Tab-spezifische Initialisierung
+  if (name === 'general') _renderSettingsProjList();
   if (name === 'qr')      _initQrTab();
   if (name === 'tracks')  _initTracksTab();
   if (name === 'backup')  updateStorageInfo();
@@ -9183,6 +9861,9 @@ async function exportFullBackup() {
       trkFeatures:    JSON.parse(localStorage.getItem('gmtw_trk_features_v1') || '{}'),
       trkRatings:     JSON.parse(localStorage.getItem('gmtw_trk_ratings_v1')  || '{}'),
       trkEdits:       JSON.parse(localStorage.getItem('gmtw_trk_edits_v1')    || '{}'),
+      // Projekte (v8)
+      projects:       _projects,
+      activeProject:  _activeProjectId,
     };
 
     // Aktuell geladene Tracks mit vollständigen GPX-Daten sichern
@@ -9197,7 +9878,7 @@ async function exportFullBackup() {
     }));
 
     const backup = {
-      _version:  7,
+      _version:  8,
       _app:      'GMTW Trail Map',
       _exported: new Date().toISOString(),
       tracks:    mergedTracks,
@@ -9326,6 +10007,13 @@ async function importFullBackup(input) {
         if (s.trkEdits && typeof s.trkEdits === 'object') {
           localStorage.setItem('gmtw_trk_edits_v1', JSON.stringify(s.trkEdits));
         }
+        // Projekte (v8+)
+        if (Array.isArray(s.projects) && s.projects.length) {
+          LS.set(LS.K.PROJECTS, s.projects);
+        }
+        if (s.activeProject) {
+          LS.set(LS.K.ACTIVE_PROJECT, s.activeProject);
+        }
       }
 
       const imported = `${tracksN} Strecken · ${markersN} Marker`;
@@ -9339,6 +10027,256 @@ async function importFullBackup(input) {
   };
   reader.onerror = () => toast('❌ Datei nicht lesbar');
   reader.readAsText(file, 'utf-8');
+}
+
+// ══════════════════════════════════════════════════════════════
+// ── PROJEKT EXPORT / IMPORT ───────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+
+async function exportProjectJson(projectId) {
+  try {
+    projectId = projectId || _activeProjectId;
+    const proj = _projects.find(p => p.id === projectId);
+    if (!proj) { toast('❌ Projekt nicht gefunden'); return; }
+
+    toast('⏳ Projekt-Export wird erstellt…');
+
+    const projTracks  = trackStore.tracks.filter(t => t.projectId === projectId);
+    const projMarkers = (_cmMarkers || []).filter(m => m.projectId === projectId);
+
+    // GPX-Strings aus IndexedDB ergänzen (in-memory kann null sein für ältere Tracks)
+    const savedTracks = await localforage.getItem(LS.K.TRACKS) || [];
+    const dbGpxMap = {};
+    savedTracks.forEach(t => { if (t.gpxString) dbGpxMap[t.id] = t.gpxString; });
+
+    const allFeats = JSON.parse(localStorage.getItem('gmtw_trk_features_v1') || '{}');
+    const allRats  = JSON.parse(localStorage.getItem('gmtw_trk_ratings_v1')  || '{}');
+    const allEds   = JSON.parse(localStorage.getItem('gmtw_trk_edits_v1')    || '{}');
+
+    const ids = new Set(projTracks.map(t => t.id));
+    const feats = {}, rats = {}, eds = {};
+    ids.forEach(id => {
+      if (allFeats[id])           feats[id]           = allFeats[id];
+      if (allFeats[id + '_meta']) feats[id + '_meta'] = allFeats[id + '_meta'];
+      if (allRats[id])            rats[id]             = allRats[id];
+      if (allEds[id])             eds[id]              = allEds[id];
+    });
+
+    let tracksWithGpx = 0;
+    const exportTracks = projTracks.map(t => {
+      const gpxString = t.gpxString || dbGpxMap[t.id] || null;
+      if (gpxString) tracksWithGpx++;
+      return {
+        id: t.id, name: t.name, cat: t.cat, color: t.color,
+        visible: t.visible, stats: t.stats,
+        gpxString,
+        sourceUrl: t.sourceUrl || null,
+        projectId: t.projectId
+      };
+    });
+
+    const payload = {
+      _app: 'gmtw-project', _version: 1,
+      _exported: new Date().toISOString(),
+      project: proj,
+      tracks: exportTracks,
+      customMarkers: projMarkers,
+      trkFeatures: feats, trkRatings: rats, trkEdits: eds
+    };
+
+    const json  = JSON.stringify(payload, null, 2);
+    const kb    = Math.round(json.length / 1024);
+    const safe  = proj.name.replace(/[^a-zA-Z0-9äöüÄÖÜ_\-]/g, '-').replace(/-+/g, '-');
+    const fname = `gmtw-projekt-${safe}-${new Date().toISOString().slice(0, 10)}.json`;
+
+    // File System Access API (Chrome 86+) mit Fallback
+    if (window.showSaveFilePicker) {
+      try {
+        const fh = await window.showSaveFilePicker({
+          suggestedName: fname,
+          types: [{ description: 'GMTW Projekt JSON', accept: { 'application/json': ['.json'] } }]
+        });
+        const writable = await fh.createWritable();
+        await writable.write(json);
+        await writable.close();
+        toast(`✅ "${proj.name}" exportiert — ${tracksWithGpx} Strecken, ${projMarkers.length} Marker, ${kb} KB`);
+        return;
+      } catch(e) { if (e.name === 'AbortError') return; }
+    }
+
+    dlFile(fname, json, 'application/json');
+    toast(`✅ "${proj.name}" exportiert — ${tracksWithGpx} Strecken, ${projMarkers.length} Marker, ${kb} KB`);
+  } catch(e) {
+    toast('❌ Export fehlgeschlagen: ' + e.message);
+    console.error('exportProjectJson:', e);
+  }
+}
+
+async function importProjectJson(input) {
+  let file = null;
+  if (input && input.files && input.files[0]) { file = input.files[0]; input.value = ''; }
+  else if (input instanceof Blob) { file = input; }
+  if (!file) return;
+
+  let s;
+  try { s = JSON.parse(await file.text()); }
+  catch(e) { toast('❌ Ungültige JSON-Datei: ' + e.message); return; }
+
+  if (s._app !== 'gmtw-project') { toast('❌ Kein GMTW-Projekt-Export (falsches Format)'); return; }
+
+  const tracksToImport = (s.tracks || []).filter(t => t.gpxString);
+  const markersToImport = s.customMarkers || [];
+
+  if (!confirm(
+    `Projekt "${escHtml(s.project?.name || '?')}" importieren?\n` +
+    `• ${tracksToImport.length} Strecken  •  ${markersToImport.length} Marker\n\n` +
+    `Ein neues Projekt wird erstellt. Fortfahren?`
+  )) return;
+
+  toast('⏳ Projekt wird importiert…');
+
+  // ── Kollisionsfreier Projektname ─────────────────────────────
+  const baseName = s.project?.name || 'Import';
+  let name = baseName;
+  let sfx = 1;
+  const existing = _projects.map(p => p.name);
+  while (existing.includes(name)) name = `${baseName} (${++sfx})`;
+
+  const newProjId = 'proj_' + Date.now();
+  const newProj = {
+    id: newProjId, name,
+    centerLat: s.project?.centerLat ?? null,
+    centerLng: s.project?.centerLng ?? null,
+    zoom: s.project?.zoom ?? 15,
+    enabled: true,
+    createdAt: new Date().toISOString()
+  };
+  _projects.push(newProj);
+  LS.set(LS.K.PROJECTS, _projects);
+
+  // ── Tracks sequenziell parsen ────────────────────────────────
+  // WICHTIG: L.GPX callback liefert ein Event-Objekt (e), nicht den Layer.
+  //          Der Layer ist e.target. addTo(map) startet das Parsen.
+  const idMap = {};
+  let importedTracks = 0;
+
+  for (let idx = 0; idx < tracksToImport.length; idx++) {
+    const t = tracksToImport[idx];
+    // Kollisionsfreie ID: Timestamp + Index + Zufall
+    const newId = `trk_${Date.now()}_${idx}_${Math.random().toString(36).slice(2, 6)}`;
+    idMap[t.id] = newId;
+
+    const ok = await new Promise((resolve) => {
+      const timeoutId = setTimeout(() => {
+        console.warn('[importProject] Timeout bei Track:', t.name);
+        resolve(false);
+      }, 30000);
+
+      // Neue L.GPX-Instanz mit GPX-String
+      const layer = new L.GPX(t.gpxString, {
+        async: true,
+        polyline_options: { color: t.color || '#c8ff00', weight: 3, opacity: 0.9 },
+        marker_options: { startIconUrl: null, endIconUrl: null, shadowUrl: null }
+      });
+
+      // KORREKTE Event-Syntax: Parameter ist das Event-Objekt e, Layer = e.target
+      layer.on('loaded', function(e) {
+        clearTimeout(timeoutId);
+        const gl = e.target; // ← das ist der GPX-Layer
+        try {
+          const pts  = _getGpxPoints(gl, t.gpxString);
+          const braw = (() => {
+            try { const b = gl.getBounds(); return (b && b.isValid && b.isValid()) ? b : null; }
+            catch { return null; }
+          })();
+          let dist = t.stats?.dist || '?', dur = t.stats?.dur || '—';
+          try { dist = (gl.get_distance() / 1000).toFixed(2); } catch {}
+          try {
+            const ms = gl.get_total_time();
+            if (ms) { const m = Math.round(ms / 60000); dur = m >= 60 ? `${Math.floor(m/60)}h ${m%60}min` : `${m} min`; }
+          } catch {}
+
+          const track = {
+            id: newId,
+            name: t.name || `Track ${idx + 1}`,
+            cat: t.cat || 'mittel',
+            color: t.color || '#c8ff00',
+            gpxLayer: gl,
+            visible: true,
+            sourceUrl: t.sourceUrl || null,
+            gpxString: t.gpxString,
+            bounds: braw,
+            stats: { dist, dur },
+            elevData: extractElevData(gl),
+            startPt:  pts.length > 0 ? pts[0]               : null,
+            finishPt: pts.length > 1 ? pts[pts.length - 1]  : null,
+            projectId: newProjId
+          };
+
+          trackStore.tracks.push(track);
+          // Layer ist bereits auf Karte (addTo unten), Start/Ziel-Marker hinzufügen
+          _addStartMarker(track);
+          _addFinishMarker(track);
+          _renderTrackFeatures(track);
+          importedTracks++;
+          resolve(true);
+        } catch(ex) {
+          console.warn('[importProject] Track-Verarbeitung fehlgeschlagen:', t.name, ex);
+          resolve(false);
+        }
+      });
+
+      layer.on('error', function(e) {
+        clearTimeout(timeoutId);
+        console.warn('[importProject] GPX parse error:', t.name, e);
+        resolve(false);
+      });
+
+      // KRITISCH: addTo(map) startet das asynchrone Parsen des GPX-Strings!
+      layer.addTo(map);
+    });
+
+    if (!ok) console.warn('[importProject] Track übersprungen:', t.name);
+  }
+
+  // ── Custom Marker mit neuen IDs ──────────────────────────────
+  const rawCm = Array.isArray(_cmMarkers) ? [..._cmMarkers] : [];
+  markersToImport.forEach((m, idx) => {
+    rawCm.push({
+      ...m,
+      id: `cm_${Date.now()}_${idx}_${Math.random().toString(36).slice(2, 6)}`,
+      projectId: newProjId
+    });
+  });
+  _cmMarkers = rawCm;
+  await _saveCustomMarkers();
+
+  // ── Features / Ratings / Edits auf neue Track-IDs remappen ──
+  const feats = JSON.parse(localStorage.getItem('gmtw_trk_features_v1') || '{}');
+  const rats  = JSON.parse(localStorage.getItem('gmtw_trk_ratings_v1')  || '{}');
+  const eds   = JSON.parse(localStorage.getItem('gmtw_trk_edits_v1')    || '{}');
+  Object.entries(s.trkFeatures || {}).forEach(([k, v]) => {
+    const isMeta = k.endsWith('_meta');
+    const origId = isMeta ? k.slice(0, -5) : k;
+    const newKey = idMap[origId];
+    if (newKey) feats[newKey + (isMeta ? '_meta' : '')] = v;
+  });
+  Object.entries(s.trkRatings || {}).forEach(([k, v]) => { if (idMap[k]) rats[idMap[k]] = v; });
+  Object.entries(s.trkEdits   || {}).forEach(([k, v]) => { if (idMap[k]) eds[idMap[k]] = v; });
+  localStorage.setItem('gmtw_trk_features_v1', JSON.stringify(feats));
+  localStorage.setItem('gmtw_trk_ratings_v1',  JSON.stringify(rats));
+  localStorage.setItem('gmtw_trk_edits_v1',    JSON.stringify(eds));
+
+  // ── Alles persistieren und zum neuen Projekt wechseln ───────
+  await persistTracks();
+  switchProject(newProjId);
+  renderTrackList();
+  buildList();
+  _renderSettingsProjList();
+
+  const msg = `✅ Projekt "${name}" importiert — ${importedTracks} Strecken, ${markersToImport.length} Marker`;
+  toast(msg);
+  speak(`Projekt ${name} importiert. ${importedTracks} Strecken geladen.`, true);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -9682,12 +10620,12 @@ async function saveMdMarker() {
     return;
   }
 
+  const existingMarker = editId ? _cmMarkers.find(m=>m.id===editId) : null;
   const marker = {
-    id:       editId || ('cm_' + Date.now()),
+    id:        editId || ('cm_' + Date.now()),
     name, cat, emoji, desc, gmapsUrl, lat, lng,
-    createdAt: editId
-      ? (_cmMarkers.find(m=>m.id===editId)?.createdAt || new Date().toISOString())
-      : new Date().toISOString()
+    projectId: existingMarker?.projectId || _activeProjectId || (_projects[0]?.id || ''),
+    createdAt: existingMarker?.createdAt || new Date().toISOString()
   };
 
   if (editId) {
@@ -9743,7 +10681,19 @@ async function _loadAndRenderCustomMarkers() {
   } catch(e) {
     _cmMarkers = [];
   }
-  _cmMarkers.forEach(cm => _renderOneCmMarker(cm));
+  // Migration: bestehende Marker dem Standard-Projekt zuweisen
+  const defaultId = _projects[0]?.id || '';
+  let cmChanged = false;
+  _cmMarkers = _cmMarkers.map(m => {
+    if (!m.projectId) { cmChanged = true; return { ...m, projectId: defaultId }; }
+    return m;
+  });
+  if (cmChanged) await _saveCustomMarkers();
+  // Marker aller aktivierten Projekte auf der Karte zeigen
+  _cmMarkers.forEach(cm => {
+    const projEnabled = _projects.find(p => p.id === cm.projectId)?.enabled !== false;
+    if (projEnabled) _renderOneCmMarker(cm);
+  });
 }
 
 // Einen einzelnen Custom-Marker auf der Karte zeichnen
@@ -12032,16 +12982,21 @@ function swPrefetchGpxTracks() {
       </div>
     </div>
     <div class="sp-section">
-      <div class="sp-label">Home-Fokus (Startzoom der Karte)</div>
-      <div class="sp-hint">Wenn gesetzt, startet die Karte immer hier (solange keine Position gespeichert)</div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input class="sp-input" id="sp-home-lat" type="number" step="0.00001" min="-90" max="90" placeholder="Latitude (51.4192)">
-        <input class="sp-input" id="sp-home-lng" type="number" step="0.00001" min="-180" max="180" placeholder="Longitude (7.4855)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="sp-label" style="margin:0">📁 Projekt Übersicht</div>
+        <label class="sp-btn sec" style="padding:5px 10px;font-size:12px;cursor:pointer;margin:0" title="Projekt-JSON importieren">
+          📥 Importieren
+          <input type="file" accept=".json" style="display:none" onchange="importProjectJson(this);this.value=''">
+        </label>
       </div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="sp-btn sec" onclick="useCurrentMapCenter()" style="flex:1">📍 Aktuelle Kartenposition</button>
-        <button class="sp-btn sec" onclick="clearHomeRegion()" style="flex:1">🗑 Löschen</button>
-      </div>
+      <div id="sp-proj-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
+      <button class="sp-btn prim" onclick="startNewProjMode()" style="width:100%;justify-content:center;gap:6px">
+        <span style="font-size:16px">➕</span> Neues Projekt erstellen
+      </button>
+      <p style="font-size:11px;color:var(--td);margin:8px 0 0;line-height:1.5">
+        Aktivierte Projekte zeigen ihre Strecken und Marker auf der Karte.
+        Der <strong>Fokus</strong> bestimmt, wohin der Übersicht-Button zoomt und welches Projekt neue Inhalte erhält.
+      </p>
     </div>
     <!-- Barrierefreiheit -->
     <div class="sp-section">
@@ -12151,6 +13106,18 @@ function swPrefetchGpxTracks() {
         <button onclick="exportAllRunsJson()" class="sp-btn sec" style="flex:1;justify-content:center">⬇ JSON</button>
         <button onclick="exportAllRunsCsv()"  class="sp-btn sec" style="flex:1;justify-content:center">⬇ CSV</button>
       </div>
+    </div>
+    <!-- Projekt Export / Import -->
+    <div class="sp-section">
+      <div class="sp-label">📁 Projekt Export / Import</div>
+      <div class="sp-hint">Exportiert nur das aktive Projekt (Strecken, Marker, Bewertungen)</div>
+      <button class="sp-btn sec" onclick="exportProjectJson()" style="width:100%;justify-content:center;margin-top:8px">
+        📤 Aktives Projekt exportieren
+      </button>
+      <label class="sp-btn sec" style="width:100%;justify-content:center;margin-top:8px;cursor:pointer">
+        📥 Projekt importieren
+        <input type="file" accept=".json,application/json" style="display:none" onchange="importProjectJson(this)">
+      </label>
     </div>
     <!-- Speicher -->
     <div class="sp-section">

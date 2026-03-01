@@ -1,25 +1,25 @@
 // =========================================================
-// GMTW Trail Map — Service Worker v6
+// GMTW Trail Map — Service Worker v9
 // OFFLINE-FIRST: Echte 95%+ Offline-Fähigkeit
 //
 // Cache-Strategien:
 //   Navigations-Requests (HTML):  Network-First → Cache → Offline-Fallback
 //   App-Shell (JS/CSS/Icons/Libs): Cache-First
-//   Karten-Tiles:                  Network-First → Cache → Transparent-PNG
+//   Karten-Tiles:                  Stale-While-Revalidate + Dedup (kein Flicker!)
 //   Fonts (Bunny/Gstatic):         Stale-While-Revalidate (eigener Cache)
 //   GPX-Tracks:                    Cache-First + Hintergrund-Update
 //   Sonstiges:                     Network-First → Cache-Fallback
 //
-// v6 Verbesserungen gegenüber v5:
-//   • Eigener FONT_CACHE (Font-Dateien getrennt gecacht)
-//   • Navigation-Handler: index.html aus Shell-Cache bei Offline
-//   • Offline-Fallback-HTML-Seite bei totalem Offline
-//   • PREFETCH_TILES Message: Karten-Bereich vorab cachen
-//   • CLEAR_ALL_CACHES: Factory-Reset per App-Befehl
-//   • Robusteres ACTIVATE: alle ungültigen Caches löschen
+// v9 Verbesserungen gegenüber v8:
+//   • Tile-Deduplication (_bgFetching): gleiche Tile wird NICHT mehrfach
+//     gleichzeitig revalidiert → kein Browser-Hänger bei Pan/Zoom
+//   • Batch-trimCache (TRIM_EVERY=50): cache.keys() nur alle 50 Inserts
+//     statt bei jedem Tile-Insert → massive CPU-Ersparnis im SW
+//   • PREFETCH_TILES mit Concurrency=6: Batch-Verarbeitung verhindert
+//     Netzwerk-Überlastung, Cache-Check vor Fetch, _bgFetching-Dedup
 // =========================================================
 
-const SW_VERSION  = 'gmtw-v7';
+const SW_VERSION  = 'gmtw-v9';
 const SHELL_CACHE = SW_VERSION + '-shell';
 const TILE_CACHE  = SW_VERSION + '-tiles';
 const DATA_CACHE  = SW_VERSION + '-data';
@@ -29,6 +29,15 @@ const FONT_CACHE  = SW_VERSION + '-fonts';
 const MAX_TILE_CACHE = 3000;
 const MAX_GPX_CACHE  = 200;
 const MAX_FONT_CACHE = 150;
+
+// ── Tile-Deduplication & Trim-Rate-Limiting ───────────────────
+// _bgFetching: verhindert, dass dieselbe Tile mehrfach gleichzeitig
+//              im Hintergrund revalidiert wird (Leaflet kann dieselbe
+//              Tile mehrfach anfordern).
+// _tileInserts: trimCache erst alle TRIM_EVERY Inserts (spart cache.keys()-Aufrufe).
+const _bgFetching  = new Set();
+let   _tileInserts = 0;
+const TRIM_EVERY   = 50; // trimCache alle N Einfügungen
 
 // App-Shell: beim Install vorab cachen (alle für 100% Offline-Betrieb)
 const SHELL_ASSETS = [
@@ -194,9 +203,9 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. Karten-Tiles: Network-First → Cache-Fallback → Transparent-PNG
+  // 2. Karten-Tiles: Stale-While-Revalidate → kein Tile-Flicker im Offline-Modus
   if (TILE_PATTERNS.some(p => p.test(url))) {
-    event.respondWith(networkFirstTile(req));
+    event.respondWith(staleWhileRevalidateTile(req));
     return;
   }
 
@@ -303,22 +312,48 @@ async function cacheFirstWithNetworkFallback(req, cacheName, maxEntries) {
 }
 
 // ==========================================================
-// STRATEGIE: Network-First fuer Karten-Tiles
+// STRATEGIE: Stale-While-Revalidate für Karten-Tiles
+//
+// Verbesserungen gegenüber naiver SWR-Implementierung:
+//   • Deduplication (_bgFetching): gleiche Tile wird NICHT mehrfach
+//     gleichzeitig im Hintergrund gefetcht — vermeidet Browser-Hänger
+//     bei Zoom/Pan, wenn Leaflet dieselbe Tile mehrfach anfordert.
+//   • Batch-Trim: trimCache nur alle TRIM_EVERY Einfügungen, nicht
+//     auf jeden Tile-Insert (spart cache.keys()-Roundtrips im SW).
+//   • Sofortige Antwort bei Cache-Hit — kein Warten auf Netzwerk.
 // ==========================================================
-async function networkFirstTile(req) {
-  const cache = await caches.open(TILE_CACHE);
+async function staleWhileRevalidateTile(req) {
+  const cache  = await caches.open(TILE_CACHE);
+  const cached = await cache.match(req);
 
-  try {
-    const response = await fetch(req, { cache: 'no-store' });
-    if (response.ok) {
-      cache.put(req, response.clone());
-      trimCache(TILE_CACHE, MAX_TILE_CACHE);
+  if (cached) {
+    // Cache-Hit: sofort liefern, dann im Hintergrund aktualisieren
+    // — aber NUR wenn für diese URL noch kein Hintergrund-Fetch läuft
+    if (!_bgFetching.has(req.url)) {
+      _bgFetching.add(req.url);
+      fetch(req, { cache: 'no-store' })
+        .then(res => {
+          if (res?.ok) {
+            cache.put(req, res.clone());
+            if (++_tileInserts % TRIM_EVERY === 0) trimCache(TILE_CACHE, MAX_TILE_CACHE);
+          }
+        })
+        .catch(() => {})
+        .finally(() => _bgFetching.delete(req.url));
     }
-    return response;
-  } catch (e) {
-    const cached = await cache.match(req);
-    if (cached) return cached;
+    return cached;
+  }
 
+  // Cache-Miss: Netzwerk abwarten (erste Anfrage für diese Tile)
+  try {
+    const res = await fetch(req, { cache: 'no-store' });
+    if (res?.ok) {
+      await cache.put(req, res.clone());
+      if (++_tileInserts % TRIM_EVERY === 0) trimCache(TILE_CACHE, MAX_TILE_CACHE);
+    }
+    return res;
+  } catch {
+    // Offline und kein Cache-Eintrag → transparentes 1×1 PNG (Karte bricht nicht)
     return new Response(TRANSPARENT_PNG, {
       status: 200,
       headers: { 'Content-Type': 'image/png' }
@@ -428,30 +463,44 @@ self.addEventListener('message', (event) => {
       }
       break;
 
-    // Karten-Tiles fuer eine Region vorab cachen
+    // Karten-Tiles für eine Region vorab cachen (concurrent batches)
+    // Verbesserungen:
+    //   • Batch-Concurrency (6): nie mehr als 6 Fetches gleichzeitig
+    //     → Browser-Netzwerkstack nicht überschwemmen
+    //   • Dedup: URLs die gerade revalidiert werden (_bgFetching) überspringen
+    //   • Cache-Check vor Fetch: bereits gecachte Tiles sofort überspringen
     case 'PREFETCH_TILES':
-      if (Array.isArray(event.data.urls)) {
-        caches.open(TILE_CACHE).then(async cache => {
-          let cached = 0, fetched = 0, failed = 0;
-          for (const url of event.data.urls) {
-            const hit = await cache.match(url);
-            if (hit) { cached++; continue; }
-            try {
-              const r = await fetch(url, { cache: 'no-store' });
-              if (r && r.ok) {
-                cache.put(url, r.clone());
-                fetched++;
-              } else {
-                failed++;
-              }
-            } catch (e) {
-              failed++;
-            }
+      if (Array.isArray(event.data.urls) && event.data.urls.length > 0) {
+        const CONCURRENCY = 6;
+        event.waitUntil((async () => {
+          const cache = await caches.open(TILE_CACHE);
+          const urls  = event.data.urls;
+          let fetched = 0, already = 0, failed = 0;
+
+          for (let i = 0; i < urls.length; i += CONCURRENCY) {
+            const batch = urls.slice(i, i + CONCURRENCY);
+            await Promise.allSettled(batch.map(async url => {
+              // Überspringe URLs die gerade live revalidiert werden
+              if (_bgFetching.has(url)) { already++; return; }
+              // Überspringe bereits gecachte Tiles
+              if (await cache.match(url)) { already++; return; }
+              _bgFetching.add(url);
+              try {
+                const r = await fetch(url, { cache: 'no-store' });
+                if (r?.ok) { await cache.put(url, r.clone()); fetched++; }
+                else failed++;
+              } catch { failed++; }
+              finally { _bgFetching.delete(url); }
+            }));
           }
-          await trimCache(TILE_CACHE, MAX_TILE_CACHE);
-          console.log('[SW] Tile-Prefetch:', fetched, 'neu,', cached, 'cached,', failed, 'Fehler');
-          event.ports[0]?.postMessage({ success: true, count: fetched + cached, fetched, cached, failed });
-        });
+
+          if (fetched > 0) {
+            _tileInserts += fetched;
+            await trimCache(TILE_CACHE, MAX_TILE_CACHE);
+          }
+          console.log(`[SW] Tile-Prefetch: ${fetched} neu, ${already} gecacht, ${failed} Fehler`);
+          event.ports[0]?.postMessage({ success: true, fetched, already, failed });
+        })());
       }
       break;
 
