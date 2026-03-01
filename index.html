@@ -4550,7 +4550,6 @@ const LS = {
 const LOCS = [
   // BEGINNER
   { id:"muni",     name:"Muni Start Beginner/Mittel", lat:51.421812, lng:7.492612, color:"#22c55e", emoji:"🚩", cat:"beginner", desc:"Startpunkt für Muni-Fahrer aller Levels" },
-  { id:"ein-bm",   name:"Einstieg Beginner/Mittel",   lat:51.420365, lng:7.483406, color:"#22c55e", emoji:"🟡", cat:"beginner", desc:"Gemischter Einstieg — Beginner & Mittel" },
   // MITTEL — Koordinaten korrekt: sam-mit=Sammelpunkt(51.423371), ziel-mit=Ziel(51.419329)
   { id:"ein-mit",  name:"Einstieg Mittel",            lat:51.423421, lng:7.480829, color:"#f59e0b", emoji:"🟡", cat:"mittel",   desc:"Einstieg in die mittlere Strecke" },
   { id:"ziel-mit", name:"Ziel Mittel",                lat:51.419329, lng:7.511120, color:"#f59e0b", emoji:"🏆", cat:"mittel",   desc:"Ziel der mittleren Strecke — an der Ruhr" },
@@ -8005,8 +8004,13 @@ function _addStartMarker(track) {
     const sp    = pts[0];
     const icon  = _buildStartPinIcon(track);
     const popup = _buildTrackPopup(track, false);
-    const mkr   = L.marker([sp.lat, sp.lng], { icon, zIndexOffset:800, title:`Start: ${track.name}` })
+
+    const mkr = L.marker([sp.lat, sp.lng], { icon, zIndexOffset:800, title:`Start: ${track.name}` })
+      // --- Dauerhaftes Label unter dem Marker ---
+      .bindTooltip(track.name, { permanent: true, direction: 'bottom', offset: [0, 4], className: 'map-label' })
+      // -----------------------------------------------
       .addTo(map);
+
     if (popup) mkr.bindPopup(popup);
     track._startMkr = mkr;
   } catch(e) { console.warn('_addStartMarker error:', e); }
