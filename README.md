@@ -3,8 +3,6 @@
 # 🦄 GMTW Muni Map 🌲
 **Die serverlose Offline-PWA für das German Muni Trail Weekend**
 
-**Das serverlose Offline-Ökosystem für Mountain-Unicycling & Freeride Events**
-
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Status: 100% Offline](https://img.shields.io/badge/Status-100%25_Offline_Ready-success)](#)
