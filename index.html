@@ -3858,36 +3858,43 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
           background:var(--s2);border:1.5px solid var(--bd2);border-radius:10px;
           padding:5px 10px 5px 12px;display:flex;align-items:center;gap:6px;
           cursor:pointer;font-family:var(--fh);font-size:12px;font-weight:700;
-          color:var(--tx);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;
-          touch-action:manipulation;
+          color:var(--tx);max-width:160px;min-width:70px;touch-action:manipulation;
+          transition:border-color .15s,background .15s;outline:none;border-style:solid;
         }
-        #proj-toggle-btn svg{flex-shrink:0;transition:transform .15s}
+        #proj-toggle-btn:hover{background:var(--s3);border-color:var(--ac)}
+        #proj-toggle-btn[aria-expanded="true"]{border-color:var(--ac);background:var(--s3)}
+        #proj-toggle-btn svg{flex-shrink:0;transition:transform .2s}
         #proj-toggle-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+        #proj-curr-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
         #proj-dropdown{
-          position:absolute;top:calc(100% + 6px);left:0;min-width:220px;max-height:340px;
+          position:fixed;top:0;left:0;min-width:200px;
           background:var(--s1);border:1.5px solid var(--bd2);border-radius:14px;
-          box-shadow:0 8px 32px rgba(0,0,0,.55);z-index:600;overflow:hidden;
-          display:flex;flex-direction:column;
+          box-shadow:0 8px 32px rgba(0,0,0,.6);z-index:2000;
+          display:flex;flex-direction:column;overflow:hidden;
+          animation:projDropIn .16s ease;
         }
         #proj-dropdown[hidden]{display:none!important}
-        #proj-search-inp{
-          width:100%;box-sizing:border-box;padding:9px 12px;border:none;
-          border-bottom:1px solid var(--bd2);background:var(--s2);
-          color:var(--tx);font-size:14px;outline:none;
-        }
-        #proj-list-inner{overflow-y:auto;flex:1;overscroll-behavior:contain}
+        @keyframes projDropIn{from{opacity:0;transform:translateY(-5px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+        #proj-list-inner{overflow-y:auto;max-height:240px;overscroll-behavior:contain;padding:4px 0}
         .proj-item{
-          padding:10px 14px;cursor:pointer;display:flex;align-items:center;
-          gap:8px;font-size:14px;color:var(--tx);touch-action:manipulation;
+          padding:9px 14px;cursor:pointer;display:flex;align-items:center;
+          gap:8px;font-size:13px;color:var(--tx);touch-action:manipulation;
+          transition:background .1s;user-select:none;
         }
         .proj-item:hover,.proj-item:active{background:var(--s2)}
-        .proj-item.active{color:var(--ac);font-weight:700}
-        .proj-item.active::before{content:'✓ ';font-weight:900}
+        .proj-item-check{width:13px;flex-shrink:0;font-size:11px;color:var(--ac);font-weight:900;visibility:hidden}
+        .proj-item.active .proj-item-check{visibility:visible}
+        .proj-item-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+        .proj-item-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+        .proj-item.active .proj-item-name{color:var(--ac)}
         .proj-new-btn{
           width:100%;padding:10px 14px;background:transparent;border:none;
           border-top:1px solid var(--bd2);color:var(--ac);font-weight:700;
-          font-size:13px;cursor:pointer;text-align:left;touch-action:manipulation;
+          font-size:12px;cursor:pointer;text-align:left;touch-action:manipulation;
+          display:flex;align-items:center;gap:8px;font-family:var(--fh);
+          transition:background .1s;
         }
+        .proj-new-btn:hover{background:var(--s2)}
         /* ── PROJEKT KARTEN (Settings Übersicht) ──────────────── */
         .proj-card{background:var(--s2);border:1.5px solid var(--bd2);border-radius:12px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
         .proj-card.is-focus{border-color:var(--ac);box-shadow:0 0 0 2px rgba(200,255,0,.15)}
@@ -4061,14 +4068,12 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
   <div id="proj-bar">
     <button id="proj-toggle-btn" onclick="toggleProjDropdown()"
       aria-haspopup="listbox" aria-expanded="false" aria-label="Aktives Projekt wechseln">
-      <span id="proj-curr-name">Standard</span>
+      <span id="proj-curr-name">GMTW</span>
       <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
         <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
     <div id="proj-dropdown" role="listbox" hidden aria-label="Projekte">
-      <input id="proj-search-inp" type="search" placeholder="Projekt suchen…"
-        oninput="_filterProjList(this.value)" autocomplete="off" aria-label="Projekte filtern">
       <div id="proj-list-inner" role="group"></div>
       <button class="proj-new-btn" onclick="startNewProjMode()">➕ Neues Projekt</button>
     </div>
@@ -4204,8 +4209,11 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
   <button class="fab" onclick="fitAll()" aria-label="Übersicht">
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1" y="1" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="12" y="1" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="12" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="12" y="12" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg>
   </button>
-  <button class="fab" id="settings-fab" onclick="openSettings()" aria-label="Einstellungen" title="Einstellungen">
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 13a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="1.7"/><path d="M10 2v1.5M10 16.5V18M18 10h-1.5M3.5 10H2M15.36 4.64l-1.06 1.06M5.7 14.3l-1.06 1.06M15.36 15.36l-1.06-1.06M5.7 5.7L4.64 4.64" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+ <button class="fab" id="settings-fab" onclick="openSettings()" aria-label="Einstellungen" title="Einstellungen">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
   </button>
 </div>
 
@@ -4921,27 +4929,37 @@ function buildList(){
   const _qrSvg  = `<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="9" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><path d="M9 9h1v1M11 9h1M9 11v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`;
 
   // ── 1. LOCS (feste Kartenpunkte) ───────────────────────────────────────
-  ['beginner','mittel','expert','logistik'].forEach(cat=>{
-    const items=LOCS.filter(l=>l.cat===cat&&(curFilter==='all'||curFilter===cat)&&!_locsHidden.has(l.id));
-    if(!items.length)return;
-    const hd=document.createElement('div'); hd.className='cat-head'; hd.textContent=CATS[cat].label; c.appendChild(hd);
-    items.forEach(loc=>{
-      if(loc.line)return; // Nur Linien-Marker überspringen (weg-camp etc.)
-      n++;
-      const ov=_locsOverrides[loc.id]||{};
-      const effName=ov.name||loc.name; const effEmoji=ov.emoji||loc.emoji;
-      const r=document.createElement('div'); r.className='lrow';
-      r.setAttribute('role','listitem');
-      r.innerHTML=`<div class="l-ico" style="background:${loc.color}22"><span role="img" aria-label="${escHtml(CATS[loc.cat].label)}">${effEmoji}</span></div>
-        <div class="l-inf"><div class="l-nm">${escHtml(effName)}</div><div class="l-co">${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}</div></div>
-        <div class="l-btns">
-          <button class="lbtn nav" aria-label="Navigation zu ${escHtml(effName)}" onclick="event.stopPropagation();navTo(${loc.lat},${loc.lng},'${esc(effName)}')">${_navSvg}</button>
-          <button class="lbtn" aria-label="QR-Code für ${escHtml(effName)}" onclick="event.stopPropagation();openQR('${esc(loc.id)}')">${_qrSvg}</button>
-        </div>`;
-      r.addEventListener('click',()=>{ if(_a11y.enabled) speak(effEmoji+' '+effName,true); closeAll(); focusMarker(loc.id); });
-      c.appendChild(r);
+  // LOCS gehören zum Standard-Projekt (_projects[0]). Nur anzeigen wenn
+  // dieses Projekt aktiv oder aktiviert ist.
+  const _locsOwnerId   = _projects[0]?.id;
+  const _locsOwnerProj = _projects.find(p => p.id === _locsOwnerId);
+  const _locsVisible   = !_locsOwnerProj                          // Sicherheitsnetz: kein Projekt → immer zeigen
+                       || _activeProjectId === _locsOwnerId       // Standard ist Fokus-Projekt
+                       || _locsOwnerProj.enabled !== false;       // Standard ist aktiviert
+
+  if (_locsVisible) {
+    ['beginner','mittel','expert','logistik'].forEach(cat=>{
+      const items=LOCS.filter(l=>l.cat===cat&&(curFilter==='all'||curFilter===cat)&&!_locsHidden.has(l.id));
+      if(!items.length)return;
+      const hd=document.createElement('div'); hd.className='cat-head'; hd.textContent=CATS[cat].label; c.appendChild(hd);
+      items.forEach(loc=>{
+        if(loc.line)return; // Nur Linien-Marker überspringen (weg-camp etc.)
+        n++;
+        const ov=_locsOverrides[loc.id]||{};
+        const effName=ov.name||loc.name; const effEmoji=ov.emoji||loc.emoji;
+        const r=document.createElement('div'); r.className='lrow';
+        r.setAttribute('role','listitem');
+        r.innerHTML=`<div class="l-ico" style="background:${loc.color}22"><span role="img" aria-label="${escHtml(CATS[loc.cat].label)}">${effEmoji}</span></div>
+          <div class="l-inf"><div class="l-nm">${escHtml(effName)}</div><div class="l-co">${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}</div></div>
+          <div class="l-btns">
+            <button class="lbtn nav" aria-label="Navigation zu ${escHtml(effName)}" onclick="event.stopPropagation();navTo(${loc.lat},${loc.lng},'${esc(effName)}')">${_navSvg}</button>
+            <button class="lbtn" aria-label="QR-Code für ${escHtml(effName)}" onclick="event.stopPropagation();openQR('${esc(loc.id)}')">${_qrSvg}</button>
+          </div>`;
+        r.addEventListener('click',()=>{ if(_a11y.enabled) speak(effEmoji+' '+effName,true); closeAll(); focusMarker(loc.id); });
+        c.appendChild(r);
+      });
     });
-  });
+  }
 
   // ── 2. Strecken-Marker (Start / Ziel der geladenen GPX-Tracks) ─────────
   const trkRows=[];
@@ -4992,21 +5010,25 @@ function buildList(){
   }
 
   // ── 3. Eigene Marker ────────────────────────────────────────────────────
-  // Marker aller aktivierten Projekte in der Liste anzeigen
-  const _enabledProjIds=new Set(_projects.filter(p=>p.enabled!==false).map(p=>p.id));
-  if(_activeProjectId) _enabledProjIds.add(_activeProjectId);
-  const visCm=_cmMarkers.filter(m=>_enabledProjIds.has(m.projectId)||!m.projectId);
+  // Alle Marker des aktiven Projekts anzeigen — auch unsichtbare (damit toggle möglich)
+  const _defaultProjId = _projects[0]?.id || '';
+  const visCm = _cmMarkers.filter(m => (m.projectId || _defaultProjId) === _activeProjectId);
+  const _eyeOnSvg  = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7C1 7 3 3 7 3s6 4 6 4-2 4-6 4S1 7 1 7Z" stroke="currentColor" stroke-width="1.4"/><circle cx="7" cy="7" r="1.8" fill="currentColor"/></svg>`;
+  const _eyeOffSvg = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7C1 7 3 3 7 3s6 4 6 4-2 4-6 4S1 7 1 7Z" stroke="currentColor" stroke-width="1.4" opacity=".3"/><path d="M2 2L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`;
   if(visCm.length>0){
     const hd=document.createElement('div'); hd.className='cat-head'; hd.textContent='Eigene Marker'; c.appendChild(hd);
     visCm.forEach(cm=>{
       n++;
       const color=CM_CAT_COLORS[cm.cat]||'#888';
       const emoji=cm.emoji||'📍';
-      const r=document.createElement('div'); r.className='lrow';
+      const isVis = cm.visible !== false;
+      const r=document.createElement('div'); r.className='lrow'; if(!isVis) r.style.opacity='0.5';
       r.setAttribute('role','listitem');
       r.innerHTML=`<div class="l-ico" style="background:${color}22"><span role="img">${emoji}</span></div>
         <div class="l-inf"><div class="l-nm">${escHtml(cm.name)}</div><div class="l-co">${cm.lat.toFixed(5)}, ${cm.lng.toFixed(5)}</div></div>
         <div class="l-btns">
+          <button class="lbtn${isVis?' on':''}" aria-label="${isVis?'Ausblenden':'Einblenden'}"
+            onclick="event.stopPropagation();toggleCmVisible('${cm.id}')">${isVis?_eyeOnSvg:_eyeOffSvg}</button>
           <button class="lbtn nav" onclick="event.stopPropagation();navTo(${cm.lat},${cm.lng},'${esc(cm.name)}')">${_navSvg}</button>
           <button class="lbtn" onclick="event.stopPropagation();openCmShareQr('${cm.id}')">${_qrSvg}</button>
         </div>`;
@@ -5125,11 +5147,13 @@ function fitAll(){
     .filter(m => enabledIds.has(m.projectId))
     .forEach(m => lb.extend([m.lat, m.lng]));
 
-  // 3. LOCS-Marker IMMER einbeziehen (sichtbar + zu aktuellem Filter passend)
-  //    → so zeigt "Übersicht" IMMER die gesamte Trail-Region
-  LOCS
-    .filter(l => !_locsHidden.has(l.id) && (curFilter === 'all' || l.cat === curFilter) && !l.line)
-    .forEach(l => lb.extend([l.lat, l.lng]));
+  // 3. LOCS nur einbeziehen wenn Standard-Projekt das Fokus-Projekt ist.
+  //    → neues/leeres Projekt fliegt zum Projekt-Zentrum, nicht zur Trail-Region
+  if (_activeProjectId === (_projects[0]?.id || '')) {
+    LOCS
+      .filter(l => !_locsHidden.has(l.id) && (curFilter === 'all' || l.cat === curFilter) && !l.line)
+      .forEach(l => lb.extend([l.lat, l.lng]));
+  }
 
   if (lb.isValid()) {
     map.flyToBounds(lb, { padding:[52,52], maxZoom:16, animate:true, duration:1.3 });
@@ -5286,9 +5310,12 @@ function _initProjects() {
     }];
     LS.set(LS.K.PROJECTS, _projects);
   }
-  // Migration: fehlende Felder ergänzen
+  // Migration: fehlende Felder + "Standard" → "GMTW" umbenennen
   let migrated = false;
-  _projects.forEach(p => { if (p.enabled === undefined) { p.enabled = true; migrated = true; } });
+  _projects.forEach(p => {
+    if (p.enabled === undefined)  { p.enabled = true;   migrated = true; }
+    if (p.name === 'Standard')    { p.name   = 'GMTW';  migrated = true; }
+  });
   if (migrated) LS.set(LS.K.PROJECTS, _projects);
   _activeProjectId = LS.get(LS.K.ACTIVE_PROJECT, '') || _projects[0].id;
   // Sicherstellen dass die gespeicherte ID noch existiert
@@ -5323,35 +5350,73 @@ function setFocusProject(id) {
   _ariaAnnounce('Fokus-Projekt: ' + proj.name);
 }
 
-// ── PROJEKT AKTIVIEREN / DEAKTIVIEREN (Layer-Sichtbarkeit) ──────────────────
+// ── ALLE LAYER EINES PROJEKTS EIN-/AUSBLENDEN ───────────────────────────────
+// Zentrale Funktion — behandelt JEDEN Layer-Typ der zu einem Projekt gehört.
+// Wird von toggleProjectEnabled UND switchProject genutzt (kein Code-Duplikat).
+function _applyProjectLayers(id, show) {
+  // ── 1. GPX-Strecken + Start/Ziel-Marker + Feature-Marker ──────────────────
+  trackStore.tracks.filter(t => t.projectId === id).forEach(t => {
+    const trackShow = show && t.visible && (gpxFilter === 'all' || t.cat === gpxFilter);
+
+    // GPX-Strecke (Polylinie)
+    if (t.gpxLayer) {
+      if (trackShow) { if (!map.hasLayer(t.gpxLayer)) t.gpxLayer.addTo(map); }
+      else           { if  (map.hasLayer(t.gpxLayer)) map.removeLayer(t.gpxLayer); }
+    }
+    // Start-Marker
+    if (t._startMkr) {
+      if (trackShow) { if (!map.hasLayer(t._startMkr))  t._startMkr.addTo(map); }
+      else           { if  (map.hasLayer(t._startMkr))  map.removeLayer(t._startMkr); }
+    }
+    // Ziel-Marker
+    if (t._finishMkr) {
+      if (trackShow) { if (!map.hasLayer(t._finishMkr)) t._finishMkr.addTo(map); }
+      else           { if  (map.hasLayer(t._finishMkr)) map.removeLayer(t._finishMkr); }
+    }
+    // Geo-tagged Feature-Marker (Schlüsselstellen: Drops, Sprünge, etc.)
+    if (Array.isArray(t._featMarkers)) {
+      t._featMarkers.forEach(m => {
+        if (trackShow) { try { if (!map.hasLayer(m)) m.addTo(map); } catch(e) {} }
+        else           { try { map.removeLayer(m);                   } catch(e) {} }
+      });
+    }
+  });
+
+  // ── 2. Eigene (Custom) Marker ──────────────────────────────────────────────
+  (_cmMarkers||[]).filter(m => m.projectId === id).forEach(m => {
+    const layer = _cmLeafletLayers?.[m.id];
+    if (!layer) return;
+    // show=true: nur wenn Marker nicht individuell ausgeblendet (visible !== false)
+    const shouldShow = show && m.visible !== false;
+    if (shouldShow) { if (!map.hasLayer(layer)) layer.addTo(map); }
+    else            { if  (map.hasLayer(layer)) map.removeLayer(layer); }
+  });
+
+  // ── 3. LOCS-Marker (fest eingebettete Trail-Punkte gehören zum Standard-Projekt) ──
+  // Das erste Projekt in _projects gilt als Owner der LOCS-Marker.
+  // Wird dieses Projekt deaktiviert → alle LOCS von der Karte entfernen.
+  if (_projects.length && id === _projects[0].id) {
+    Object.values(MKR || {}).forEach(entry => {
+      if (!entry?.m) return;
+      const locId = (entry._base || entry.loc)?.id;
+      // Individuell ausgeblendete Marker (per toggleLocsVisibility) immer respektieren
+      const individuallyHidden = locId && _locsHidden.has(locId);
+      if (show && !individuallyHidden) {
+        if (!map.hasLayer(entry.m)) entry.m.addTo(map);
+      } else {
+        if (map.hasLayer(entry.m)) map.removeLayer(entry.m);
+      }
+    });
+  }
+}
+
+// ── PROJEKT AKTIVIEREN / DEAKTIVIEREN (Toggle-Switch in Einstellungen) ───────
 function toggleProjectEnabled(id, enabled) {
   const proj = _projects.find(p => p.id === id);
   if (!proj) return;
   proj.enabled = !!enabled;
   LS.set(LS.K.PROJECTS, _projects);
-  // Tracks ein-/ausblenden
-  trackStore.tracks.filter(t => t.projectId === id).forEach(t => {
-    const show = enabled && t.visible;
-    if (t.gpxLayer) {
-      if (show) { if (!map.hasLayer(t.gpxLayer)) t.gpxLayer.addTo(map); }
-      else       { if  (map.hasLayer(t.gpxLayer)) map.removeLayer(t.gpxLayer); }
-    }
-    if (t._startMkr) {
-      if (show) t._startMkr.addTo(map);
-      else if (map.hasLayer(t._startMkr)) map.removeLayer(t._startMkr);
-    }
-    if (t._finishMkr) {
-      if (show) t._finishMkr.addTo(map);
-      else if (map.hasLayer(t._finishMkr)) map.removeLayer(t._finishMkr);
-    }
-  });
-  // Custom Markers ein-/ausblenden
-  (_cmMarkers||[]).filter(m => m.projectId === id).forEach(m => {
-    const layer = _cmLeafletLayers?.[m.id];
-    if (!layer) return;
-    if (enabled) { if (!map.hasLayer(layer)) layer.addTo(map); }
-    else         { if  (map.hasLayer(layer)) map.removeLayer(layer); }
-  });
+  _applyProjectLayers(id, !!enabled);
 }
 
 // ── PROJEKT-VERWALTUNG FUNKTIONEN ──────────────────────────────
@@ -5365,8 +5430,15 @@ function toggleProjDropdown() {
   dd.hidden = !willOpen;
   btn.setAttribute('aria-expanded', String(willOpen));
   if (!willOpen) return;
+  // position:fixed → Koordinaten anhand des Buttons berechnen (Overflow-safe)
+  const r = btn.getBoundingClientRect();
+  dd.style.top  = (r.bottom + 4) + 'px';
+  // Nicht über den rechten Rand hinausgehen
+  const vpW = window.innerWidth;
+  const ddW = 200; // min-width
+  const left = Math.min(r.left, vpW - ddW - 8);
+  dd.style.left = Math.max(4, left) + 'px';
   _renderProjList();
-  setTimeout(() => document.getElementById('proj-search-inp')?.focus(), 50);
 }
 function closeProjDropdown() {
   const dd = document.getElementById('proj-dropdown');
@@ -5384,48 +5456,59 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { const dd = document.getElementById('proj-dropdown'); if (dd && !dd.hidden) { closeProjDropdown(); document.getElementById('proj-toggle-btn')?.focus(); } }
 });
 
-// Projektliste rendern
-function _renderProjList(filter='') {
+// Projektliste im Dropdown rendern
+function _renderProjList() {
   const inner = document.getElementById('proj-list-inner');
   if (!inner) return;
   inner.innerHTML = '';
-  const q = filter.toLowerCase();
-  const list = _projects.filter(p => !q || p.name.toLowerCase().includes(q));
-  if (!list.length) {
-    inner.innerHTML = '<div style="padding:12px 14px;font-size:13px;color:var(--td)">Keine Projekte gefunden</div>';
+  if (!_projects.length) {
+    inner.innerHTML = '<div style="padding:12px 14px;font-size:13px;color:var(--td)">Keine Projekte</div>';
     return;
   }
-  list.forEach(p => {
+  _projects.forEach(p => {
     const isFocus   = p.id === _activeProjectId;
     const isEnabled = p.enabled !== false;
     const item = document.createElement('div');
     item.className = 'proj-item' + (isFocus ? ' active' : '');
-    item.setAttribute('role','option');
+    item.setAttribute('role', 'option');
     item.setAttribute('aria-selected', isFocus ? 'true' : 'false');
-    item.style.cssText = 'display:flex;align-items:center;gap:6px';
-    // Grüner/grauer Aktivitätspunkt
-    const dot = document.createElement('span');
-    dot.style.cssText = 'display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0;background:' + (isEnabled ? 'var(--ac)' : 'var(--td)');
-    dot.title = isEnabled ? 'Aktiv' : 'Deaktiviert';
-    item.appendChild(dot);
-    item.appendChild(document.createTextNode('\u00a0' + p.name));
+    item.innerHTML =
+      '<span class="proj-item-check">✓</span>'
+      + '<span class="proj-item-dot" style="background:' + (isEnabled ? 'var(--ac)' : 'var(--td)') + '" title="' + (isEnabled ? 'Sichtbar' : 'Ausgeblendet') + '"></span>'
+      + '<span class="proj-item-name">' + escHtml(p.name) + '</span>';
     item.addEventListener('click', () => { switchProject(p.id); closeProjDropdown(); });
     inner.appendChild(item);
   });
 }
-function _filterProjList(val) { _renderProjList(val); }
 
-// ── PROJEKT WECHSELN (Fokus + sicherstellen aktiviert + Karte zoomen) ────────
+// ── PROJEKT WECHSELN — STRIKTE TRENNUNG ─────────────────────────────────────
+// Beim Wechsel werden ALLE anderen Projekte deaktiviert (Karte + Menü).
+// Nur das gewählte Projekt ist sichtbar. Andere können danach per Toggle
+// manuell aktiviert werden, um sie zusätzlich einzublenden.
 function switchProject(id) {
   const proj = _projects.find(p => p.id === id);
   if (!proj) return;
-  // Fokus-Projekt aktivieren falls deaktiviert
-  if (!proj.enabled) {
-    proj.enabled = true;
-    LS.set(LS.K.PROJECTS, _projects);
-    toggleProjectEnabled(id, true);
-  }
+
+  // 1. Alle ANDEREN Projekte deaktivieren — Flag setzen + ALLE Layer-Typen entfernen
+  //    (GPX-Strecke, Start, Ziel, Feature-Marker, Custom-Marker)
+  _projects.forEach(p => {
+    if (p.id !== id) {
+      p.enabled = false;
+      _applyProjectLayers(p.id, false);
+    }
+  });
+
+  // 2. Fokus-Projekt aktivieren — Flag setzen + ALLE Layer-Typen einblenden
+  proj.enabled = true;
+  _applyProjectLayers(id, true);
+
+  // 3. Einmal persistieren
+  LS.set(LS.K.PROJECTS, _projects);
+
+  // 4. Fokus + UI
   setFocusProject(id);
+  _renderSettingsProjList();
+  _renderProjList();
   fitAll();
   speak('Projekt: ' + proj.name + '.', true);
   toast('📁 ' + proj.name);
@@ -5575,7 +5658,7 @@ function _renderSettingsProjList() {
             + '<span class="proj-sw-track"></span>'
           + '</label>'
         + '<div class="proj-card-info"'
-            + (isFocus ? '' : ' role="button" tabindex="0" onclick="setFocusProject(\'' + p.id + '\');fitAll();_renderSettingsProjList()"')
+            + (isFocus ? '' : ' role="button" tabindex="0" onclick="switchProject(\'' + p.id + '\')"')
             + ' aria-label="' + escHtml(p.name) + (isFocus ? ' (Fokus)' : '') + '">'
             + '<div class="proj-card-name' + (isFocus ? ' is-focus' : '') + '">'
                 + (isFocus ? '⭐ ' : '') + escHtml(p.name)
@@ -5586,8 +5669,8 @@ function _renderSettingsProjList() {
           + '</div>'
         + '<div class="proj-card-actions">'
             + '<button class="proj-card-act focus-btn' + (isFocus ? ' is-focus' : '') + '" '
-                + 'onclick="setFocusProject(\'' + p.id + '\');fitAll();_renderSettingsProjList()" '
-                + 'title="' + (isFocus ? 'Ist Fokus-Projekt' : 'Als Fokus setzen') + '" aria-label="Fokus">⭐</button>'
+                + 'onclick="switchProject(\'' + p.id + '\')" '
+                + 'title="' + (isFocus ? 'Ist Fokus-Projekt' : 'Projekt auswählen & isolieren') + '" aria-label="Fokus">⭐</button>'
             + '<button class="proj-card-act" onclick="exportProjectJson(\'' + p.id + '\')" title="Exportieren" aria-label="Exportieren">📤</button>'
             + '<button class="proj-card-act del-btn" onclick="deleteProject(\'' + p.id + '\')" title="Löschen" aria-label="Löschen">🗑</button>'
           + '</div>'
@@ -6350,6 +6433,14 @@ window.addEventListener('load', async ()=>{
   initTheme();
   // Projekte initialisieren (vor Track-Restore, damit projectId-Migration möglich)
   _initProjects();
+  // LOCS-Marker wurden im Modul-Scope bedingungslos zur Karte hinzugefügt.
+  // Wenn das Standard-Projekt (projects[0]) deaktiviert gespeichert wurde,
+  // jetzt sofort alle LOCS von der Karte entfernen.
+  if (_projects[0]?.enabled === false) {
+    Object.values(MKR || {}).forEach(entry => {
+      if (entry?.m && map.hasLayer(entry.m)) map.removeLayer(entry.m);
+    });
+  }
   const params=new URLSearchParams(window.location.search);
   const locId=params.get('loc');
   if(locId&&MKR[locId]) setTimeout(()=>focusMarker(locId),700);
@@ -6648,6 +6739,18 @@ function loadGpxXml(gpxStr, name, cat, existingId=null, sourceUrl=null, silent=f
     updateGpxBadge();
     renderTrackList();
     persistTracks();
+
+    // Auto-Projektzentrum: wenn Projekt noch kein Zentrum hat, vom ersten Track übernehmen
+    if (bounds) {
+      const _autoCtrProj = _projects.find(p => p.id === _activeProjectId);
+      if (_autoCtrProj && _autoCtrProj.centerLat == null) {
+        const ctr = bounds.getCenter ? bounds.getCenter() : bounds.getNorthEast();
+        _autoCtrProj.centerLat = ctr.lat;
+        _autoCtrProj.centerLng = ctr.lng;
+        _autoCtrProj.zoom = 14;
+        LS.set(LS.K.PROJECTS, _projects);
+      }
+    }
 
     if (!silent) {
       toast(`✅ "${escHtml(name)}" · ${dist} km`);
@@ -8007,12 +8110,17 @@ function _addStartMarker(track) {
 
     const mkr = L.marker([sp.lat, sp.lng], { icon, zIndexOffset:800, title:`Start: ${track.name}` })
       // --- Dauerhaftes Label unter dem Marker ---
-      .bindTooltip(track.name, { permanent: true, direction: 'bottom', offset: [0, 4], className: 'map-label' })
+      .bindTooltip(track.name, { permanent: true, direction: 'bottom', offset: [0, 4], className: 'map-label' });
       // -----------------------------------------------
-      .addTo(map);
 
     if (popup) mkr.bindPopup(popup);
     track._startMkr = mkr;
+
+    // Nur zur Karte hinzufügen wenn Projekt aktiviert und Track sichtbar
+    const _sProjEnabled = _projects.find(p => p.id === track.projectId)?.enabled !== false;
+    if (_sProjEnabled && track.visible && (gpxFilter === 'all' || track.cat === gpxFilter)) {
+      mkr.addTo(map);
+    }
   } catch(e) { console.warn('_addStartMarker error:', e); }
 }
 
@@ -8027,10 +8135,15 @@ function _addFinishMarker(track) {
 
     const icon  = _buildFinishPinIcon(track);
     const popup = _buildTrackPopup(track, true);
-    const mkr   = L.marker([fp.lat, fp.lng], { icon, zIndexOffset:799, title:`Ziel: ${track.name}` })
-      .addTo(map);
+    const mkr   = L.marker([fp.lat, fp.lng], { icon, zIndexOffset:799, title:`Ziel: ${track.name}` });
     if (popup) mkr.bindPopup(popup);
     track._finishMkr = mkr;
+
+    // Nur zur Karte hinzufügen wenn Projekt aktiviert und Track sichtbar
+    const _fProjEnabled = _projects.find(p => p.id === track.projectId)?.enabled !== false;
+    if (_fProjEnabled && track.visible && (gpxFilter === 'all' || track.cat === gpxFilter)) {
+      mkr.addTo(map);
+    }
   } catch(e) { console.warn('_addFinishMarker error:', e); }
 }
 
@@ -10629,6 +10742,7 @@ async function saveMdMarker() {
     id:        editId || ('cm_' + Date.now()),
     name, cat, emoji, desc, gmapsUrl, lat, lng,
     projectId: existingMarker?.projectId || _activeProjectId || (_projects[0]?.id || ''),
+    visible:   existingMarker ? (existingMarker.visible !== false) : true,
     createdAt: existingMarker?.createdAt || new Date().toISOString()
   };
 
@@ -10638,6 +10752,14 @@ async function saveMdMarker() {
     else _cmMarkers.push(marker);
   } else {
     _cmMarkers.push(marker);
+    // Auto-Projektzentrum: wenn Projekt noch kein Zentrum hat, vom ersten Marker übernehmen
+    const _autoCtrProj = _projects.find(p => p.id === _activeProjectId);
+    if (_autoCtrProj && _autoCtrProj.centerLat == null) {
+      _autoCtrProj.centerLat = lat;
+      _autoCtrProj.centerLng = lng;
+      _autoCtrProj.zoom = map ? map.getZoom() : 15;
+      LS.set(LS.K.PROJECTS, _projects);
+    }
   }
 
   await _saveCustomMarkers();
@@ -10670,6 +10792,24 @@ async function deleteCmMarker(id) {
   toast('🗑 Marker gelöscht');
 }
 
+// ── Einzelnen Custom-Marker ein-/ausblenden ──────────────────────────────────
+async function toggleCmVisible(id) {
+  const cm = _cmMarkers.find(m => m.id === id);
+  if (!cm) return;
+  // Normalisieren: undefined/true → false, false → true
+  cm.visible = (cm.visible === false) ? true : false;
+  await _saveCustomMarkers();
+  // Layer existiert garantiert (wird seit _loadAndRenderCustomMarkers immer erstellt)
+  const layer = _cmLeafletLayers?.[id];
+  if (layer) {
+    const projEnabled = _projects.find(p => p.id === cm.projectId)?.enabled !== false;
+    const shouldShow  = cm.visible !== false && projEnabled;
+    if (shouldShow) { if (!map.hasLayer(layer)) layer.addTo(map); }
+    else            { if  (map.hasLayer(layer)) map.removeLayer(layer); }
+  }
+  buildList();
+}
+
 async function _saveCustomMarkers() {
   try {
     await localforage.setItem(LS.K.CUSTOM_MARKERS, _cmMarkers);
@@ -10685,19 +10825,23 @@ async function _loadAndRenderCustomMarkers() {
   } catch(e) {
     _cmMarkers = [];
   }
-  // Migration: bestehende Marker dem Standard-Projekt zuweisen
+  // Migration: projectId + visible-Feld ergänzen
   const defaultId = _projects[0]?.id || '';
   let cmChanged = false;
   _cmMarkers = _cmMarkers.map(m => {
-    if (!m.projectId) { cmChanged = true; return { ...m, projectId: defaultId }; }
-    return m;
+    let changed = false;
+    let nm = m;
+    if (!nm.projectId)            { nm = { ...nm, projectId: defaultId }; changed = true; }
+    if (nm.visible === undefined) { nm = { ...nm, visible: true };         changed = true; }
+    if (changed) cmChanged = true;
+    return nm;
   });
   if (cmChanged) await _saveCustomMarkers();
-  // Marker aller aktivierten Projekte auf der Karte zeigen
-  _cmMarkers.forEach(cm => {
-    const projEnabled = _projects.find(p => p.id === cm.projectId)?.enabled !== false;
-    if (projEnabled) _renderOneCmMarker(cm);
-  });
+  // Für ALLE Marker einen Leaflet-Layer erstellen.
+  // _renderOneCmMarker prüft selbst ob der Marker auf die Karte gehört
+  // (projEnabled + visible). So hat _applyProjectLayers immer einen Layer zum
+  // ein-/ausblenden — auch für Marker aus aktuell deaktivierten Projekten.
+  _cmMarkers.forEach(cm => _renderOneCmMarker(cm));
 }
 
 // Einen einzelnen Custom-Marker auf der Karte zeichnen
@@ -10756,11 +10900,16 @@ function _renderOneCmMarker(cm) {
   </div>`;
 
   const mkr = L.marker([cm.lat, cm.lng], { icon, zIndexOffset: 700 })
-    .addTo(map)
     .bindPopup(popup, { maxWidth: 292, minWidth: 250 })
     .bindTooltip(cm.name, { permanent: false, direction: 'top', className: 'map-label' });
 
   _cmLeafletLayers[cm.id] = mkr;
+
+  // Zur Karte nur hinzufügen wenn Projekt aktiviert UND Marker sichtbar
+  const _cmProjEnabled = _projects.find(p => p.id === cm.projectId)?.enabled !== false;
+  if (_cmProjEnabled && cm.visible !== false) {
+    mkr.addTo(map);
+  }
 }
 
 // QR-Code für einen Custom-Marker im bestehenden QR-Modal anzeigen
@@ -10844,12 +10993,16 @@ function renderAllMarkersList() {
     container.appendChild(item);
   });
 
-  // ── Abschnitt 2: Strecken-Marker (Start/Ziel der geladenen GPX-Tracks) ─
+  // ── Abschnitt 2: Strecken-Marker (nur aktives + aktivierte Projekte) ────────
+  const _visProjs2 = new Set(_projects.filter(p => p.enabled !== false).map(p => p.id));
+  if (_activeProjectId) _visProjs2.add(_activeProjectId);
   const trkMarkers = [];
-  trackStore.tracks.forEach(t => {
-    if (t._startMkr)  trkMarkers.push({ track: t, type: 'start',  mkr: t._startMkr,  emoji: '▶',  label: 'Start' });
-    if (t._finishMkr) trkMarkers.push({ track: t, type: 'finish', mkr: t._finishMkr, emoji: '🏁', label: 'Ziel'  });
-  });
+  trackStore.tracks
+    .filter(t => _visProjs2.has(t.projectId))
+    .forEach(t => {
+      if (t._startMkr)  trkMarkers.push({ track: t, type: 'start',  mkr: t._startMkr,  emoji: '▶',  label: 'Start' });
+      if (t._finishMkr) trkMarkers.push({ track: t, type: 'finish', mkr: t._finishMkr, emoji: '🏁', label: 'Ziel'  });
+    });
 
   if (trkMarkers.length > 0) {
     const trkHdr = document.createElement('div');
@@ -10882,20 +11035,23 @@ function renderAllMarkersList() {
     });
   }
 
-  // ── Abschnitt 3: Eigene Marker ────────────────────────────────
+  // ── Abschnitt 3: Eigene Marker (nur aktives + aktivierte Projekte) ──────────
+  const _visProjs3 = new Set(_projects.filter(p => p.enabled !== false).map(p => p.id));
+  if (_activeProjectId) _visProjs3.add(_activeProjectId);
+  const visCmAll = _cmMarkers.filter(m => _visProjs3.has(m.projectId) || !m.projectId);
   const cmHdr = document.createElement('div');
   cmHdr.className = 'cm-section-hdr';
   cmHdr.style.marginTop = '12px';
-  cmHdr.innerHTML = `<span class="cm-section-title">Eigene Marker</span><span class="cm-section-count">${_cmMarkers.length}</span>`;
+  cmHdr.innerHTML = `<span class="cm-section-title">Eigene Marker</span><span class="cm-section-count">${visCmAll.length}</span>`;
   container.appendChild(cmHdr);
 
-  if (!_cmMarkers.length) {
+  if (!visCmAll.length) {
     const empty = document.createElement('div');
     empty.className = 'cm-empty';
-    empty.innerHTML = 'Noch keine eigenen Marker<br><span style="font-size:11px">Aktiviere den Marker-Modus und tippe auf der Karte</span>';
+    empty.innerHTML = 'Keine eigenen Marker im aktiven Projekt<br><span style="font-size:11px">Aktiviere den Marker-Modus und tippe auf der Karte</span>';
     container.appendChild(empty);
   } else {
-    _cmMarkers.forEach(cm => {
+    visCmAll.forEach(cm => {
       const color    = CM_CAT_COLORS[cm.cat] || '#888';
       const catLabel = CATS[cm.cat]?.label || cm.cat;
       const emoji    = cm.emoji || '📍';
@@ -12666,9 +12822,12 @@ function _initTracksTab() {
     </div>`;
   }).join('');
 
-  // Eigene Tracks (nicht aus AUTO_TRACKS)
+  // Eigene Tracks — nur aktives + aktivierte Projekte
+  const _visTracksProjs = new Set(_projects.filter(p => p.enabled !== false).map(p => p.id));
+  if (_activeProjectId) _visTracksProjs.add(_activeProjectId);
   const customTracks = trackStore.tracks.filter(t =>
     !AUTO_TRACKS.some(at => at.url === t.sourceUrl || at.name === t.name)
+    && _visTracksProjs.has(t.projectId)
   );
   const customHtml = customTracks.length
     ? `<div style="margin-top:16px;margin-bottom:6px;font-size:10px;font-weight:800;color:var(--td);letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between">
