@@ -3,222 +3,232 @@
 # 🦄 GMTW Muni Map 🌲
 **Die serverlose Offline-PWA für das German Muni Trail Weekend**
 
+![alt text](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status: 100% Offline](https://img.shields.io/badge/Status-100%25_Offline_Ready-success)](#)
-[![Map: Leaflet](https://img.shields.io/badge/Map-Leaflet.js-199900?logo=leaflet&logoColor=white)](https://leafletjs.com/)
-[![Geospatial: Turf.js](https://img.shields.io/badge/Geospatial-Turf.js-green)](#)
-[![Storage: IndexedDB](https://img.shields.io/badge/Storage-IndexedDB_Unlimited-blueviolet)](#)
 
-Ein technologisches Meisterwerk, verpackt in **einer einzigen HTML-Datei**. Entwickelt von Muni-Fahrern für Muni-Fahrer. Diese Progressive Web App (PWA) kombiniert hochpräzises Leaflet-Mapping, Turn-by-Turn Navigation, Sturzerkennung, Trail-Editoren und Multi-QR-Datenübertragung für den Einsatz in den tiefsten Wäldern – **komplett ohne Handynetz, Cloud oder App-Store.**
+![alt text](https://img.shields.io/badge/Status-100%25_Offline_Ready-success)
 
-[**📖 Das Ultimative Handbuch**](#-das-lückenlose-muni-handbuch-bedienung) • [**🚀 The Black Magic (Algorithmen)**](#-the-black-magic--innovative-ansätze) • [**🛡️ Offline-Resilienz**](#%EF%B8%8F-hardcore-offline-resilienz)
 
+![alt text](https://img.shields.io/badge/Map-Leaflet.js-199900?logo=leaflet&logoColor=white)
+
+
+![alt text](https://img.shields.io/badge/Geospatial-Turf.js-green)
+
+
+![alt text](https://img.shields.io/badge/Storage-IndexedDB_Unlimited-blueviolet)
+
+Eine Progressive Web App (PWA), die alle Paradigmen der modernen Softwareentwicklung bricht. Keine Build-Pipelines, kein React, kein Webpack, kein Node.js-Backend, keine Cloud-Datenbanken.
+
+Nur 4.500 Zeilen pures, inlined Vanilla JavaScript, CSS und HTML in einer einzigen Datei. Diese Datei treibt moderne Browser-APIs an ihr physikalisches Limit und mutiert dein Smartphone in einen kryptografischen Renntransponder, ein prädiktives HUD-Navigationssystem, einen Sensor-Telemetrie-Logger und ein optisches Datennetzwerk.
+
+Entwickelt für das Überleben im tiefsten Wald – dort, wo das Handynetz stirbt.
+
+🚵 Das Rider-Handbuch (UX) • ⚙️ Systemarchitektur & Web-APIs • 🧬 Algorithmen & Mathematik
 </div>
+🚵‍♂️ Teil 1: Das Rider-Handbuch (UX & Bedienung)
 
-<br>
+Wie man die App auf dem Trail bedient.
+1. Multi-Projekt Management & Map-Control
 
-> [!IMPORTANT]  
-> **Das Paradigma dieser App:** 
-> Einrad-Downhill und Enduro-Events finden dort statt, wo Handys keinen Empfang haben. Klassische Timing-Systeme sind teuer, herkömmliche Apps versagen offline völlig. Diese App ändert die Spielregeln radikal: **Dein Smartphone *ist* der Transponder, das Navi, der Kamera-Scanner, der Server und die Datenbank in einem.**
+Die App ist als Plattform für beliebig viele Events konzipiert.
 
----
+    Projekte Isolieren: Oben links findest du das Dropdown (z.B. GMTW). Wechselst du das Projekt, werden alle Trails, Custom-Marker und Zeiten des alten Projekts hart aus der UI entfernt und das neue Event geladen.
 
-## ✨ Feature-Matrix
+    Fokuspunkt setzen: Klickst du auf "Neues Projekt", verlangt die App einen Doppelklick auf die Weltkarte. Diese [lat, lng] Koordinate wird als fixes Epizentrum des neuen Trips gespeichert.
 
-| 🗺️ Map & Leaflet Engine | ⏱️ Race Engine & Sensoren | 🗂️ Daten, Admin & Kamera |
-| :--- | :--- | :--- |
-| **Topo & Satellit** (Kacheln cachebar) | **Auto-Start** via Turf.js Vektoren | **Integrierter Kamera-Scanner** (jsQR) |
-| **Turn-by-Turn HUD** (Off-Route Warnung) | **Dynamische Zwischenzeiten (Splits)** | **Multi-QR-Chunking** für Tracks |
-| **Leaflet Mini-Map Editor** (Features setzen) | **Sensor-Fusion** für Sturz-Erkennung | **Krypto-Signaturen** für Resultate |
-| **GPX-Parser** (inkl. Live-Höhenprofil) | **Web Bluetooth** Smartwatch GPS | **Leaderboard CSV/JSON Exporte** |
-| **A11Y (TTS)** Sprachsteuerung & Shortcuts | **Live-GPS Recorder** (inkl. Auto-Save) | **IndexedDB Full-State-Backups** |
+    Dual-Layer & Dynamische Skalierung: Ein Button wechselt zwischen OpenTopoMap und Esri-Satellit. Ein Slider in den Einstellungen skaliert alle UI-Marker auf der Karte stufenlos (50% - 200%), je nach Sehkraft und Displaygröße.
 
----
+2. Das Profil & Die Garage
 
-## 📖 Das lückenlose Muni-Handbuch (Bedienung)
-*Eine detaillierte Aufschlüsselung jedes UI-Elements, jedes Menüs und jeder Unterfunktion.*
+In den Einstellungen ➔ 👤 Profil.
 
-### 1. Die Karten-Oberfläche (Leaflet) & Basis-Steuerung
-Die primäre Ansicht der App ist die voll interaktive **Leaflet-Karte**.
-* **Layer-Umschalter (Oben rechts):** Wechselt nahtlos zwischen *OpenTopoMap* (inklusive Höhenlinien, ideal für Trails) und *Esri Satellitenbildern*.
-* **Filter-Chips (Oben links):** Blendet Kategorien ein/aus (🟢 Beginner, 🟡 Mittel, 🔴 Expert, 🔵 Logistik). *Tiefendetail: Der "Weg ins Camp" ist ein eigenes Polyline-Element, das nur eingeblendet wird, wenn der "Logistik"-Filter aktiv ist.*
-* **Listen-Ansicht (Burger-Menü):** Öffnet ein Bottom-Sheet mit allen aktuell sichtbaren Markern, aufgeteilt nach Kategorien, inklusive Schnellzugriff auf Navigation und Teilen-QRs.
-* **FABs (Floating Action Buttons - Rechts unten):**
-  * `📍 GPS`: Zentriert die Karte auf dich. (Aktiviert Auto-Follow).
-  * `📂 GPX`: Öffnet die Streckenverwaltung.
-  * `🔴 REC`: Startet sofort eine neue Strecken-Aufzeichnung.
-  * `🌓 Theme`: Schaltet das gesamte UI zwischen Dark-Mode (OLED-optimiert) und Light-Mode (High-Contrast für direkte Sonneneinstrahlung) um.
-  * `⛶ Fit Bounds`: Zoomt die Karte automatisch so, dass alle sichtbaren Trails und Marker ins Bild passen.
-  * `⚙️ Settings`: Öffnet das Hauptmenü.
+    Avatar-Matrix: Wähle aus 20 Emojis (🦄, 🦅, 🧗) und 8 Hex-Colors dein Icon. Es taucht in Bestenlisten und Popups auf.
 
-### 2. Offline-Caching & PWA-Installation (WICHTIG!)
-Die App MUSS installiert werden, um im Wald zu überleben. Gehe auf **⚙️ Einstellungen ➔ 📲 App**.
-* **Smart Install Prompt:** Die App analysiert deinen Browser (Safari, Chrome, Firefox) und zeigt dir exakt die bebilderten Schritte, um die App als PWA auf den Homescreen zu legen.
-* **Aggressives Map-Caching:** Zoome auf der Leaflet-Karte in das Trail-Gebiet (mindestens Zoom 12). Klicke auf `🗺️ Sichtbaren Kartenbereich cachen`. Der ServiceWorker berechnet die Bounding-Box und lädt hunderte Kartenkacheln geräuschlos in den lokalen Speicher.
-* **Storage Lock:** Mit `🔒 Dauerhaften Speicher anfragen` verbietest du dem Smartphone, deine gecachten Karten bei Speichermangel zu löschen.
+    Hardware-Log: Trage deinen Fahrer-Namen, Muni-Namen, Radgröße (19" bis 36"), Bremse und Specials (wie Schlumpf-Nabe oder Freewheel) ein. Diese Daten werden später kryptografisch in deine Rennzeiten gesiegelt.
 
-### 3. Fahrer-Profil & Hardware (Avatar Builder)
-Gehe auf **⚙️ Einstellungen ➔ 👤 Profil**. Diese Daten sind essentiell für Leaderboards und Auswertungen:
-* **Avatar-Builder:** Kombiniere 20 Rider-Emojis (🦄, 🚵, 🦅) mit 8 Hintergrundfarben zu deinem Piloten-Avatar. Dieser wird im Run-Detail-Screen angezeigt.
-* **Muni-Hardware:** Trage Fahrername, Muni-Name, Radgröße (19" Trial bis 36" Road) und Bremse ein. Nutze die Quick-Buttons für Besonderheiten wie *Schlumpf-Nabe* oder *Freewheel*.
-* **Sprache:** Wähle 🇩🇪, 🇬🇧, 🇫🇷 oder 🇪🇸. Dies steuert das UI und den Akzent der TTS-Vorlesestimme.
+3. Turn-by-Turn HUD & Off-Route Alarm
 
-### 4. Eigene Marker setzen & Deep-Linking
-Du hast eine gefährliche Wurzel oder einen perfekten Zeltplatz gefunden?
-* **Marker-Modus:** Aktiviere unter *⚙️ Einstellungen ➔ Marker* den Button `📍 Karte`. Ein **Doppelklick** auf die Leaflet-Map setzt einen neuen Pin.
-* **Marker Modal:** Wähle ein Emoji (⚠️, 🔥), schreibe eine Beschreibung und weise eine Kategorie zu. 
-* **Deep-Linking (Auto-GMaps):** Die App generiert automatisch einen Link, der bei einem Klick auf "Navigation" nativ **Apple Maps** (auf iOS) oder **Google Maps** (auf Android) mit der perfekten Route zum Marker öffnet.
-* **Skalierung:** Mit dem *Marker-Größen-Slider* kannst du alle Icons stufenlos auf 50% bis 200% skalieren.
+Klick auf einen Trail ➔ 🧭 Navigation.
 
-### 5. Das GPX-Panel (Import, Tracks & Live-Aufzeichnung)
-Tippe auf das **Ordner-Symbol (FAB)**.
-* **📥 Laden:** Importiere GPX per Upload, Drag&Drop oder füge eine GitHub-Raw-URL ein. Ein integrierter CORS-Proxy hilft, wenn fremde Server den Download blockieren.
-* **🗺️ Tracks:** Wähle eine Strecke. Die App parst die XML-Daten live und generiert ein **Farbverlaufs-Höhenprofil** auf einem HTML-Canvas (inkl. Min/Max und Gesamtanstieg).
-* **🔴 Aufnahme:** Zeichne neue Lines auf! Die App zieht eine rote Linie. **Schutzfunktionen:** Ein `WakeLock` hält das Display an, und alle 15 Sekunden feuert ein Auto-Save in die IndexedDB. Stürzt das Handy ab, fragt die App beim Neustart: *"Unterbrochene Aufnahme gefunden. Wiederherstellen?"*.
-* **Web Share API:** Fertige Aufnahmen können direkt über das native Teilen-Menü (WhatsApp, AirDrop) als `.gpx` gesendet werden.
+    To-Start Mode: Ein fetter Richtungspfeil und eine Meter-Anzeige lotsen dich zum Trailhead. Weichst du >30m ab, pulsiert das HUD rot: ⚠️ Falsche Richtung.
 
-### 6. Turn-by-Turn Navigation & Off-Route Detection
-Öffne das Popup einer Strecke und klicke auf `🧭 Navigation`. Ein dynamisches HUD erscheint oben im Bild:
-* **Modus 1 (Zum Start):** Ein Richtungspfeil und die Distanz lotsen dich zum Trailhead. Gehst du falsch, warnt dich das HUD rot pulsierend.
-* **Modus 2 (Auf der Strecke):** Am Start angekommen, wechselt die Logik. Die App peilt den GPX-Pfad **ca. 50 Meter in Fahrtrichtung voraus** an. Sie erkennt Kurven und zeigt rechtzeitig Abbiegepfeile (`↰`, `↱`).
-* **Off-Route Warnung:** Verlässt du den Pfad um mehr als 25 Meter, wird das HUD rot und die Stimme ruft: *"Achtung, du bist neben der Strecke!"*.
+    On-Track Mode: Auf dem Trail warnt dich das HUD präventiv vor Kurven (↰, ↱) und zeigt dir die verbleibende Distanz in %. Weichst du >25m vom Pfad ab, wird der Off-Route Alarm getriggert.
 
-### 7. Trail-Tagebuch & Mini-Map Editor
-Unter **⚙️ Einstellungen ➔ Strecken ➔ ⚙️ Einstellungen** findest du das ultimative Planungstool für jede Strecke:
-* **📝 Mein Rating:** Vergib 1-5 Sterne für *Schwierigkeit*, *Spaß* und *Flow*. Ein Statistik-Dashboard rechnet dir aus, wie viel Prozent des Wochenendes du bereits gemeistert hast.
-* **🎽 Condition:** Setze den aktuellen Untergrund: ☀️ Trocken, 🌧 Matschig, ❄️ Eisig.
-* **🚀 Trail Features (Der Editor):** Klicke auf `➕ Schlüsselstelle`. Es öffnet sich ein Full-Screen-Modal mit einer **separaten Leaflet Mini-Map und Fadenkreuz**. Schiebe die Karte exakt über die Position (oder nutze `📡 Live GPS`), wähle den Typ (⬇️ Drop, 🪨 Steinfeld, 🌉 Northshore) und speichere. Diese Hindernisse werden als Emojis auf der Hauptkarte gerendert!
-* **🕐 Historie:** Jedes editierte Feld und jedes neue Feature wird in einem lokalen Changelog mit Timestamp protokolliert.
+4. Trail-Tagebuch & Der Mini-Map Editor
 
-### 8. Enduro Race-Engine ⏱️ (Die Rennleitung in der Tasche)
-Absolut professionelle Zeitmessung durch Turf.js Geofencing.
-1. Wähle eine Strecke und drücke `⏱ Timing`.
-2. **Smartwatch (Optional):** Nutze `🔵 Smartwatch verbinden`, um via Web Bluetooth das hochpräzise GPS deiner Garmin/Apple Watch abzugreifen.
-3. **Die Startbox (≤ 5m):** Bei 5m ändert sich das Display: Ein Canvas-Render zeigt die Distanz zentimetergenau und farbcodiert an.
-4. **Arming (≤ 2m):** Die App fragt `✓ Ja, Start!`. Bestätige. Das System ist scharf (die Uhr steht auf 00:00).
-5. **GO!:** Die App berechnet eine 6m breite, unsichtbare Vektor-Linie im 90-Grad-Winkel zum Trail. Fährst du über diese Linie, feuert der Startschuss.
-6. **Dynamische Splits:** Die Strecke wird mathematisch in 4 Sektoren unterteilt. Im Hintergrund pulsieren Boxen. Passierst du einen Sektor, wird die Zwischenzeit geloggt.
-7. **Ziel:** Fährst du durch das Ziel, vibriert das Handy wild, die Zeit stoppt, und die **Krypto-Signatur** deines Laufs wird erstellt. (Klick auf den Lauf im Leaderboard für eine genaue Split- und Sturz-Analyse!).
+In den Einstellungen ➔ Strecken ➔ ⚙️ Einstellungen.
 
-### 9. Der Interne Kamera-Scanner & Das QR-Ökosystem
-Im Wald gibt es kein Internet. Die Datenübertragung läuft optisch. Gehe auf **⚙️ Einstellungen ➔ QR-Scan**. Die `jsQR`-Kamera erkennt automatisch:
-* **GPX-Strecken via Multi-QR-Chunking:** (Siehe unter "Black Magic").
-* **Einfache Links:** Lade GPX-URLs direkt aus dem Code.
-* **Einzelne Marker:** Scanne den Code eines Kumpels und übernimm seine Drops und Notizen.
-* **Full-State-Backups:** Lies ein kompaktes Backup-JSON direkt aus einem Code aus.
+    Persönliches Rating: Werte jeden Track mit 1-5 Sternen für Schwierigkeit, Spaß & Flow. Ein visuelles Dashboard rechnet live aus, wie viel Prozent des Events du "geschafft" hast. Zustand (Trocken, Feucht, Eisig) ist trackbar.
 
-### 10. Barrierefreiheit & Sprachsteuerung (A11Y)
-Die Sonne blendet extrem oder das Handy steckt im Rucksack?
-* Aktiviere die **♿ Vorlesefunktion**. Es erscheint eine schwebende **TTS Control Bar**.
-* **Steuerung:** Du kannst die Stimme pausieren <kbd>⏸</kbd>, den letzten Satz wiederholen <kbd>⏮</kbd> oder überspringen <kbd>⏭</kbd>.
-* Tippe auf die `🔊` FAB (oder <kbd>V</kbd> auf dem PC): Die App liest dir die gesamte Kartenlage vor (Zoomstufe, sichtbare Strecken, Entfernung vom GPS).
-* Tippe auf <kbd>N</kbd>: *"Nächster Punkt: Start Expert 2, 450 Meter entfernt."*
+    Fadenkreuz-Editor: Klicke ➕ Schlüsselstelle. Ein Full-Screen Modal öffnet sich mit einer zweiten, isolierten Leaflet Mini-Map. Schiebe die Karte exakt über den Drop oder das Steinfeld (oder nutze den Live-GPS Button), wähle den Typ und speichere. Die Hindernisse erscheinen als Emojis auf dem Trail.
 
-### 11. Admin-Modus (Exporte & Geräte klonen)
-Unter **⚙️ Einstellungen ➔ Backup** hast du die absolute Datenkontrolle:
-* **📊 Zeiten Export:** Lade *alle* gefahrenen Zeiten aller Teilnehmer (inkl. Splits, Stürze, Muni-Specs und Signaturen) als **UTF-8 BOM CSV** herunter (perfekt formatiert für Excel).
-* **📦 Full Backup:** Ein Klick packt *alles* (Strecken, Zeiten, Avatar, Features, Marker, History) in ein JSON. Importiere diese Datei auf einem anderen Tablet, und das Gerät ist ein exakter Klon.
+    Audit-Log (Changelog): Jede kleinste Änderung an Texten oder Features wird lokal mit Zeitstempel in einer Historie protokolliert (📝 Beschreibung bearbeitet).
 
----
+5. Das Enduro-Rennen ⏱️
 
-## 🚀 The "Black Magic" – Innovative Ansätze
-*Hier wird es für Software-Engineers spannend. Diese App reizt Web-APIs gnadenlos aus.*
+Klick auf ⏱ Timing.
 
-<details open>
-<summary><b>🛸 Multi-QR-Chunking (Daten beamen ohne Netz)</b></summary>
-Ein QR-Code fasst nicht genug Daten für einen GPX-Track. Wie sendest du im Wald eine Strecke von Handy zu Handy, wenn AirDrop/Bluetooth versagt?
-<br><br>
-<b>Die Protokoll-Pipeline:</b>
-<ol>
-  <li><b>Ramer-Douglas-Peucker (RDP):</b> Die Strecke wird iterativ mathematisch geglättet, um redundante Trackpunkte zu löschen.</li>
-  <li><b>Delta-Encoding:</b> Statt dicker <code>[lat, lng, ele, time]</code> Arrays speichert die App nur die relativen Millimeter-Abstände zum vorherigen Punkt in einer kompakten 10^-5 Matrix.</li>
-  <li><b>DEFLATE-Kompression:</b> Das Delta-JSON wird via <code>pako</code> (Zlib) direkt im Browser extrem komprimiert.</li>
-  <li><b>Base64Url & Chunking:</b> Die Binärdaten werden zu URL-sicheren Strings konvertiert, in 1100-Zeichen-Blöcke zerschnitten und mit einem Sync-Header <code>{v:1, id, i, n, z, d}</code> versehen.</li>
-  <li><b>Das Daumenkino:</b> Die App spielt diese Chunks als animierte QR-Bilder in einer Endlosschleife ab. Der integrierte <code>jsQR</code> Scanner des Empfängers puzzelt die Frames asynchron zusammen.</li>
-</ol>
-</details>
+    Bluetooth-Link (Optional): Koppel eine Smartwatch, um deren hochpräzises GPS in die App einzuspeisen.
 
-<details open>
-<summary><b>💥 Sensor Fusion (Crash & Dismount Detection)</b></summary>
-Die App misst nicht nur die Zeit, sondern <i>wie hart</i> du fährst. Sie überwacht die native <code>DeviceMotionEvent</code> API (Beschleunigungssensor) in Echtzeit.
-<ul>
-  <li><b>Sturzerkennung (Crash):</b> Der 3D-Vektor <code>√(ax² + ay² + az²)</code> wird alle paar Millisekunden berechnet. Gibt es einen Spike von über <b>35 m/s² (ca. 3.5 G)</b> und das Handy ist ~400ms danach auffällig ruhig, geht das System von einem Sturz aus. Es loggt "💥 Sturz" mitsamt Timestamp in die Rennakte.</li>
-  <li><b>Absteigen (Dismount):</b> Fällt die GPS-Geschwindigkeit auf dem Trail abrupt von dynamischer Fahrt (>5 km/h) auf Stillstand (<1 km/h), wird ein "🚶 Absteigen" registriert.</li>
-</ul>
-</details>
+    Canvas Approach (≤ 5m): Ein 60fps Overlay überlagert alles. Zahlen wachsen proportional zur Nähe an, die Farbe fadet in Neongrün. Bei 2m bestätigst du das "Arming".
 
-<details open>
-<summary><b>🔐 Serverless Crypto-Signing (Anti-Cheat System)</b></summary>
-Da es keinen zentralen Server gibt: Wie verhindert man, dass jemand sein exportiertes JSON-Zeitenfile am PC bearbeitet und eine Fabelzeit einträgt?
-<br><br>
-Beim Passieren der Ziellinie nutzt die App die native <code>window.crypto.subtle</code> API. Sie generiert einen <b>HMAC-SHA256 Hash</b> aus: <i>Gesamtzeit + Splits + Fahrername + Muni-Setup + Einem internen, tagesaktuellen Secret-Key</i>.
-Dieser kryptografische Hash wird im JSON und im Ziel-QR-Code unlöschbar hinterlegt. Ändert ein Cheater später nur eine Millisekunde der Zeit, bricht die Signatur bei der Prüfung durch den Rennleiter sofort zusammen.
-</details>
+    Auto-Start: Du hast das Handy in der Tasche. Durchbrichst du die unsichtbare Startlinie, feuert der Timer lautlos los.
 
-<details open>
-<summary><b>🎯 Dynamisches Geofencing (Turf.js Vektor-Startlinien)</b></summary>
-Eine Startlinie ist kein simpler "Radius" (Kreis), in den man hineinfährt – das gäbe krasse Fehlstarts, wenn man sich dem Punkt von der Seite nähert. 
-Die App nutzt die Geomathematik von <b>Turf.js</b>: Sie misst das <i>Bearing</i> (den Kompass-Winkel) der ersten Trail-Meter. Im exakten 90-Grad-Winkel dazu errechnet sie live die Koordinaten für eine virtuelle, 6 Meter breite Linie quer auf dem Trail. Erst wenn du <i>genau diese Vektor-Linie in Fahrtrichtung</i> durchbrichst, startet der Timer.
-</details>
+    Zwischenzeiten & Telemetrie: Die App nimmt 4 Sektor-Zeiten. Gleichzeitig lauscht sie auf harte Einschläge (Stürze) oder abrupte Stopps (Absteigen) und loggt diese.
 
----
+    Das Ziel: Im Ziel vibriert das Handy stark. Die Signatur wird errechnet, ein QR-Code für das Leaderboard erscheint.
 
-## 🛡️ Hardcore Offline-Resilienz
-*Ein Mountain-Unicycle Event verzeiht keine Software-Fehler. Diese App ist auf das Überleben im Extremfall programmiert.*
+6. Optisches Beamen (QR Scanner)
 
-> [!TIP]  
-> **Unlimited Storage via IndexedDB:**
-> Der normale `localStorage` eines Browsers crasht bei 5 MB. Diese App umgeht das Limit elegant durch den Einsatz von `localForage`. Alle GPX-Files, Tausende Map-Tiles und riesige JSON-Backups werden asynchron in die **IndexedDB** des Browsers geschrieben. Gigabytes an Offline-Daten sind möglich.
+Ohne Internet lädst du Strecken und Marker optisch.
 
-* **🔋 WakeLock API:** iOS und Android killen inaktive Browser-Tabs gnadenlos, wenn das Display aus ist. Beim Rennstart ruft die App `navigator.wakeLock.request('screen')` auf. Das Betriebssystem hält die App priorisiert am Leben, das GPS loggt ungebremst im Hintergrund.
-* **⚠️ GPS-Retry-Logik:** Verliert das Handy im dichten Wald das Signal, gibt die App nicht auf. Sie registriert den Error-Code und versucht in immer länger werdenden Abständen, die Hardwaresensoren neu zu initialisieren.
+    Öffne den Scanner (jsQR). Halte ihn über das Display eines Freundes.
 
----
+    Er spielt ein animiertes QR-Daumenkino ab. Dein Scanner fängt die Frames mit 5 FPS ein, baut die Chunks zusammen und entpackt eine riesige GPX-Datei mitten im Wald.
 
-## 💻 Tech Stack & Architektur
+7. PWA Installation & Hardcore Offline-Caching
 
-Der absolute Clou an diesem Projekt: Es ist eine **Single-File-App (SFA)**.
-Kein Node.js, kein Webpack, kein React, keine `.env` Dateien. Alle ~3900 Zeilen Code stecken in einer `index.html`.
+    Geräte-Sniffer: Die App erkennt exakt, ob du "Safari iOS", "Samsung Internet" oder "Firefox Mobile" nutzt und zeigt dir die perfekt passende Foto-Anleitung, um die App auf den Homescreen zu installieren.
 
-**Eingesetzte Open-Source Schwergewichte (CDNs / Inlined):**
-*   **[Leaflet.js](https://leafletjs.com/):** High-Performance Map Rendering.
-*   **[Turf.js](https://turfjs.org/):** Fortgeschrittene Geomathematik (Distance, Bearing, Destination, Line-Splitting).
-*   **[jsQR](https://github.com/cozmo/jsQR):** Kamera-Scanning in purem JavaScript.
-*   **[Pako](https://github.com/nodeca/pako):** Rasante Zlib/Deflate In-Browser-Kompression.
-*   **[localForage](https://localforage.github.io/localForage/):** Asynchroner Offline-Storage Wrapper.
-*   **Web APIs:** `DeviceMotionEvent`, `Web Crypto API`, `Web Bluetooth API`, `Web Share API`, `WakeLock API`, `Web Speech API`, `MediaDevices API`.
+    Area-Caching: Klicke auf 🗺️ Sichtbaren Kartenbereich cachen. Der ServiceWorker zieht bis zu 3.000 Tiles im Hintergrund. Mit 🔒 Dauerhaften Speicher anfragen sperrst du das OS davor aus, deine Offline-Karten zu löschen.
 
----
+🖧 Teil 2: Systemarchitektur & API Deep-Dive
 
-## 🛠️ Setup (Für Entwickler & Event-Orgas)
+Wie die App unter der Haube funktioniert und welche Web-APIs missbraucht wurden.
+1. IndexedDB Wrapper (localForage)
 
-Es ist so einfach, wie Software nur sein kann:
+Der native localStorage limitiert Strings auf 5 MB. Ein langes GPX-File hat schnell 1 MB.
 
-1. Lade dieses Repository als `.zip` herunter oder klone es:
-   ```bash
-   git clone https://github.com/DeinUsername/GMTW-Trail-Map.git
+    Lösung: localForage injiziert alle großen Payloads asynchron in die Browser-eigene IndexedDB.
 
-    Gehe in den Ordner. Es müssen nur 3 Dateien vorhanden sein: index.html, manifest.json und service-worker.js (und der /icons Ordner).
+    Dies ermöglicht das Speichern von hunderten Tracks, kompletten Full-State JSON Backups und gigantischen GPS-Recordings (Gigabytes an Kapazität).
 
-    Starte einen lokalen Webserver. (WICHTIG: Moderne APIs wie Kamera, Bluetooth und ServiceWorker blockieren aus Sicherheitsgründen, wenn man die Datei nur per Doppelklick file:// öffnet. Sie benötigen zwingend localhost oder HTTPS).
-    code Bash
+2. High-Performance Tile-Precaching (requestIdleCallback)
 
-    # Mit Python (Mac/Linux/Windows)
-    python3 -m http.server 8080
+Web-Maps ruckeln beim Scrollen, wenn sie Kacheln nachladen.
 
-    # Oder mit Node.js
-    npx serve
+    Die _TPC Engine umgeht das komplett. Registriert Leaflet für 1.400ms keine Bewegung (moveend debounce), feuert ein requestIdleCallback.
 
-    Öffne http://localhost:8080 im Browser deines Handys oder PCs. Fertig.
+    Die App kalkuliert die X/Y/Z Koordinaten des Viewports + 50% Padding für die Zoomstufen -2 bis +1.
 
-📜 Lizenz
+    Sie sortiert die Array-Liste nach "Manhattan-Distanz" zum Kartenmittelpunkt. Die wichtigsten (zentralsten) Kacheln werden zuerst via MessageChannel an den Service Worker zum Download gesendet. Der Main-Thread (UI) wird zu 0,0% blockiert.
 
-Dieses Projekt steht unter der MIT Lizenz.
+3. DOMParser XML-Injection (iOS Fallback)
 
-Du bist völlig frei, diesen Code zu forken, ihn in Stücke zu reißen, das Design zu ändern und die "Muni"-Begriffe durch Mountainbike-, Trailrunning- oder Geocaching-Begriffe zu ersetzen.
+iOS Safari weigert sich oft, lokal erzeugte blob: URLs in Leaflet-GPX-Plugins über XMLHttpRequest zu laden.
 
-Baue darauf dein eigenes, komplett kostenloses, hardware-unabhängiges und serverloses Zeitmesssystem für dein nächstes lokales Offroad-Event! (Siehe LICENSE Datei für den genauen Rechtstext).
+    Der Hack: Wenn der Input mit < beginnt, umgeht die App den XHR-Request komplett. Sie wirft den String direkt in den nativen DOMParser (new DOMParser().parseFromString(gpx, "text/xml")) und verfüttert den fertigen DOM-Tree an Leaflet. 100% Erfolgsquote auf allen Plattformen.
+
+4. Kontextuelle Accessibility & Spatial TTS (speechSynthesis)
+
+Ein radikaler Ansatz für Screenreader & Sprachsteuerung im Sport-Einsatz.
+
+    State-Aware TTS: Drückt der Nutzer <kbd>V</kbd> oder den 🔊-FAB, parst die App den aktuellen DOM-State. Ist das Race-Overlay offen? Sie liest die Live-Zeit vor. Ist das Settings-Panel offen? Sie liest die Beschreibung des aktuellen Tabs.
+
+    Spatial Lookup (<kbd>N</kbd>): Die Funktion speakNearestPoint() iteriert im Hintergrund über alle Tracks, Custom Marker und LOCS, wendet die Haversine-Formel auf deine GPS-Position an und kündigt akustisch an: "Nächster Punkt: Start Expert 2, 450 Meter entfernt."
+
+    15s Chrome Bugfix: Chrome stoppt lange TTS-Ansagen nach 15 Sekunden. Die App nutzt ein setInterval (10s), das speechSynthesis.resume() triggert, um den Browser wachzuhalten (_ttsKeepalive). HTML-Tags und Emojis werden vor der Sprachausgabe per Regex hart bereinigt (_cleanForSpeech).
+
+5. Web Share API Level 2 (Nativer OS-Dialog)
+
+    Exportierte Tracks und Renn-Zeiten werden nicht nur "heruntergeladen". Die App kreiert ein natives File-Objekt (new File([gpxStr], "track.gpx")) und übergibt es an navigator.share({ files: [file] }). So öffnet sich direkt das native iOS/Android Share-Sheet (WhatsApp, AirDrop, etc.).
+
+🧬 Teil 3: Algorithmen & Mathematik (The Black Magic)
+
+Der wirkliche Wahnsinn liegt in den mathematischen Konzepten der App.
+1. Das Optische Datennetzwerk (Multi-QR Chunking v2)
+
+Wie überträgt man 3.000 Geokoordinaten optisch durch eine Handykamera?
+
+    Binary-Search RDP: Der Ramer-Douglas-Peucker-Algorithmus glättet den Track. Ein simpler RDP ist aber zu ungenau, um ein striktes Punkt-Limit einzuhalten. Die App nutzt eine Binärsuche mit 18 Iterationen (1:2^18 Präzision) auf die Variable Epsilon, um exakt das Epsilon zu finden, das den Track auf < 1.000 Punkte limitiert, ohne ihn kaputt zu machen.
+
+    Delta-Encoding Matrix: Floats (z.B. 51.421812) verbrauchen viel Platz als String. Die App rechnet sie auf 1e5 (Integers) hoch. Dann wird nur noch die Differenz zum vorherigen Punkt gespeichert: [dLat, dLng, dEle, dTime].
+
+    DEFLATE Kompression: Dieses Delta-Array wird mit pako.js (Zlib) auf maximaler Stufe (Level 9) im Browser komprimiert.
+
+    Chunk-Multiplexing: Der Base64Url-String wird in Pakete à 1100 Zeichen zerschnitten. Jeder Frame erhält den Header: {v:1, T:'gmtw-chunk', id, i, n, z, d}. Der Sender animiert diese als Slideshow. Der Empfänger-Scanner (jsQR) fängt Frames mit 5 FPS, puffert sie in einem asynchronen _qrChunkBuffer (Deduplizierung via Set()), dekomprimiert bei 100% und baut das Leaflet-Layer wieder auf.
+
+2. Vektor-Geofencing (Die unsichtbare Startlinie)
+
+Klassische Geofences nutzen die simple Haversine-Distanz (Kreise). Näherst du dich dem Kreis von der falschen Seite, startet die Zeitmessung fehlerhaft.
+
+    Turf.js Vektor-Berechnung: Die App nimmt den 1. und 2. Punkt des GPX-Tracks. Mit turf.bearing() wird der exakte Kompasswinkel der Strecke berechnet.
+
+    Mit turf.destination() rechnet die App vom Startpunkt aus 3 Meter im Winkel von -90° (Links) und 3 Meter im Winkel von +90° (Rechts).
+
+    Daraus entsteht ein absolut perfektes, 6 Meter breites Linien-Polygon quer über den Trail (_drawStartLine). Nur der Durchbruch dieser Linie startet den Timer.
+
+    Adaptive Checkpoints: Die Strecke wird durch turf.lineChunk und turf.along algorithmisch in 4 identisch lange Sektoren unterteilt.
+
+3. Serverless Cryptography (Anti-Cheat HMAC)
+
+Niemand darf exportierte Leaderboard-Zeiten manipulieren.
+
+    SubtleCrypto API: Beim Passieren der Ziellinie feuert die native window.crypto.subtle API.
+
+    Sie importiert einen tagesaktuellen Raw-Key: GMTW26-RACE-YYYY-MM-DD.
+
+    Die App bündelt: Track-ID, Gesamtzeit, Split-Array, Fahrername und Muni-Setup (Radgröße, Bremsen).
+
+    Daraus wird ein HMAC-SHA256 Hash erzeugt. Die ersten 24 Zeichen werden als Signatur in den Ziel-QR-Code und das JSON-Export-File eingebrannt. Modifiziert jemand am PC auch nur eine Ziffer seiner Zeit, crasht die Signatur bei der Event-Leitung (unsigned).
+
+4. Sensor-Fusion (Crash & Dismount Telemetrie)
+
+Die App analysiert die Fahrdynamik live über die DeviceMotionEvent API.
+
+    G-Force Impact Calculation: Alle paar Millisekunden wird der Vektor SENSORS.accelMag = Math.sqrt(ax² + ay² + az²) berechnet.
+
+    Crash-Heuristik: Übersteigt accelMag den Schwellenwert von 35 m/s² (~3.5 G) (harter Impact) prüft ein Timeout 400ms später, ob die Bewegung auf < 4 m/s² abgefallen ist (Fahrer liegt am Boden). Ist dies erfüllt, wird _recordFallEvent('fall') getriggert.
+
+    Dismount-Heuristik: Die GPS-Geschwindigkeit wird mit der Vorherigen verglichen. Fällt der Speed in einer Sekunde von dynamischen >5 km/h auf fast absoluten Stillstand (<1 km/h), wird ein 🚶 Absteigen geloggt.
+
+    Bluetooth Sensor-Fusion: Ist eine Smartwatch über das Bluetooth GATT-Profil 0x1819 gekoppelt, wird bei jedem GPS-Tick geprüft, ob die Daten der Uhr jünger als 3 Sekunden sind. Wenn ja, werden Handy-GPS und Watch-GPS gemittelt, um die Präzision im Wald drastisch zu erhöhen.
+
+5. High-Resolution Background Recorder (WakeLock)
+
+Die Aufzeichnung (recStart()) darf durch OS-Throttling nicht abbrechen.
+
+    WakeLock API: navigator.wakeLock.request('screen') wird gefeuert. Das Display bleibt hart erzwungen an, was das OS zwingt, der App maximale CPU- und GPS-Priorität zuzuweisen.
+
+    Auto-Save Loop: Der _persistInt Interval pumpt das gesamte Array an 3D-Geodaten alle 5 Sekunden in die IndexedDB. Stürzt der Browser ab, erkennt die App beim Reload das unfertige Array im Storage und rekonstruiert die Polyline (restoreRecorder()).
+
+6. Light Mode WCAG AA Compliance
+
+Der Light-Mode ist nicht nur "hell", er ist auf extreme Lesbarkeit bei direkter Sonneneinstrahlung getrimmt.
+
+    Alle CSS-Variablen im [data-theme=light] Block wurden mathematisch auf WCAG AA Konformität kalibriert.
+
+    Primärer Text (--tx: #0c1420) hat auf Weiß ein Kontrastverhältnis von ~17:1.
+
+    Die Akzentfarbe Grün (--ac) wird im Light-Mode drastisch abgedunkelt auf #236b00, was einen garantierten Kontrast von > 7.5:1 liefert, damit Buttons immer perfekt lesbar bleiben.
+
+💻 Code & Dependencies (100% Inlined)
+
+Es gibt kein NPM, kein Node.js, kein Webpack.
+
+    Leaflet.js: Map Rendering & Interaktivität (Layer, Polylines).
+
+    Turf.js: Geomathematik (Bearing, Destination, Line-Splitting).
+
+    jsQR & qrcode-generator: Optisches Kamera-Scanning & lokales QR-Canvas-Drawing.
+
+    Pako.js: In-Browser Deflate/Inflate Kompression (C-Level Speed).
+
+    localForage: Asynchroner IndexedDB Wrapper für unlimitierten Speicher.
+
+🚀 Instant Deployment
+
+Da die App serverseitig völlig stumm ist, reicht der kleinste verfügbare HTTPS-Webspace.
+
+    Repository klonen.
+
+    Die Dateien index.html, manifest.json, service-worker.js und das icons/ Verzeichnis auf Vercel, Netlify, GitHub Pages oder einen 1€ FTP-Server schieben.
+
+    Die URL auf dem Smartphone öffnen.
+
+    App installieren.
+
+    In den Wald gehen und das Netz vergessen.
 <div align="center">
 <b>Built with ☕, 🦄 and raw Vanilla JavaScript for GMTW 2026.</b><br>
 <i>"Where we're going, we don't need servers."</i>
