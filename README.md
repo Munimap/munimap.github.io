@@ -4,17 +4,9 @@
 **Die serverlose Offline-PWA für das German Muni Trail Weekend**
 
 ![alt text](https://img.shields.io/badge/License-MIT-yellow.svg)
-
-
 ![alt text](https://img.shields.io/badge/Status-100%25_Offline_Ready-success)
-
-
 ![alt text](https://img.shields.io/badge/Map-Leaflet.js-199900?logo=leaflet&logoColor=white)
-
-
 ![alt text](https://img.shields.io/badge/Geospatial-Turf.js-green)
-
-
 ![alt text](https://img.shields.io/badge/Storage-IndexedDB_Unlimited-blueviolet)
 
 Eine Progressive Web App (PWA), die alle Paradigmen der modernen Softwareentwicklung bricht. Keine Build-Pipelines, kein React, kein Webpack, kein Node.js-Backend, keine Cloud-Datenbanken.
