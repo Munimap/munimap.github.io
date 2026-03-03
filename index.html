@@ -4044,7 +4044,7 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
 <!-- TOP BAR -->
 <div id="topbar">
   <div id="tbrow">
-    <button class="ibtn" onclick="toggleSheet()" aria-label="Menü">
+    <button class="ibtn" onclick="toggleSheet()" data-i18n-aria="aria_menu" aria-label="Menü">
       <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M0 1H18M0 7H12M0 13H18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
     </button>
     <div id="titlepill">
@@ -4059,11 +4059,11 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
 
 <!-- FILTER + PROJEKT-AUSWAHL -->
 <div id="fbar">
-  <button class="chip on" data-f="all"      onclick="setFilter('all',this)">Alle</button>
-  <button class="chip"    data-f="beginner" aria-label="Beginner Filter" onclick="setFilter('beginner',this)">🟢 Beginner</button>
-  <button class="chip"    data-f="mittel"   onclick="setFilter('mittel',this)">🟡 Mittel</button>
-  <button class="chip"    data-f="expert"   onclick="setFilter('expert',this)">🔴 Expert</button>
-  <button class="chip"    data-f="logistik" aria-label="Logistik Filter" onclick="setFilter('logistik',this)">🔵 Logistik</button>
+  <button class="chip on" data-f="all"      onclick="setFilter('all',this)"><span data-i18n="filter_all">Alle</span></button>
+  <button class="chip"    data-f="beginner" onclick="setFilter('beginner',this)">🟢 <span data-i18n="filter_beginner">Beginner</span></button>
+  <button class="chip"    data-f="mittel"   onclick="setFilter('mittel',this)">🟡 <span data-i18n="filter_medium">Mittel</span></button>
+  <button class="chip"    data-f="expert"   onclick="setFilter('expert',this)">🔴 <span data-i18n="filter_expert">Expert</span></button>
+  <button class="chip"    data-f="logistik" onclick="setFilter('logistik',this)">🔵 <span data-i18n="filter_logistics">Logistik</span></button>
   <!-- Projekt-Dropdown -->
   <div id="proj-bar">
     <button id="proj-toggle-btn" onclick="toggleProjDropdown()"
@@ -4075,7 +4075,7 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
     </button>
     <div id="proj-dropdown" role="listbox" hidden aria-label="Projekte">
       <div id="proj-list-inner" role="group"></div>
-      <button class="proj-new-btn" onclick="startNewProjMode()">➕ Neues Projekt</button>
+      <button class="proj-new-btn" onclick="startNewProjMode()"><span data-i18n="btn_new_project">➕ Neues Projekt</span></button>
     </div>
   </div>
 </div>
@@ -4083,8 +4083,8 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
 <!-- Projekt Erstellen: Hinweisbanner (zeigt sich während Map-Doppelklick-Modus) -->
 <div id="proj-create-hint" role="status" aria-live="polite">
   <span style="font-size:18px">🗺️</span>
-  <span style="font-weight:700;font-size:14px">Doppelklick auf die Karte, um den Fokuspunkt des neuen Projekts zu setzen</span>
-  <button onclick="_cancelProjCreateMode()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation;white-space:nowrap">Abbrechen</button>
+  <span data-i18n="proj_create_hint" style="font-weight:700;font-size:14px">Doppelklick auf die Karte, um den Fokuspunkt des neuen Projekts zu setzen</span>
+  <button data-i18n="proj_cancel" onclick="_cancelProjCreateMode()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation;white-space:nowrap">Abbrechen</button>
 </div>
 
 <!-- Projekt Erstellen: Schritt 2 — Optionen-Sheet (nach Doppelklick) -->
@@ -4093,15 +4093,14 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
     <!-- Header -->
     <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px">
       <div>
-        <div id="proj-s2-ttl" style="font-family:var(--fh);font-size:17px;font-weight:900;color:var(--tx)">Neues Projekt</div>
-        <div id="proj-s2-sub" style="font-size:12px;color:var(--td);margin-top:2px">Fokuspunkt gesetzt · Was möchtest du tun?</div>
+        <div id="proj-s2-ttl" data-i18n="proj_step2_title" style="font-family:var(--fh);font-size:17px;font-weight:900;color:var(--tx)">Neues Projekt</div>
+        <div id="proj-s2-sub" data-i18n="proj_step2_subtitle" style="font-size:12px;color:var(--td);margin-top:2px">Fokuspunkt gesetzt · Was möchtest du tun?</div>
       </div>
       <button onclick="closeProjStep2()" style="width:32px;height:32px;border-radius:8px;border:none;background:var(--s2);color:var(--tx);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation" aria-label="Schließen">✕</button>
     </div>
     <!-- Name-Eingabe -->
     <div style="padding:0 16px 12px">
-      <label style="font-size:12px;color:var(--td);font-weight:700;display:block;margin-bottom:4px">Projektname</label>
-      <input id="proj-s2-name" type="text" placeholder="z.B. Sauerland 2026" maxlength="40"
+      <input id="proj-s2-name" type="text" data-i18n-ph="proj_name_ph" placeholder="Projektname…" maxlength="40"
         class="sp-inp" style="width:100%;box-sizing:border-box"
         onkeydown="if(event.key==='Enter')saveProjStep2('only')">
     </div>
@@ -4109,31 +4108,19 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
     <div style="border-top:1px solid var(--bd2)">
       <button class="proj-s2-opt" onclick="saveProjStep2('marker')" style="width:100%;background:none;border:none;text-align:left">
         <div class="proj-s2-icon">📍</div>
-        <div>
-          <div style="font-weight:700">Marker setzen</div>
-          <div style="font-size:12px;color:var(--td);margin-top:2px">Erstelle das Projekt und setze direkt einen Marker</div>
-        </div>
+        <div><div data-i18n="proj_btn_marker" style="font-weight:700">📍 Marker setzen</div></div>
       </button>
       <button class="proj-s2-opt" onclick="saveProjStep2('gpx')" style="width:100%;background:none;border:none;text-align:left">
         <div class="proj-s2-icon">🗺️</div>
-        <div>
-          <div style="font-weight:700">GPX-Strecke laden</div>
-          <div style="font-size:12px;color:var(--td);margin-top:2px">Erstelle das Projekt und importiere eine GPX-Datei</div>
-        </div>
+        <div><div data-i18n="proj_btn_gpx" style="font-weight:700">🗺 GPX-Datei laden</div></div>
       </button>
       <button class="proj-s2-opt" onclick="saveProjStep2('import')" style="width:100%;background:none;border:none;text-align:left">
         <div class="proj-s2-icon">📥</div>
-        <div>
-          <div style="font-weight:700">Projekt importieren</div>
-          <div style="font-size:12px;color:var(--td);margin-top:2px">Lade ein vorhandenes Projekt-JSON (Strecken, Marker, Daten)</div>
-        </div>
+        <div><div data-i18n="proj_btn_import" style="font-weight:700">📥 Projekt-JSON importieren</div></div>
       </button>
       <button class="proj-s2-opt" onclick="saveProjStep2('only')" style="width:100%;background:none;border:none;text-align:left">
         <div class="proj-s2-icon">✅</div>
-        <div>
-          <div style="font-weight:700">Nur Projekt erstellen</div>
-          <div style="font-size:12px;color:var(--td);margin-top:2px">Leeres Projekt anlegen, Inhalte später hinzufügen</div>
-        </div>
+        <div><div data-i18n="proj_btn_only" style="font-weight:700">✓ Nur erstellen</div></div>
       </button>
     </div>
     <!-- Versteckter File-Picker für GPX / Projekt-Import -->
@@ -4149,7 +4136,7 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
   <button class="tts-ctrl-btn" id="tts-pause-btn" onclick="ttsTogglePause()"   aria-label="Pause / Weiter" title="Pause / Weiter">⏸</button>
   <button class="tts-ctrl-btn" id="tts-skip-btn"  onclick="ttsSkipForward()"   aria-label="Weiter / Überspringen" title="Aktuellen Text überspringen">⏭</button>
   <button class="tts-ctrl-btn" id="tts-stop-btn"  onclick="speakStop()"        aria-label="Stopp" title="Sprachausgabe stoppen">⏹</button>
-  <span id="tts-status-txt" style="flex:1;min-width:0;font-size:11px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis" aria-live="polite">Bereit</span>
+  <span id="tts-status-txt" style="flex:1;min-width:0;font-size:11px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis" aria-live="polite" data-i18n="tts_ready">Bereit</span>
 </div>
 
 <!-- FEATURE LOCATION PICKER MODAL -->
@@ -4227,10 +4214,10 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
 <!-- LEGEND -->
 <div id="legend">
   <div class="lgnd-t">Legende</div>
-  <div class="lgnd-r"><div class="lgnd-d" style="background:var(--beg)"></div><span class="lgnd-l">Beginner</span></div>
-  <div class="lgnd-r"><div class="lgnd-d" style="background:var(--mit)"></div><span class="lgnd-l">Mittel</span></div>
-  <div class="lgnd-r"><div class="lgnd-d" style="background:var(--exp)"></div><span class="lgnd-l">Expert</span></div>
-  <div class="lgnd-r"><div class="lgnd-d" style="background:var(--log)"></div><span class="lgnd-l">Logistik</span></div>
+  <div class="lgnd-r"><div class="lgnd-d" style="background:var(--beg)"></div><span data-i18n="cat_beginner" class="lgnd-l">Beginner</span></div>
+  <div class="lgnd-r"><div class="lgnd-d" style="background:var(--mit)"></div><span data-i18n="cat_mittel" class="lgnd-l">Mittel</span></div>
+  <div class="lgnd-r"><div class="lgnd-d" style="background:var(--exp)"></div><span data-i18n="cat_expert" class="lgnd-l">Expert</span></div>
+  <div class="lgnd-r"><div class="lgnd-d" style="background:var(--log)"></div><span data-i18n="cat_logistik" class="lgnd-l">Logistik</span></div>
 </div>
 
 <div id="backdrop" onclick="closeAll()"></div>
@@ -4240,11 +4227,12 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
   <div class="s-handle"></div>
   <div class="s-head">
     <div style="display:flex;align-items:center;gap:10px">
-      <span class="s-title" id="sheet-title">Trail Punkte</span>
+      <span class="s-title" id="sheet-title" data-i18n="sheet_title">Trail Punkte</span>
       <span class="s-cnt" id="s-cnt">0</span>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <button id="sheet-tts-btn" onclick="onA11yToggle(!_a11y.enabled)"
+        data-i18n-title="sheet_tts_toggle" data-i18n-aria="sheet_tts_toggle"
         title="Vorlesen ein/aus" aria-label="Vorlesen ein/aus">🔊</button>
       <button class="s-close" onclick="closeAll()">×</button>
     </div>
@@ -4557,23 +4545,62 @@ const LS = {
 // ── DATEN ──────────────────────────────────────────────────────
 const LOCS = [
   // BEGINNER
-  { id:"muni",     name:"Muni Start Beginner/Mittel", lat:51.421812, lng:7.492612, color:"#22c55e", emoji:"🚩", cat:"beginner", desc:"Startpunkt für Muni-Fahrer aller Levels" },
-  // MITTEL — Koordinaten korrekt: sam-mit=Sammelpunkt(51.423371), ziel-mit=Ziel(51.419329)
-  { id:"ein-mit",  name:"Einstieg Mittel",            lat:51.423421, lng:7.480829, color:"#f59e0b", emoji:"🟡", cat:"mittel",   desc:"Einstieg in die mittlere Strecke" },
-  { id:"ziel-mit", name:"Ziel Mittel",                lat:51.419329, lng:7.511120, color:"#f59e0b", emoji:"🏆", cat:"mittel",   desc:"Ziel der mittleren Strecke — an der Ruhr" },
+  { id:"muni", name:"Muni Start Beginner/Mittel", lat:51.421812, lng:7.492612, color:"#22c55e", emoji:"🚩", cat:"beginner",
+    desc:"Startpunkt für Muni-Fahrer aller Levels",
+    nameI18n:{en:"Muni Start Beginner/Medium",fr:"Départ Muni Débutant/Intermédiaire",es:"Salida Muni Principiante/Medio",it:"Partenza Muni Principiante/Medio"},
+    descI18n:{en:"Starting point for Muni riders of all levels",fr:"Point de départ pour les cyclistes de tous niveaux",es:"Punto de salida para ciclistas de todos los niveles",it:"Punto di partenza per ciclisti di tutti i livelli"} },
+  // MITTEL
+  { id:"ein-mit", name:"Einstieg Mittel", lat:51.423421, lng:7.480829, color:"#f59e0b", emoji:"🟡", cat:"mittel",
+    desc:"Einstieg in die mittlere Strecke",
+    nameI18n:{en:"Medium Entry",fr:"Entrée Intermédiaire",es:"Entrada Medio",it:"Ingresso Medio"},
+    descI18n:{en:"Entry point for the medium route",fr:"Entrée dans le parcours intermédiaire",es:"Entrada a la ruta de nivel medio",it:"Punto di ingresso al percorso intermedio"} },
+  { id:"ziel-mit", name:"Ziel Mittel", lat:51.419329, lng:7.511120, color:"#f59e0b", emoji:"🏆", cat:"mittel",
+    desc:"Ziel der mittleren Strecke — an der Ruhr",
+    nameI18n:{en:"Medium Finish",fr:"Arrivée Intermédiaire",es:"Meta Medio",it:"Arrivo Medio"},
+    descI18n:{en:"Finish of the medium route — by the Ruhr river",fr:"Arrivée du parcours intermédiaire — au bord de la Ruhr",es:"Meta de la ruta media — junto al río Ruhr",it:"Arrivo del percorso intermedio — lungo il fiume Ruhr"} },
   // EXPERT
-  { id:"exp-zone", name:"Expert Zone",                lat:51.418692, lng:7.475410, color:"#ef4444", emoji:"⚠️", cat:"expert",   desc:"Hochanspruchsvolles Gelände" },
-  { id:"exp-kurs", name:"Zerstörer",                  lat:51.416403, lng:7.453939, color:"#ef4444", emoji:"🎇", cat:"expert",   desc:"Links sehr schwer, rechts schwer" },
+  { id:"exp-zone", name:"Expert Zone", lat:51.418692, lng:7.475410, color:"#ef4444", emoji:"⚠️", cat:"expert",
+    desc:"Hochanspruchsvolles Gelände",
+    nameI18n:{en:"Expert Zone",fr:"Zone Expert",es:"Zona Expert",it:"Zona Expert"},
+    descI18n:{en:"Highly demanding terrain",fr:"Terrain très exigeant",es:"Terreno muy exigente",it:"Terreno molto impegnativo"} },
+  { id:"exp-kurs", name:"Zerstörer", lat:51.416403, lng:7.453939, color:"#ef4444", emoji:"🎇", cat:"expert",
+    desc:"Links sehr schwer, rechts schwer",
+    nameI18n:{en:"Destroyer",fr:"Destructeur",es:"Destructor",it:"Distruttore"},
+    descI18n:{en:"Left: very hard, right: hard",fr:"Gauche : très difficile, droite : difficile",es:"Izquierda: muy difícil, derecha: difícil",it:"Sinistra: molto difficile, destra: difficile"} },
   // LOGISTIK
-  { id:"camp",      name:"GMTW Camp",            lat:51.417704, lng:7.494867, color:"#38bdf8", emoji:"⛺", cat:"logistik", desc:"Hauptcamp des Events — Basisstation", large:true },
-  { id:"camp-tor",  name:"Camp Tor",             lat:51.417482, lng:7.490904, color:"#38bdf8", emoji:"🚧", cat:"logistik", desc:"Haupteingang zum GMTW Camp" },
-  { id:"zeltplatz", name:"Zeltplatz Eingang",    lat:51.420130, lng:7.495086, color:"#38bdf8", emoji:"🏕️",cat:"logistik", desc:"Eingang Campingplatz Hohensyburg · Syburger Dorfstr. 69" },
-  { id:"sam-beg",   name:"Sammelpunkt Beginner", lat:51.419799, lng:7.484685, color:"#38bdf8", emoji:"👥", cat:"logistik", desc:"Treffpunkt nach dem Aufstieg vom Camp" },
-  { id:"sam-mit",  name:"Sammelpunkt Mittel",         lat:51.423371, lng:7.513606, color:"#f59e0b", emoji:"👥", cat:"logistik", desc:"Sammelpunkt — Auf dem Spielplatz" },
-  { id:"sam-camp",  name:"Sammelpunkt → Camp",   lat:51.418164, lng:7.478552, color:"#38bdf8", emoji:"🔁", cat:"logistik", desc:"Treffpunkt für den Rückweg ins Camp" },
-  { id:"wc",        name:"Dusche / WC",          lat:51.418808, lng:7.493754, color:"#a78bfa", emoji:"🚿", cat:"logistik", desc:"Sanitäreinrichtungen am Camp" },
+  { id:"camp", name:"GMTW Camp", lat:51.417704, lng:7.494867, color:"#38bdf8", emoji:"⛺", cat:"logistik", large:true,
+    desc:"Hauptcamp des Events — Basisstation",
+    nameI18n:{en:"GMTW Camp",fr:"Camp GMTW",es:"Campamento GMTW",it:"Campo GMTW"},
+    descI18n:{en:"Main event camp — base station",fr:"Camp principal de l'événement — base",es:"Campamento principal del evento — base",it:"Campo principale dell'evento — base"} },
+  { id:"camp-tor", name:"Camp Tor", lat:51.417482, lng:7.490904, color:"#38bdf8", emoji:"🚧", cat:"logistik",
+    desc:"Haupteingang zum GMTW Camp",
+    nameI18n:{en:"Camp Gate",fr:"Portail du Camp",es:"Entrada del Campamento",it:"Ingresso Campo"},
+    descI18n:{en:"Main entrance to the GMTW Camp",fr:"Entrée principale du camp GMTW",es:"Entrada principal al campamento GMTW",it:"Ingresso principale al campo GMTW"} },
+  { id:"zeltplatz", name:"Zeltplatz Eingang", lat:51.420130, lng:7.495086, color:"#38bdf8", emoji:"🏕️", cat:"logistik",
+    desc:"Eingang Campingplatz Hohensyburg · Syburger Dorfstr. 69",
+    nameI18n:{en:"Campsite Entrance",fr:"Entrée du Camping",es:"Entrada al Camping",it:"Ingresso Campeggio"},
+    descI18n:{en:"Campsite entrance Hohensyburg · Syburger Dorfstr. 69",fr:"Entrée du camping Hohensyburg · Syburger Dorfstr. 69",es:"Entrada al camping Hohensyburg · Syburger Dorfstr. 69",it:"Ingresso campeggio Hohensyburg · Syburger Dorfstr. 69"} },
+  { id:"sam-beg", name:"Sammelpunkt Beginner", lat:51.419799, lng:7.484685, color:"#38bdf8", emoji:"👥", cat:"logistik",
+    desc:"Treffpunkt nach dem Aufstieg vom Camp",
+    nameI18n:{en:"Beginner Meeting Point",fr:"Point de Rencontre Débutants",es:"Punto de Encuentro Principiantes",it:"Punto d'Incontro Principianti"},
+    descI18n:{en:"Meeting point after the climb from camp",fr:"Point de rencontre après la montée depuis le camp",es:"Punto de encuentro tras la subida desde el campamento",it:"Punto d'incontro dopo la salita dal campo"} },
+  { id:"sam-mit", name:"Sammelpunkt Mittel", lat:51.423371, lng:7.513606, color:"#f59e0b", emoji:"👥", cat:"logistik",
+    desc:"Sammelpunkt — Auf dem Spielplatz",
+    nameI18n:{en:"Medium Meeting Point",fr:"Point de Rencontre Intermédiaire",es:"Punto de Encuentro Medio",it:"Punto d'Incontro Medio"},
+    descI18n:{en:"Meeting point — at the playground",fr:"Point de rencontre — au terrain de jeux",es:"Punto de encuentro — en el parque infantil",it:"Punto d'incontro — al parco giochi"} },
+  { id:"sam-camp", name:"Sammelpunkt → Camp", lat:51.418164, lng:7.478552, color:"#38bdf8", emoji:"🔁", cat:"logistik",
+    desc:"Treffpunkt für den Rückweg ins Camp",
+    nameI18n:{en:"Meeting Point → Camp",fr:"Point de Rencontre → Camp",es:"Punto de Encuentro → Campamento",it:"Punto d'Incontro → Campo"},
+    descI18n:{en:"Meeting point for the return to camp",fr:"Point de rencontre pour le retour au camp",es:"Punto de encuentro para el regreso al campamento",it:"Punto d'incontro per il ritorno al campo"} },
+  { id:"wc", name:"Dusche / WC", lat:51.418808, lng:7.493754, color:"#a78bfa", emoji:"🚿", cat:"logistik",
+    desc:"Sanitäreinrichtungen am Camp",
+    nameI18n:{en:"Shower / WC",fr:"Douche / WC",es:"Ducha / WC",it:"Doccia / WC"},
+    descI18n:{en:"Sanitary facilities at the camp",fr:"Installations sanitaires au camp",es:"Instalaciones sanitarias en el campamento",it:"Servizi igienici al campo"} },
   // Rückweg ins Camp (Polyline + Mittelpunkt-Marker; standardmäßig ausgeblendet)
-  { id:"weg-camp",  name:"Weg zurück ins Camp",  lat:51.417784, lng:7.484588, color:"#f59e0b", emoji:"↩️", cat:"logistik", desc:"Rückweg vom Kurs zum Camp — ca. 1 km", line:true },
+  { id:"weg-camp", name:"Weg zurück ins Camp", lat:51.417784, lng:7.484588, color:"#f59e0b", emoji:"↩️", cat:"logistik", line:true,
+    desc:"Rückweg vom Kurs zum Camp — ca. 1 km",
+    nameI18n:{en:"Way back to Camp",fr:"Retour au Camp",es:"Camino de Vuelta al Campamento",it:"Strada di Ritorno al Campo"},
+    descI18n:{en:"Return route from the course to camp — approx. 1 km",fr:"Chemin de retour du parcours au camp — env. 1 km",es:"Ruta de regreso del recorrido al campamento — aprox. 1 km",it:"Percorso di ritorno dal corso al campo — circa 1 km"} },
 ];
 
 const CATS = {
@@ -4583,6 +4610,644 @@ const CATS = {
   logistik: { label:"Logistik & Einrichtungen",color:"var(--log)" },
 };
 const WEG = [[51.418146,7.478490],[51.417422,7.490686]];
+
+// ── i18n ────────────────────────────────────────────────────────
+// App-Sprache: sofort aus localStorage laden → vor allen i18n-Funktionen
+// var (nicht let) → window._appLang, zugänglich aus jedem Eval-Kontext
+var _appLang = localStorage.getItem('gmtw_lang_v1') || 'de';
+
+// TRANSLATIONS: alle UI-Texte in 5 Sprachen (DE/EN/FR/ES/IT)
+const TRANSLATIONS = {
+  de: {
+    /* ── FILTERBAR ── */
+    filter_all:'Alle', filter_beginner:'Beginner', filter_medium:'Mittel',
+    filter_expert:'Expert', filter_logistics:'Logistik', btn_new_project:'➕ Neues Projekt',
+    /* ── KATEGORIEN ── */
+    cat_beginner:'Beginner', cat_mittel:'Mittel', cat_expert:'Expert',
+    cat_logistik:'Logistik', cat_logistik_full:'Logistik & Einrichtungen',
+    /* ── SHEET ── */
+    sheet_title:'Trail Punkte', sheet_tts_toggle:'Vorlesen ein/aus',
+    /* ── BUILDLIST ── */
+    list_track_pins:'Strecken-Pins', list_own_markers:'Eigene Marker', list_no_entries:'Keine Einträge',
+    /* ── SETTINGS TABS ── */
+    settings_title:'Einstellungen',
+    tab_profile:'👤 Profil', tab_general:'Allgemein', tab_tracks:'Strecken',
+    tab_backup:'Backup', tab_markers:'Marker', tab_qr:'QR-Scan', tab_app:'📲 App',
+    /* ── SETTINGS GENERAL ── */
+    sg_gps_emoji:'GPS-Position Emoji', sg_gps_save:'Speichern', sg_gps_reset:'Zurücksetzen',
+    sg_project_overview:'📁 Projekt Übersicht', sg_import:'📥 Importieren',
+    sg_new_project:'➕ Neues Projekt erstellen',
+    sg_a11y_title:'♿ Barrierefreiheit & Vorlesen',
+    sg_tts_label:'Vorlesefunktion', sg_tts_hint:'Texte auf der Karte werden vorgelesen',
+    sg_rate_label:'🎚 Sprechgeschwindigkeit', sg_rate_slow:'Langsam', sg_rate_fast:'Schnell',
+    sg_hc_label:'🌓 Hoher Kontrast',
+    sg_map_btn:'📢 Karte [V]', sg_nearest_btn:'📍 Nächster [N]',
+    sg_keyboard_hint:'⌨️ V = Karte · N = Nächster Punkt · S = Einstellungen · Esc = Schließen',
+    sg_aa_autospeak:'Auto-Ansagen',
+    /* ── SETTINGS BACKUP ── */
+    sb_full_export:'📦 Vollständiges Backup exportieren',
+    sb_full_export_hint:'Alle Strecken, Marker, Einstellungen',
+    sb_full_import:'⬆ Backup importieren',
+    sb_full_import_hint:'Überschreibt alle lokalen Daten',
+    sb_markers_title:'📍 Nur eigene Marker ex-/importieren',
+    sb_markers_export:'📤 Marker exportieren', sb_markers_import:'📥 Marker importieren',
+    sb_runs_export:'📊 Läufe exportieren', sb_runs_csv:'📋 Als CSV exportieren',
+    sb_project_export:'📤 Aktives Projekt exportieren', sb_project_import:'📥 Projekt importieren',
+    /* ── SETTINGS APP ── */
+    sa_install_title:'📲 App installieren', sa_install_btn:'Installieren',
+    sa_install_guide:'Installationsanleitung', sa_device_title:'📱 Gerät & Browser',
+    sa_cache_title:'💾 Offline-Cache',
+    sa_cache_btn:'🗺️ Sichtbaren Kartenbereich cachen',
+    sa_cache_offline:'Offline verfügbar',
+    sa_storage_btn:'💾 Dauerhaften Speicher anfordern',
+    /* ── SETTINGS PROFILE ── */
+    sp_lang_label:'🌐 App-Sprache / Language',
+    sp_lang_hint:'Alle Menüs und Texte werden übersetzt',
+    sp_name_label:'Dein Name', sp_muni_label:'Einrad-Typ (Muni)',
+    sp_name_ph:'Fahrername', sp_muni_ph:'Dein Einrad',
+    /* ── SETTINGS TRACKS ── */
+    st_no_tracks:'Keine Strecken geladen', st_load_gpx:'GPX laden',
+    /* ── PROJEKT ── */
+    proj_create_hint:'Doppelklick auf die Karte, um den Fokuspunkt des neuen Projekts zu setzen',
+    proj_cancel:'Abbrechen', proj_step2_title:'Neues Projekt',
+    proj_step2_subtitle:'Fokuspunkt gesetzt · Was möchtest du tun?',
+    proj_btn_marker:'📍 Marker setzen', proj_btn_gpx:'🗺 GPX-Datei laden',
+    proj_btn_import:'📥 Projekt-JSON importieren', proj_btn_only:'✓ Nur erstellen',
+    proj_name_ph:'Projektname…',
+    proj_confirm_delete:'Projekt „{name}" löschen? Strecken und Marker bleiben erhalten.',
+    /* ── MARKER MODAL ── */
+    mm_title_new:'Neuer Marker', mm_title_edit:'Marker bearbeiten',
+    mm_name_ph:'Name', mm_desc_ph:'Beschreibung (optional)',
+    mm_save:'Speichern', mm_delete:'Löschen', mm_cancel:'Abbrechen',
+    /* ── POPUPS ── */
+    popup_nav:'Navigation', popup_share:'📤 Teilen',
+    popup_edit:'✏ Bearbeiten', popup_delete:'🗑 Löschen',
+    popup_maps_apple:'Apple Maps öffnen', popup_maps_google:'Google Maps öffnen',
+    /* ── TOASTS ── */
+    toast_map_topo:'🌲 Topo Ansicht', toast_map_sat:'🛰 Satellit Ansicht',
+    toast_markers_shown:'👁 Marker wieder eingeblendet', toast_markers_hidden:'🙈 Marker ausgeblendet',
+    toast_marker_size:'📐 Marker-Größe: {pct}%',
+    toast_qr_saved:'⬇ QR-Bild gespeichert!', toast_link_copied:'✅ Link kopiert!',
+    toast_dark_mode:'🌙 Dunkel Modus', toast_light_mode:'☀️ Hell Modus',
+    toast_project_name_req:'⚠️ Bitte Projektname eingeben',
+    toast_project_focus:'📍 Fokus für „{name}" gespeichert',
+    toast_project_min:'⚠️ Mindestens ein Projekt erforderlich',
+    toast_gps_active:'✅ Standort (±{acc}m)', toast_gps_off:'📍 GPS deaktiviert',
+    toast_gps_activating:'📡 GPS wird aktiviert…',
+    toast_tts_enable_hint:'🔊 Vorlesefunktion in Einstellungen aktivieren',
+    toast_backup_exported:'✅ Backup exportiert', toast_backup_imported:'✅ Backup importiert',
+    toast_backup_error:'❌ Backup-Fehler',
+    toast_markers_exported:'✅ Marker exportiert', toast_markers_imported:'✅ Marker importiert',
+    toast_gpx_loaded:'✅ {name} geladen', toast_track_deleted:'🗑 Strecke gelöscht', toast_marker_deleted:'🗑 Marker gelöscht',
+    toast_qr_lib_missing:'❌ QR-Lib nicht geladen',
+    toast_project_exported:'✅ Projekt exportiert',
+    toast_project_imported:'✅ Projekt „{name}" importiert',
+    toast_storage_saved:'💾 Dauerhafter Speicher aktiviert',
+    /* ── TTS / SPEAK ── */
+    speak_lang_changed:'Sprache geändert.',
+    speak_map_not_loaded:'Karte noch nicht geladen.',
+    speak_map_zoom:'Karte, Zoom-Stufe {zoom}.',
+    speak_no_tracks:'Keine Strecken geladen.',
+    speak_tracks_visible:'{n} Strecke{s} sichtbar: {names}.',
+    speak_own_markers:'{n} eigene Marker auf der Karte.',
+    speak_gps_dist:'GPS-Position {dist} Meter vom Kartenmittelpunkt entfernt.',
+    speak_gps_off_map:'GPS nicht aktiv.',
+    speak_nearest_none:'Kein Punkt in der Nähe gefunden.',
+    speak_nearest:'Nächster Punkt: {type} „{name}", {dist} entfernt.',
+    speak_dist_km:'{n} Kilometer', speak_dist_m:'{n} Meter',
+    speak_tts_activated:'Vorlesefunktion aktiviert.',
+    speak_rate:'Sprechrate {rate}',
+    speak_settings_opened:'Einstellungen geöffnet. Profil, Allgemein, Strecken, Backup, Marker, QR-Scan, App.',
+    speak_settings_closed:'Einstellungen geschlossen.',
+    speak_tab_opened:'{label} geöffnet.',
+    speak_menu_opened:'Menü geöffnet. {items}.',
+    speak_menu_no_items:'Keine Einträge',
+    speak_project:'Projekt: {name}.',
+    speak_new_proj_dblclick:'Doppelklick auf die Karte, um den Fokuspunkt des neuen Projekts zu setzen.',
+    speak_cancelled:'Abgebrochen.',
+    speak_project_created:'Neues Projekt erstellt: {name}.',
+    speak_project_deleted:'Projekt gelöscht: {name}.',
+    speak_gps_active:'GPS aktiv. Genauigkeit plus minus {acc} Meter.',
+    speak_gps_error:'GPS Fehler: {msg}',
+    speak_gps_disabled:'GPS deaktiviert.',
+    speak_recording_started:'Aufnahme gestartet. Fahrer: {rider}. Muni: {muni}.',
+    speak_recording_stopped:'{label}. Aufnahme gestoppt.',
+    speak_new_attempt:'{label}. Neuer Versuch.',
+    speak_recording_finished:'Aufnahme beendet. {pts} GPS-Punkte. {dist} Kilometer. Dauer: {dur}.',
+    speak_qr_panel:'GPX-Panel offen: {tab}.',
+    speak_race_running:'Rennen läuft. Zeit: {timer}. {pos}',
+    /* ── CONFIRM ── */
+    confirm_delete_track:'Strecke löschen?',
+    confirm_delete_marker:'Marker löschen?',
+    tts_off:'AUS', tts_on:'EIN — aktiv', tts_ready:'Bereit',
+    tts_speaking:'Liest vor…', tts_paused:'Pause', tts_error:'Fehler', tts_stopped:'Gestoppt',
+    sg_a11y_hint:'Liest Karteninhalt, Toasts und Navigation laut vor — Steuerung über die Leiste am unteren Bildschirmrand',
+    sg_hc_desc:'Stärkere Kontraste für bessere Lesbarkeit',
+    sg_proj_hint:'Aktivierte Projekte zeigen ihre Strecken und Marker auf der Karte. Der Fokus bestimmt, wohin der Übersicht-Button zoomt und welches Projekt neue Inhalte erhält.',
+    proj_focus_badge:'Fokus', proj_tracks_count:'{n} Strecken',
+    proj_marker_count:'{n} Marker', proj_empty:'Leer', proj_no_projects:'Keine Projekte',
+    proj_disable:'Deaktivieren', proj_enable:'Aktivieren',
+    proj_is_focus:'Ist Fokus-Projekt', proj_select:'Projekt auswählen & isolieren',
+    proj_export_btn:'Exportieren', proj_delete_btn:'Löschen',
+    tts_bar_ready:'Bereit',
+  },
+  en: {
+    filter_all:'All', filter_beginner:'Beginner', filter_medium:'Medium',
+    filter_expert:'Expert', filter_logistics:'Logistics', btn_new_project:'➕ New Project',
+    cat_beginner:'Beginner', cat_mittel:'Medium', cat_expert:'Expert',
+    cat_logistik:'Logistics', cat_logistik_full:'Logistics & Facilities',
+    sheet_title:'Trail Points', sheet_tts_toggle:'Read aloud on/off',
+    list_track_pins:'Track Pins', list_own_markers:'My Markers', list_no_entries:'No entries',
+    settings_title:'Settings',
+    tab_profile:'👤 Profile', tab_general:'General', tab_tracks:'Tracks',
+    tab_backup:'Backup', tab_markers:'Markers', tab_qr:'QR-Scan', tab_app:'📲 App',
+    sg_gps_emoji:'GPS Position Emoji', sg_gps_save:'Save', sg_gps_reset:'Reset',
+    sg_project_overview:'📁 Project Overview', sg_import:'📥 Import',
+    sg_new_project:'➕ Create new project',
+    sg_a11y_title:'♿ Accessibility & Read Aloud',
+    sg_tts_label:'Read aloud', sg_tts_hint:'Map texts will be read aloud',
+    sg_rate_label:'🎚 Speech rate', sg_rate_slow:'Slow', sg_rate_fast:'Fast',
+    sg_hc_label:'🌓 High Contrast',
+    sg_map_btn:'📢 Map [V]', sg_nearest_btn:'📍 Nearest [N]',
+    sg_keyboard_hint:'⌨️ V = Map · N = Nearest · S = Settings · Esc = Close',
+    sg_aa_autospeak:'Auto announcements',
+    sb_full_export:'📦 Export full backup',
+    sb_full_export_hint:'All tracks, markers, settings',
+    sb_full_import:'⬆ Import backup',
+    sb_full_import_hint:'Overwrites all local data',
+    sb_markers_title:'📍 Export/import markers only',
+    sb_markers_export:'📤 Export markers', sb_markers_import:'📥 Import markers',
+    sb_runs_export:'📊 Export runs', sb_runs_csv:'📋 Export as CSV',
+    sb_project_export:'📤 Export active project', sb_project_import:'📥 Import project',
+    sa_install_title:'📲 Install App', sa_install_btn:'Install',
+    sa_install_guide:'Installation guide', sa_device_title:'📱 Device & Browser',
+    sa_cache_title:'💾 Offline Cache',
+    sa_cache_btn:'🗺️ Cache visible map area',
+    sa_cache_offline:'Available offline',
+    sa_storage_btn:'💾 Request persistent storage',
+    sp_lang_label:'🌐 App Language',
+    sp_lang_hint:'All menus and texts will be translated',
+    sp_name_label:'Your name', sp_muni_label:'Unicycle type (Muni)',
+    sp_name_ph:'Rider name', sp_muni_ph:'Your unicycle',
+    st_no_tracks:'No tracks loaded', st_load_gpx:'Load GPX',
+    proj_create_hint:'Double-click the map to set the focus point for the new project',
+    proj_cancel:'Cancel', proj_step2_title:'New Project',
+    proj_step2_subtitle:'Focus point set · What do you want to do?',
+    proj_btn_marker:'📍 Add marker', proj_btn_gpx:'🗺 Load GPX file',
+    proj_btn_import:'📥 Import project JSON', proj_btn_only:'✓ Create only',
+    proj_name_ph:'Project name…',
+    proj_confirm_delete:'Delete project "{name}"? Tracks and markers will be kept.',
+    mm_title_new:'New Marker', mm_title_edit:'Edit Marker',
+    mm_name_ph:'Name', mm_desc_ph:'Description (optional)',
+    mm_save:'Save', mm_delete:'Delete', mm_cancel:'Cancel',
+    popup_nav:'Navigate', popup_share:'📤 Share',
+    popup_edit:'✏ Edit', popup_delete:'🗑 Delete',
+    popup_maps_apple:'Open Apple Maps', popup_maps_google:'Open Google Maps',
+    toast_map_topo:'🌲 Topo view', toast_map_sat:'🛰 Satellite view',
+    toast_markers_shown:'👁 Markers shown', toast_markers_hidden:'🙈 Markers hidden',
+    toast_marker_size:'📐 Marker size: {pct}%',
+    toast_qr_saved:'⬇ QR image saved!', toast_link_copied:'✅ Link copied!',
+    toast_dark_mode:'🌙 Dark mode', toast_light_mode:'☀️ Light mode',
+    toast_project_name_req:'⚠️ Please enter a project name',
+    toast_project_focus:'📍 Focus saved for "{name}"',
+    toast_project_min:'⚠️ At least one project required',
+    toast_gps_active:'✅ Location (±{acc}m)', toast_gps_off:'📍 GPS disabled',
+    toast_gps_activating:'📡 Activating GPS…',
+    toast_tts_enable_hint:'🔊 Enable read aloud in settings',
+    toast_backup_exported:'✅ Backup exported', toast_backup_imported:'✅ Backup imported',
+    toast_backup_error:'❌ Backup error',
+    toast_markers_exported:'✅ Markers exported', toast_markers_imported:'✅ Markers imported',
+    toast_gpx_loaded:'✅ {name} loaded', toast_track_deleted:'🗑 Track deleted', toast_marker_deleted:'🗑 Marker deleted',
+    toast_qr_lib_missing:'❌ QR lib not loaded',
+    toast_project_exported:'✅ Project exported',
+    toast_project_imported:'✅ Project "{name}" imported',
+    toast_storage_saved:'💾 Persistent storage enabled',
+    speak_lang_changed:'Language changed.',
+    speak_map_not_loaded:'Map not loaded yet.',
+    speak_map_zoom:'Map, zoom level {zoom}.',
+    speak_no_tracks:'No tracks loaded.',
+    speak_tracks_visible:'{n} track{s} visible: {names}.',
+    speak_own_markers:'{n} own markers on the map.',
+    speak_gps_dist:'GPS position {dist} metres from map centre.',
+    speak_gps_off_map:'GPS not active.',
+    speak_nearest_none:'No nearby point found.',
+    speak_nearest:'Nearest point: {type} "{name}", {dist} away.',
+    speak_dist_km:'{n} kilometres', speak_dist_m:'{n} metres',
+    speak_tts_activated:'Read aloud enabled.',
+    speak_rate:'Speech rate {rate}',
+    speak_settings_opened:'Settings opened. Profile, General, Tracks, Backup, Markers, QR-Scan, App.',
+    speak_settings_closed:'Settings closed.',
+    speak_tab_opened:'{label} opened.',
+    speak_menu_opened:'Menu opened. {items}.',
+    speak_menu_no_items:'No entries',
+    speak_project:'Project: {name}.',
+    speak_new_proj_dblclick:'Double-click the map to set the new project\'s focus point.',
+    speak_cancelled:'Cancelled.',
+    speak_project_created:'New project created: {name}.',
+    speak_project_deleted:'Project deleted: {name}.',
+    speak_gps_active:'GPS active. Accuracy plus/minus {acc} metres.',
+    speak_gps_error:'GPS error: {msg}',
+    speak_gps_disabled:'GPS disabled.',
+    speak_recording_started:'Recording started. Rider: {rider}. Muni: {muni}.',
+    speak_recording_stopped:'{label}. Recording stopped.',
+    speak_new_attempt:'{label}. New attempt.',
+    speak_recording_finished:'Recording finished. {pts} GPS points. {dist} kilometres. Duration: {dur}.',
+    speak_qr_panel:'GPX panel open: {tab}.',
+    speak_race_running:'Race running. Time: {timer}. {pos}',
+    confirm_delete_track:'Delete track?',
+    confirm_delete_marker:'Delete marker?',
+    tts_off:'OFF', tts_on:'ON — active', tts_ready:'Ready',
+    tts_speaking:'Reading…', tts_paused:'Paused', tts_error:'Error', tts_stopped:'Stopped',
+    sg_a11y_hint:'Reads map content, toasts and navigation aloud — control via the bar at the bottom of the screen',
+    sg_hc_desc:'Stronger contrasts for better readability',
+    sg_proj_hint:'Enabled projects show their tracks and markers on the map. Focus determines where the overview button zooms and which project receives new content.',
+    proj_focus_badge:'Focus', proj_tracks_count:'{n} tracks',
+    proj_marker_count:'{n} markers', proj_empty:'Empty', proj_no_projects:'No projects',
+    proj_disable:'Disable', proj_enable:'Enable',
+    proj_is_focus:'Is focus project', proj_select:'Select & isolate project',
+    proj_export_btn:'Export', proj_delete_btn:'Delete',
+    tts_bar_ready:'Ready',
+  },
+  fr: {
+    filter_all:'Tous', filter_beginner:'Débutant', filter_medium:'Intermédiaire',
+    filter_expert:'Expert', filter_logistics:'Logistique', btn_new_project:'➕ Nouveau projet',
+    cat_beginner:'Débutant', cat_mittel:'Intermédiaire', cat_expert:'Expert',
+    cat_logistik:'Logistique', cat_logistik_full:'Logistique & Équipements',
+    sheet_title:'Points de piste', sheet_tts_toggle:'Lecture on/off',
+    list_track_pins:'Épingles de piste', list_own_markers:'Mes marqueurs', list_no_entries:'Aucune entrée',
+    settings_title:'Paramètres',
+    tab_profile:'👤 Profil', tab_general:'Général', tab_tracks:'Parcours',
+    tab_backup:'Sauvegarde', tab_markers:'Marqueurs', tab_qr:'Scanner QR', tab_app:'📲 Appli',
+    sg_gps_emoji:'Emoji position GPS', sg_gps_save:'Enregistrer', sg_gps_reset:'Réinitialiser',
+    sg_project_overview:'📁 Aperçu des projets', sg_import:'📥 Importer',
+    sg_new_project:'➕ Créer un projet',
+    sg_a11y_title:'♿ Accessibilité & Lecture',
+    sg_tts_label:'Lecture vocale', sg_tts_hint:'Les textes de la carte seront lus',
+    sg_rate_label:'🎚 Vitesse de lecture', sg_rate_slow:'Lent', sg_rate_fast:'Rapide',
+    sg_hc_label:'🌓 Contraste élevé',
+    sg_map_btn:'📢 Carte [V]', sg_nearest_btn:'📍 Le plus proche [N]',
+    sg_keyboard_hint:'⌨️ V = Carte · N = Plus proche · S = Paramètres · Esc = Fermer',
+    sg_aa_autospeak:'Annonces auto',
+    sb_full_export:'📦 Exporter sauvegarde complète',
+    sb_full_export_hint:'Tous les parcours, marqueurs, paramètres',
+    sb_full_import:'⬆ Importer sauvegarde',
+    sb_full_import_hint:'Écrase toutes les données locales',
+    sb_markers_title:'📍 Exporter/importer marqueurs uniquement',
+    sb_markers_export:'📤 Exporter marqueurs', sb_markers_import:'📥 Importer marqueurs',
+    sb_runs_export:'📊 Exporter les runs', sb_runs_csv:'📋 Exporter en CSV',
+    sb_project_export:'📤 Exporter projet actif', sb_project_import:'📥 Importer projet',
+    sa_install_title:'📲 Installer l\'appli', sa_install_btn:'Installer',
+    sa_install_guide:'Guide d\'installation', sa_device_title:'📱 Appareil & Navigateur',
+    sa_cache_title:'💾 Cache hors-ligne',
+    sa_cache_btn:'🗺️ Mettre en cache la zone visible',
+    sa_cache_offline:'Disponible hors-ligne',
+    sa_storage_btn:'💾 Demander stockage persistant',
+    sp_lang_label:'🌐 Langue de l\'appli',
+    sp_lang_hint:'Tous les menus et textes seront traduits',
+    sp_name_label:'Ton prénom', sp_muni_label:'Type de monocycle',
+    sp_name_ph:'Nom du pilote', sp_muni_ph:'Ton monocycle',
+    st_no_tracks:'Aucun parcours chargé', st_load_gpx:'Charger GPX',
+    proj_create_hint:'Double-cliquez sur la carte pour définir le point de focus du nouveau projet',
+    proj_cancel:'Annuler', proj_step2_title:'Nouveau projet',
+    proj_step2_subtitle:'Point de focus défini · Que veux-tu faire ?',
+    proj_btn_marker:'📍 Ajouter un marqueur', proj_btn_gpx:'🗺 Charger fichier GPX',
+    proj_btn_import:'📥 Importer JSON projet', proj_btn_only:'✓ Créer seulement',
+    proj_name_ph:'Nom du projet…',
+    proj_confirm_delete:'Supprimer le projet « {name} » ? Les parcours et marqueurs seront conservés.',
+    mm_title_new:'Nouveau marqueur', mm_title_edit:'Modifier le marqueur',
+    mm_name_ph:'Nom', mm_desc_ph:'Description (facultatif)',
+    mm_save:'Enregistrer', mm_delete:'Supprimer', mm_cancel:'Annuler',
+    popup_nav:'Navigation', popup_share:'📤 Partager',
+    popup_edit:'✏ Modifier', popup_delete:'🗑 Supprimer',
+    popup_maps_apple:'Ouvrir Apple Maps', popup_maps_google:'Ouvrir Google Maps',
+    toast_map_topo:'🌲 Vue topo', toast_map_sat:'🛰 Vue satellite',
+    toast_markers_shown:'👁 Marqueurs affichés', toast_markers_hidden:'🙈 Marqueurs masqués',
+    toast_marker_size:'📐 Taille marqueurs : {pct} %',
+    toast_qr_saved:'⬇ Image QR sauvegardée !', toast_link_copied:'✅ Lien copié !',
+    toast_dark_mode:'🌙 Mode sombre', toast_light_mode:'☀️ Mode clair',
+    toast_project_name_req:'⚠️ Veuillez saisir un nom de projet',
+    toast_project_focus:'📍 Mise au point enregistrée pour « {name} »',
+    toast_project_min:'⚠️ Au moins un projet requis',
+    toast_gps_active:'✅ Position (±{acc} m)', toast_gps_off:'📍 GPS désactivé',
+    toast_gps_activating:'📡 Activation GPS…',
+    toast_tts_enable_hint:'🔊 Activer la lecture dans les paramètres',
+    toast_backup_exported:'✅ Sauvegarde exportée', toast_backup_imported:'✅ Sauvegarde importée',
+    toast_backup_error:'❌ Erreur de sauvegarde',
+    toast_markers_exported:'✅ Marqueurs exportés', toast_markers_imported:'✅ Marqueurs importés',
+    toast_gpx_loaded:'✅ {name} chargé', toast_track_deleted:'🗑 Parcours supprimé', toast_marker_deleted:'🗑 Marqueur supprimé',
+    toast_qr_lib_missing:'❌ Lib QR non chargée',
+    toast_project_exported:'✅ Projet exporté',
+    toast_project_imported:'✅ Projet « {name} » importé',
+    toast_storage_saved:'💾 Stockage persistant activé',
+    speak_lang_changed:'Langue modifiée.',
+    speak_map_not_loaded:'Carte pas encore chargée.',
+    speak_map_zoom:'Carte, niveau de zoom {zoom}.',
+    speak_no_tracks:'Aucun parcours chargé.',
+    speak_tracks_visible:'{n} parcours visible{s} : {names}.',
+    speak_own_markers:'{n} marqueurs personnels sur la carte.',
+    speak_gps_dist:'Position GPS à {dist} mètres du centre de la carte.',
+    speak_gps_off_map:'GPS inactif.',
+    speak_nearest_none:'Aucun point à proximité.',
+    speak_nearest:'Point le plus proche : {type} « {name} », à {dist}.',
+    speak_dist_km:'{n} kilomètres', speak_dist_m:'{n} mètres',
+    speak_tts_activated:'Lecture vocale activée.',
+    speak_rate:'Vitesse de lecture {rate}',
+    speak_settings_opened:'Paramètres ouverts. Profil, Général, Parcours, Sauvegarde, Marqueurs, QR, Appli.',
+    speak_settings_closed:'Paramètres fermés.',
+    speak_tab_opened:'{label} ouvert.',
+    speak_menu_opened:'Menú ouvert. {items}.',
+    speak_menu_no_items:'Aucune entrée',
+    speak_project:'Projet : {name}.',
+    speak_new_proj_dblclick:'Double-cliquez sur la carte pour définir le point de focus du nouveau projet.',
+    speak_cancelled:'Annulé.',
+    speak_project_created:'Nouveau projet créé : {name}.',
+    speak_project_deleted:'Projet supprimé : {name}.',
+    speak_gps_active:'GPS actif. Précision plus ou moins {acc} mètres.',
+    speak_gps_error:'Erreur GPS : {msg}',
+    speak_gps_disabled:'GPS désactivé.',
+    speak_recording_started:'Enregistrement démarré. Pilote : {rider}. Monocycle : {muni}.',
+    speak_recording_stopped:'{label}. Enregistrement arrêté.',
+    speak_new_attempt:'{label}. Nouvel essai.',
+    speak_recording_finished:'Enregistrement terminé. {pts} points GPS. {dist} km. Durée : {dur}.',
+    speak_qr_panel:'Panneau GPX ouvert : {tab}.',
+    speak_race_running:'Course en cours. Temps : {timer}. {pos}',
+    confirm_delete_track:'Supprimer le parcours ?',
+    confirm_delete_marker:'Supprimer le marqueur ?',
+    tts_off:'DÉSACTIVÉ', tts_on:'ACTIVÉ — actif', tts_ready:'Prêt',
+    tts_speaking:'En lecture…', tts_paused:'En pause', tts_error:'Erreur', tts_stopped:'Arrêté',
+    sg_a11y_hint:'Lit le contenu de la carte, les toasts et la navigation à voix haute — contrôle via la barre en bas de l\'écran',
+    sg_hc_desc:'Contrastes plus forts pour une meilleure lisibilité',
+    sg_proj_hint:'Les projets activés affichent leurs pistes et marqueurs sur la carte. Le focus détermine où le bouton de vue d\'ensemble effectue un zoom.',
+    proj_focus_badge:'Focus', proj_tracks_count:'{n} pistes',
+    proj_marker_count:'{n} marqueurs', proj_empty:'Vide', proj_no_projects:'Aucun projet',
+    proj_disable:'Désactiver', proj_enable:'Activer',
+    proj_is_focus:'Est le projet focus', proj_select:'Sélectionner & isoler le projet',
+    proj_export_btn:'Exporter', proj_delete_btn:'Supprimer',
+    tts_bar_ready:'Prêt',
+  },
+  es: {
+    filter_all:'Todos', filter_beginner:'Principiante', filter_medium:'Medio',
+    filter_expert:'Experto', filter_logistics:'Logística', btn_new_project:'➕ Nuevo proyecto',
+    cat_beginner:'Principiante', cat_mittel:'Medio', cat_expert:'Experto',
+    cat_logistik:'Logística', cat_logistik_full:'Logística e Instalaciones',
+    sheet_title:'Puntos de ruta', sheet_tts_toggle:'Lectura act./des.',
+    list_track_pins:'Pines de ruta', list_own_markers:'Mis marcadores', list_no_entries:'Sin entradas',
+    settings_title:'Ajustes',
+    tab_profile:'👤 Perfil', tab_general:'General', tab_tracks:'Pistas',
+    tab_backup:'Copia de seg.', tab_markers:'Marcadores', tab_qr:'Escáner QR', tab_app:'📲 App',
+    sg_gps_emoji:'Emoji posición GPS', sg_gps_save:'Guardar', sg_gps_reset:'Restablecer',
+    sg_project_overview:'📁 Vista de proyectos', sg_import:'📥 Importar',
+    sg_new_project:'➕ Crear proyecto',
+    sg_a11y_title:'♿ Accesibilidad y Lectura',
+    sg_tts_label:'Lectura en voz alta', sg_tts_hint:'Los textos del mapa serán leídos',
+    sg_rate_label:'🎚 Velocidad de voz', sg_rate_slow:'Lento', sg_rate_fast:'Rápido',
+    sg_hc_label:'🌓 Alto contraste',
+    sg_map_btn:'📢 Mapa [V]', sg_nearest_btn:'📍 Más cercano [N]',
+    sg_keyboard_hint:'⌨️ V = Mapa · N = Más cercano · S = Ajustes · Esc = Cerrar',
+    sg_aa_autospeak:'Anuncios auto',
+    sb_full_export:'📦 Exportar copia completa',
+    sb_full_export_hint:'Todas las rutas, marcadores, ajustes',
+    sb_full_import:'⬆ Importar copia',
+    sb_full_import_hint:'Sobrescribe todos los datos locales',
+    sb_markers_title:'📍 Exportar/importar marcadores',
+    sb_markers_export:'📤 Exportar marcadores', sb_markers_import:'📥 Importar marcadores',
+    sb_runs_export:'📊 Exportar carreras', sb_runs_csv:'📋 Exportar como CSV',
+    sb_project_export:'📤 Exportar proyecto activo', sb_project_import:'📥 Importar proyecto',
+    sa_install_title:'📲 Instalar app', sa_install_btn:'Instalar',
+    sa_install_guide:'Guía de instalación', sa_device_title:'📱 Dispositivo & Navegador',
+    sa_cache_title:'💾 Caché sin conexión',
+    sa_cache_btn:'🗺️ Cachear área visible del mapa',
+    sa_cache_offline:'Disponible sin conexión',
+    sa_storage_btn:'💾 Solicitar almacenamiento persistente',
+    sp_lang_label:'🌐 Idioma de la app',
+    sp_lang_hint:'Todos los menús y textos serán traducidos',
+    sp_name_label:'Tu nombre', sp_muni_label:'Tipo de monociclo',
+    sp_name_ph:'Nombre del piloto', sp_muni_ph:'Tu monociclo',
+    st_no_tracks:'Sin pistas cargadas', st_load_gpx:'Cargar GPX',
+    proj_create_hint:'Doble clic en el mapa para establecer el punto de foco del nuevo proyecto',
+    proj_cancel:'Cancelar', proj_step2_title:'Nuevo proyecto',
+    proj_step2_subtitle:'Punto de foco establecido · ¿Qué quieres hacer?',
+    proj_btn_marker:'📍 Añadir marcador', proj_btn_gpx:'🗺 Cargar archivo GPX',
+    proj_btn_import:'📥 Importar JSON proyecto', proj_btn_only:'✓ Solo crear',
+    proj_name_ph:'Nombre del proyecto…',
+    proj_confirm_delete:'¿Eliminar proyecto "{name}"? Las pistas y marcadores se conservarán.',
+    mm_title_new:'Nuevo marcador', mm_title_edit:'Editar marcador',
+    mm_name_ph:'Nombre', mm_desc_ph:'Descripción (opcional)',
+    mm_save:'Guardar', mm_delete:'Eliminar', mm_cancel:'Cancelar',
+    popup_nav:'Navegación', popup_share:'📤 Compartir',
+    popup_edit:'✏ Editar', popup_delete:'🗑 Eliminar',
+    popup_maps_apple:'Abrir Apple Maps', popup_maps_google:'Abrir Google Maps',
+    toast_map_topo:'🌲 Vista topo', toast_map_sat:'🛰 Vista satélite',
+    toast_markers_shown:'👁 Marcadores visibles', toast_markers_hidden:'🙈 Marcadores ocultos',
+    toast_marker_size:'📐 Tamaño marcadores: {pct}%',
+    toast_qr_saved:'⬇ Imagen QR guardada!', toast_link_copied:'✅ Enlace copiado!',
+    toast_dark_mode:'🌙 Modo oscuro', toast_light_mode:'☀️ Modo claro',
+    toast_project_name_req:'⚠️ Por favor ingresa un nombre de proyecto',
+    toast_project_focus:'📍 Foco guardado para "{name}"',
+    toast_project_min:'⚠️ Se requiere al menos un proyecto',
+    toast_gps_active:'✅ Ubicación (±{acc}m)', toast_gps_off:'📍 GPS desactivado',
+    toast_gps_activating:'📡 Activando GPS…',
+    toast_tts_enable_hint:'🔊 Activar lectura en ajustes',
+    toast_backup_exported:'✅ Copia exportada', toast_backup_imported:'✅ Copia importada',
+    toast_backup_error:'❌ Error de copia',
+    toast_markers_exported:'✅ Marcadores exportados', toast_markers_imported:'✅ Marcadores importados',
+    toast_gpx_loaded:'✅ {name} cargado', toast_track_deleted:'🗑 Pista eliminada', toast_marker_deleted:'🗑 Marcador eliminado',
+    toast_qr_lib_missing:'❌ Lib QR no cargada',
+    toast_project_exported:'✅ Proyecto exportado',
+    toast_project_imported:'✅ Proyecto "{name}" importado',
+    toast_storage_saved:'💾 Almacenamiento persistente activado',
+    speak_lang_changed:'Idioma cambiado.',
+    speak_map_not_loaded:'Mapa aún no cargado.',
+    speak_map_zoom:'Mapa, nivel de zoom {zoom}.',
+    speak_no_tracks:'No hay rutas cargadas.',
+    speak_tracks_visible:'{n} ruta{s} visible{s}: {names}.',
+    speak_own_markers:'{n} marcadores propios en el mapa.',
+    speak_gps_dist:'Posición GPS a {dist} metros del centro del mapa.',
+    speak_gps_off_map:'GPS inactivo.',
+    speak_nearest_none:'No se encontró ningún punto cercano.',
+    speak_nearest:'Punto más cercano: {type} "{name}", a {dist}.',
+    speak_dist_km:'{n} kilómetros', speak_dist_m:'{n} metros',
+    speak_tts_activated:'Lectura en voz alta activada.',
+    speak_rate:'Velocidad de voz {rate}',
+    speak_settings_opened:'Ajustes abiertos. Perfil, General, Pistas, Copia, Marcadores, QR, App.',
+    speak_settings_closed:'Ajustes cerrados.',
+    speak_tab_opened:'{label} abierto.',
+    speak_menu_opened:'Menú abierto. {items}.',
+    speak_menu_no_items:'Sin entradas',
+    speak_project:'Proyecto: {name}.',
+    speak_new_proj_dblclick:'Doble clic en el mapa para establecer el punto de foco del nuevo proyecto.',
+    speak_cancelled:'Cancelado.',
+    speak_project_created:'Nuevo proyecto creado: {name}.',
+    speak_project_deleted:'Proyecto eliminado: {name}.',
+    speak_gps_active:'GPS activo. Precisión más/menos {acc} metros.',
+    speak_gps_error:'Error GPS: {msg}',
+    speak_gps_disabled:'GPS desactivado.',
+    speak_recording_started:'Grabación iniciada. Piloto: {rider}. Muni: {muni}.',
+    speak_recording_stopped:'{label}. Grabación detenida.',
+    speak_new_attempt:'{label}. Nuevo intento.',
+    speak_recording_finished:'Grabación finalizada. {pts} puntos GPS. {dist} km. Duración: {dur}.',
+    speak_qr_panel:'Panel GPX abierto: {tab}.',
+    speak_race_running:'Carrera en curso. Tiempo: {timer}. {pos}',
+    confirm_delete_track:'¿Eliminar la pista?',
+    confirm_delete_marker:'¿Eliminar el marcador?',
+    tts_off:'DESACTIVADO', tts_on:'ACTIVADO — activo', tts_ready:'Listo',
+    tts_speaking:'Leyendo…', tts_paused:'Pausado', tts_error:'Error', tts_stopped:'Detenido',
+    sg_a11y_hint:'Lee en voz alta el contenido del mapa, toasts y navegación — control mediante la barra en la parte inferior de la pantalla',
+    sg_hc_desc:'Contrastes más fuertes para una mejor legibilidad',
+    sg_proj_hint:'Los proyectos activos muestran sus rutas y marcadores en el mapa. El foco determina adónde hace zoom el botón de vista general.',
+    proj_focus_badge:'Foco', proj_tracks_count:'{n} rutas',
+    proj_marker_count:'{n} marcadores', proj_empty:'Vacío', proj_no_projects:'Sin proyectos',
+    proj_disable:'Desactivar', proj_enable:'Activar',
+    proj_is_focus:'Es el proyecto foco', proj_select:'Seleccionar y aislar proyecto',
+    proj_export_btn:'Exportar', proj_delete_btn:'Eliminar',
+    tts_bar_ready:'Listo',
+  },
+  it: {
+    filter_all:'Tutti', filter_beginner:'Principiante', filter_medium:'Intermedio',
+    filter_expert:'Esperto', filter_logistics:'Logistica', btn_new_project:'➕ Nuovo progetto',
+    cat_beginner:'Principiante', cat_mittel:'Intermedio', cat_expert:'Esperto',
+    cat_logistik:'Logistica', cat_logistik_full:'Logistica e Strutture',
+    sheet_title:'Punti del percorso', sheet_tts_toggle:'Lettura att./dis.',
+    list_track_pins:'Spille percorso', list_own_markers:'I miei marcatori', list_no_entries:'Nessuna voce',
+    settings_title:'Impostazioni',
+    tab_profile:'👤 Profilo', tab_general:'Generale', tab_tracks:'Percorsi',
+    tab_backup:'Backup', tab_markers:'Marcatori', tab_qr:'Scansione QR', tab_app:'📲 App',
+    sg_gps_emoji:'Emoji posizione GPS', sg_gps_save:'Salva', sg_gps_reset:'Ripristina',
+    sg_project_overview:'📁 Panoramica progetti', sg_import:'📥 Importa',
+    sg_new_project:'➕ Crea nuovo progetto',
+    sg_a11y_title:'♿ Accessibilità e Lettura',
+    sg_tts_label:'Lettura vocale', sg_tts_hint:'I testi della mappa verranno letti',
+    sg_rate_label:'🎚 Velocità di lettura', sg_rate_slow:'Lento', sg_rate_fast:'Veloce',
+    sg_hc_label:'🌓 Alto contrasto',
+    sg_map_btn:'📢 Mappa [V]', sg_nearest_btn:'📍 Più vicino [N]',
+    sg_keyboard_hint:'⌨️ V = Mappa · N = Più vicino · S = Impostazioni · Esc = Chiudi',
+    sg_aa_autospeak:'Annunci automatici',
+    sb_full_export:'📦 Esporta backup completo',
+    sb_full_export_hint:'Tutti i percorsi, marcatori, impostazioni',
+    sb_full_import:'⬆ Importa backup',
+    sb_full_import_hint:'Sovrascrive tutti i dati locali',
+    sb_markers_title:'📍 Esporta/importa solo marcatori',
+    sb_markers_export:'📤 Esporta marcatori', sb_markers_import:'📥 Importa marcatori',
+    sb_runs_export:'📊 Esporta giri', sb_runs_csv:'📋 Esporta come CSV',
+    sb_project_export:'📤 Esporta progetto attivo', sb_project_import:'📥 Importa progetto',
+    sa_install_title:'📲 Installa app', sa_install_btn:'Installa',
+    sa_install_guide:'Guida all\'installazione', sa_device_title:'📱 Dispositivo & Browser',
+    sa_cache_title:'💾 Cache offline',
+    sa_cache_btn:'🗺️ Memorizza area mappa visibile',
+    sa_cache_offline:'Disponibile offline',
+    sa_storage_btn:'💾 Richiedi archiviazione persistente',
+    sp_lang_label:'🌐 Lingua dell\'app',
+    sp_lang_hint:'Tutti i menu e i testi verranno tradotti',
+    sp_name_label:'Il tuo nome', sp_muni_label:'Tipo di monociclo',
+    sp_name_ph:'Nome pilota', sp_muni_ph:'Il tuo monociclo',
+    st_no_tracks:'Nessun percorso caricato', st_load_gpx:'Carica GPX',
+    proj_create_hint:'Doppio clic sulla mappa per impostare il punto di focus del nuovo progetto',
+    proj_cancel:'Annulla', proj_step2_title:'Nuovo progetto',
+    proj_step2_subtitle:'Punto di focus impostato · Cosa vuoi fare?',
+    proj_btn_marker:'📍 Aggiungi marcatore', proj_btn_gpx:'🗺 Carica file GPX',
+    proj_btn_import:'📥 Importa JSON progetto', proj_btn_only:'✓ Solo creare',
+    proj_name_ph:'Nome del progetto…',
+    proj_confirm_delete:'Eliminare il progetto "{name}"? I percorsi e i marcatori verranno mantenuti.',
+    mm_title_new:'Nuovo marcatore', mm_title_edit:'Modifica marcatore',
+    mm_name_ph:'Nome', mm_desc_ph:'Descrizione (opzionale)',
+    mm_save:'Salva', mm_delete:'Elimina', mm_cancel:'Annulla',
+    popup_nav:'Navigazione', popup_share:'📤 Condividi',
+    popup_edit:'✏ Modifica', popup_delete:'🗑 Elimina',
+    popup_maps_apple:'Apri Apple Maps', popup_maps_google:'Apri Google Maps',
+    toast_map_topo:'🌲 Vista topo', toast_map_sat:'🛰 Vista satellite',
+    toast_markers_shown:'👁 Marcatori visibili', toast_markers_hidden:'🙈 Marcatori nascosti',
+    toast_marker_size:'📐 Dimensione marcatori: {pct}%',
+    toast_qr_saved:'⬇ Immagine QR salvata!', toast_link_copied:'✅ Link copiato!',
+    toast_dark_mode:'🌙 Modalità scura', toast_light_mode:'☀️ Modalità chiara',
+    toast_project_name_req:'⚠️ Inserisci un nome per il progetto',
+    toast_project_focus:'📍 Focus salvato per "{name}"',
+    toast_project_min:'⚠️ È richiesto almeno un progetto',
+    toast_gps_active:'✅ Posizione (±{acc}m)', toast_gps_off:'📍 GPS disattivato',
+    toast_gps_activating:'📡 Attivazione GPS…',
+    toast_tts_enable_hint:'🔊 Attiva la lettura nelle impostazioni',
+    toast_backup_exported:'✅ Backup esportato', toast_backup_imported:'✅ Backup importato',
+    toast_backup_error:'❌ Errore backup',
+    toast_markers_exported:'✅ Marcatori esportati', toast_markers_imported:'✅ Marcatori importati',
+    toast_gpx_loaded:'✅ {name} caricato', toast_track_deleted:'🗑 Percorso eliminato', toast_marker_deleted:'🗑 Marcatore eliminato',
+    toast_qr_lib_missing:'❌ Lib QR non caricata',
+    toast_project_exported:'✅ Progetto esportato',
+    toast_project_imported:'✅ Progetto "{name}" importato',
+    toast_storage_saved:'💾 Archiviazione persistente attivata',
+    speak_lang_changed:'Lingua cambiata.',
+    speak_map_not_loaded:'Mappa non ancora caricata.',
+    speak_map_zoom:'Mappa, livello di zoom {zoom}.',
+    speak_no_tracks:'Nessun percorso caricato.',
+    speak_tracks_visible:'{n} percorso{s} visibile{s}: {names}.',
+    speak_own_markers:'{n} marcatori personali sulla mappa.',
+    speak_gps_dist:'Posizione GPS a {dist} metri dal centro della mappa.',
+    speak_gps_off_map:'GPS non attivo.',
+    speak_nearest_none:'Nessun punto nelle vicinanze.',
+    speak_nearest:'Punto più vicino: {type} "{name}", a {dist}.',
+    speak_dist_km:'{n} chilometri', speak_dist_m:'{n} metri',
+    speak_tts_activated:'Lettura vocale attivata.',
+    speak_rate:'Velocità di lettura {rate}',
+    speak_settings_opened:'Impostazioni aperte. Profilo, Generale, Percorsi, Backup, Marcatori, QR, App.',
+    speak_settings_closed:'Impostazioni chiuse.',
+    speak_tab_opened:'{label} aperto.',
+    speak_menu_opened:'Menù aperto. {items}.',
+    speak_menu_no_items:'Nessuna voce',
+    speak_project:'Progetto: {name}.',
+    speak_new_proj_dblclick:'Doppio clic sulla mappa per impostare il punto di focus del nuovo progetto.',
+    speak_cancelled:'Annullato.',
+    speak_project_created:'Nuovo progetto creato: {name}.',
+    speak_project_deleted:'Progetto eliminato: {name}.',
+    speak_gps_active:'GPS attivo. Precisione più/meno {acc} metri.',
+    speak_gps_error:'Errore GPS: {msg}',
+    speak_gps_disabled:'GPS disattivato.',
+    speak_recording_started:'Registrazione avviata. Pilota: {rider}. Monociclo: {muni}.',
+    speak_recording_stopped:'{label}. Registrazione interrotta.',
+    speak_new_attempt:'{label}. Nuovo tentativo.',
+    speak_recording_finished:'Registrazione completata. {pts} punti GPS. {dist} km. Durata: {dur}.',
+    speak_qr_panel:'Pannello GPX aperto: {tab}.',
+    speak_race_running:'Gara in corso. Tempo: {timer}. {pos}',
+    confirm_delete_track:'Eliminare il percorso?',
+    confirm_delete_marker:'Eliminare il marcatore?',
+    tts_off:'DISATTIVATO', tts_on:'ATTIVATO — attivo', tts_ready:'Pronto',
+    tts_speaking:'In lettura…', tts_paused:'In pausa', tts_error:'Errore', tts_stopped:'Fermato',
+    sg_a11y_hint:'Legge ad alta voce il contenuto della mappa, i toast e la navigazione — controllo tramite la barra in fondo allo schermo',
+    sg_hc_desc:'Contrasti più forti per una migliore leggibilità',
+    sg_proj_hint:'I progetti abilitati mostrano le loro piste e marcatori sulla mappa. Il focus determina dove zooma il pulsante di panoramica.',
+    proj_focus_badge:'Focus', proj_tracks_count:'{n} percorsi',
+    proj_marker_count:'{n} marcatori', proj_empty:'Vuoto', proj_no_projects:'Nessun progetto',
+    proj_disable:'Disabilita', proj_enable:'Abilita',
+    proj_is_focus:'È il progetto focus', proj_select:'Seleziona e isola progetto',
+    proj_export_btn:'Esporta', proj_delete_btn:'Elimina',
+    tts_bar_ready:'Pronto',
+  },
+};
+
+/** Gibt den übersetzten String für den aktuellen Sprachkey zurück.
+ *  Platzhalter: {var} → vars.var */
+function t(key, vars = {}) {
+  const dict = TRANSLATIONS[_appLang] || TRANSLATIONS.de;
+  const str  = dict[key] ?? TRANSLATIONS.de[key] ?? key;
+  return str.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
+}
+
+/** Liefert den übersetzten Namen eines LOCS-Eintrags */
+function _locName(loc) {
+  if (_appLang !== 'de' && loc.nameI18n?.[_appLang]) return loc.nameI18n[_appLang];
+  return loc.name;
+}
+/** Liefert die übersetzte Beschreibung eines LOCS-Eintrags */
+function _locDesc(loc) {
+  if (_appLang !== 'de' && loc.descI18n?.[_appLang]) return loc.descI18n[_appLang];
+  return loc.desc || '';
+}
+
+/** Aktualisiert alle data-i18n-Elemente im DOM auf die aktuelle Sprache */
+function _applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset['i18nPh']); });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset['i18nAria'])); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.dataset['i18nTitle']); });
+  document.querySelectorAll('[data-cat-label]').forEach(el => { el.textContent = t('cat_' + el.dataset.catLabel); });
+}
 
 // GPX Farben (spec-konform)
 const GPX_COLORS = { beginner:'#27AE60', mittel:'#D4A017', expert:'#ef4444' };
@@ -4628,8 +5293,8 @@ const SAT = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Wo
 });
 let isSat=false;
 function toggleLayer(){
-  if(isSat){map.removeLayer(SAT);map.addLayer(TOPO);isSat=false;toast('🌲 Topo Ansicht')}
-  else{map.removeLayer(TOPO);map.addLayer(SAT);isSat=true;toast('🛰 Satellit Ansicht')}
+  if(isSat){map.removeLayer(SAT);map.addLayer(TOPO);isSat=false;toast(t('toast_map_topo'))}
+  else{map.removeLayer(TOPO);map.addLayer(SAT);isSat=true;toast(t('toast_map_sat'))}
 }
 
 // Kartenposition speichern bei Bewegung
@@ -4772,11 +5437,11 @@ function toggleLocsVisibility(id) {
   if (_locsHidden.has(id)) {
     _locsHidden.delete(id);
     if (MKR[id]) MKR[id].m.addTo(map);
-    toast('👁 Marker wieder eingeblendet');
+    toast(t('toast_markers_shown'));
   } else {
     _locsHidden.add(id);
     if (MKR[id]) map.removeLayer(MKR[id].m);
-    toast('🙈 Marker ausgeblendet');
+    toast(t('toast_markers_hidden'));
   }
   // Weg-zurück-Layer mit weg-camp synchronisieren
   if (id === 'weg-camp') {
@@ -4807,7 +5472,7 @@ function editLocsMarker(id) {
     document.getElementById('md-lng').value   = base.lng;
     document.getElementById('md-lat-disp').textContent = base.lat.toFixed(6);
     document.getElementById('md-lng-disp').textContent = base.lng.toFixed(6);
-    document.getElementById('md-title').textContent = 'Marker bearbeiten';
+    document.getElementById('md-title').textContent = t('mm_title_edit');
     document.getElementById('md-edit-id').value = ''; // kein custom-id
     _buildMdEmojiPicker(ov.emoji || base.emoji);
     _updateMdShareQr(base.lat, base.lng, ov.name || base.name);
@@ -4845,7 +5510,8 @@ function mkIcon(loc){
 
 function mkPopup(loc){
   const c=CATS[loc.cat];
-  const nm=escHtml(loc.name), ds=escHtml(loc.desc||''), badge=escHtml(c.label);
+  const locName=_locName(loc), locDesc=_locDesc(loc);
+  const nm=escHtml(locName), ds=escHtml(locDesc), badge=escHtml(t('cat_'+loc.cat)||c.label);
   return `<div style="background:var(--s1)">
     <div class="p-top">
       <div class="p-badge" style="background:${loc.color}">${badge}</div>
@@ -4854,15 +5520,15 @@ function mkPopup(loc){
       ${ds?`<div class="p-desc">${ds}</div>`:''}
     </div>
     <div class="p-acts">
-      <button class="pbtn nav" onclick="navTo(${loc.lat},${loc.lng},'${esc(loc.name)}')" aria-label="Navigation starten">
+      <button class="pbtn nav" onclick="navTo(${loc.lat},${loc.lng},'${esc(locName)}')" aria-label="${escHtml(t('popup_nav'))}">
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1L12 6.5L6.5 12M1 6.5H11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Navigation
+        ${escHtml(t('popup_nav'))}
       </button>
-      <button class="pbtn shr" onclick="openQR('${esc(loc.id)}')" aria-label="QR-Code anzeigen">
+      <button class="pbtn shr" onclick="openQR('${esc(loc.id)}')" aria-label="QR">
         <svg width="15" height="15" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="9" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/><path d="M9 9h1v1M11 9h1M9 11v1M11 12h1M12 11v-1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Nav-QR
+        QR
       </button>
-      <button class="pbtn spk" onclick="speakPopupContent('${esc(loc.name)}','${esc(loc.desc||'')}','${esc(badge)}')" aria-label="Vorlesen" title="Vorlesen [🔊]">🔊</button>
+      <button class="pbtn spk" onclick="speakPopupContent('${esc(locName)}','${esc(locDesc)}','${esc(badge)}')" aria-label="🔊" title="🔊">🔊</button>
     </div>
   </div>`;
 }
@@ -4873,7 +5539,7 @@ LOCS.forEach(loc=>{
   const eff = { ...loc, name: ov.name||loc.name, emoji: ov.emoji||loc.emoji, desc: ov.desc||loc.desc };
   const m   = L.marker([loc.lat,loc.lng],{icon:mkIcon(eff)});
   if (!_locsHidden.has(loc.id)) m.addTo(map);
-  m.bindTooltip(eff.name,{permanent:true,direction:'bottom',offset:[0,4],className:'map-label'});
+  m.bindTooltip(_locName(eff),{permanent:true,direction:'bottom',offset:[0,4],className:'map-label'});
   m.bindPopup(mkPopup(eff),{maxWidth:292,minWidth:250});
   MKR[loc.id]={m, loc:eff, _base:loc};
 });
@@ -4887,7 +5553,7 @@ function reloadLocsMarkers() {
     const eff = { ...loc, name: ov.name||loc.name, emoji: ov.emoji||loc.emoji, desc: ov.desc||loc.desc };
     entry.loc = eff;
     entry.m.setIcon(mkIcon(eff));
-    entry.m.setTooltipContent(eff.name);
+    entry.m.setTooltipContent(_locName(eff));
     entry.m.setPopupContent(mkPopup(eff));
     if (_locsHidden.has(loc.id)) { if (map.hasLayer(entry.m)) map.removeLayer(entry.m); }
     else { if (!map.hasLayer(entry.m)) entry.m.addTo(map); }
@@ -4918,7 +5584,7 @@ function onMkScaleChange(val) {
   }
   // Rennen-Checkpoint-Marker skalieren (falls Rennen aktiv)
   _updateCpMarkerIcons();
-  toast('📐 Marker-Größe: ' + pct + '%');
+  toast(t('toast_marker_size', {pct}));
 }
 
 // ── SHEET / POI-LISTE ──────────────────────────────────────────
@@ -4941,12 +5607,12 @@ function buildList(){
     ['beginner','mittel','expert','logistik'].forEach(cat=>{
       const items=LOCS.filter(l=>l.cat===cat&&(curFilter==='all'||curFilter===cat)&&!_locsHidden.has(l.id));
       if(!items.length)return;
-      const hd=document.createElement('div'); hd.className='cat-head'; hd.textContent=CATS[cat].label; c.appendChild(hd);
+      const hd=document.createElement('div'); hd.className='cat-head'; hd.textContent=t('cat_'+cat)||CATS[cat].label; c.appendChild(hd);
       items.forEach(loc=>{
         if(loc.line)return; // Nur Linien-Marker überspringen (weg-camp etc.)
         n++;
         const ov=_locsOverrides[loc.id]||{};
-        const effName=ov.name||loc.name; const effEmoji=ov.emoji||loc.emoji;
+        const effName=ov.name||_locName(loc); const effEmoji=ov.emoji||loc.emoji;
         const r=document.createElement('div'); r.className='lrow';
         r.setAttribute('role','listitem');
         r.innerHTML=`<div class="l-ico" style="background:${loc.color}22"><span role="img" aria-label="${escHtml(CATS[loc.cat].label)}">${effEmoji}</span></div>
@@ -4977,7 +5643,7 @@ function buildList(){
   });
   if(trkRows.length>0){
     const hd=document.createElement('div'); hd.className='cat-head';
-    hd.innerHTML=`<span>Strecken-Pins</span> <span style="font-size:10px;opacity:.7;font-weight:600">(Start &amp; Ziel)</span>`;
+    hd.innerHTML=`<span>${escHtml(t('list_track_pins'))}</span> <span style="font-size:10px;opacity:.7;font-weight:600">(Start &amp; Ziel)</span>`;
     c.appendChild(hd);
     trkRows.forEach(({label,track,lat,lng,emoji,type})=>{
       n++;
@@ -5016,7 +5682,7 @@ function buildList(){
   const _eyeOnSvg  = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7C1 7 3 3 7 3s6 4 6 4-2 4-6 4S1 7 1 7Z" stroke="currentColor" stroke-width="1.4"/><circle cx="7" cy="7" r="1.8" fill="currentColor"/></svg>`;
   const _eyeOffSvg = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7C1 7 3 3 7 3s6 4 6 4-2 4-6 4S1 7 1 7Z" stroke="currentColor" stroke-width="1.4" opacity=".3"/><path d="M2 2L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`;
   if(visCm.length>0){
-    const hd=document.createElement('div'); hd.className='cat-head'; hd.textContent='Eigene Marker'; c.appendChild(hd);
+    const hd=document.createElement('div'); hd.className='cat-head'; hd.textContent=t('list_own_markers'); c.appendChild(hd);
     visCm.forEach(cm=>{
       n++;
       const color=CM_CAT_COLORS[cm.cat]||'#888';
@@ -5050,11 +5716,11 @@ function toggleSheet(){
       const cats=[];
       ['beginner','mittel','expert','logistik'].forEach(cat=>{
         const n=LOCS.filter(l=>l.cat===cat&&!l.line&&!_locsHidden.has(l.id)&&(curFilter==='all'||curFilter===cat)).length;
-        if(n) cats.push(CATS[cat].label+': '+n);
+        if(n) cats.push((t('cat_'+cat)||CATS[cat].label)+': '+n);
       });
       const cmN=(_cmMarkers||[]).filter(m=>!_activeProjectId||m.projectId===_activeProjectId).length;
-      if(cmN) cats.push('Eigene Marker: '+cmN);
-      speak('Menü geöffnet. '+(cats.length?cats.join(', '):'Keine Einträge')+'.',true);
+      if(cmN) cats.push(t('list_own_markers')+': '+cmN);
+      speak(t('speak_menu_opened',{items:cats.length?cats.join(', '):t('speak_menu_no_items')}),true);
     }
   }
 }
@@ -5198,7 +5864,7 @@ function navTo(lat,lng,name){
  * @param {string} bgColor - Hintergrundfarbe
  */
 function drawQR(canvas, data, size=160, fgColor='#0b0e14', bgColor='#ffffff'){
-  if(!window.qrcode){ toast('❌ QR-Lib nicht geladen'); return false; }
+  if(!window.qrcode){ toast(t('toast_qr_lib_missing')); return false; }
   try{
     const qr=window.qrcode(0,'M');
     qr.addData(data);
@@ -5232,11 +5898,11 @@ function downloadCanvas(canvas, filename){
       const u=URL.createObjectURL(blob);
       const a=document.createElement('a'); a.href=u; a.download=filename;
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(u); toast('⬇ QR-Bild gespeichert!');
+      URL.revokeObjectURL(u); toast(t('toast_qr_saved'));
     },'image/png');
   }catch(e){
     const a=document.createElement('a'); a.href=canvas.toDataURL('image/png'); a.download=filename; a.click();
-    toast('⬇ QR-Bild gespeichert!');
+    toast(t('toast_qr_saved'));
   }
 }
 
@@ -5260,8 +5926,8 @@ function openQR(id){
 function copyQR(){
   if(!curQrUrl)return;
   if(navigator.clipboard){
-    navigator.clipboard.writeText(curQrUrl).then(()=>toast('✅ Link kopiert!')).catch(()=>{legacyCopy(curQrUrl);toast('✅ Link kopiert!');});
-  } else { legacyCopy(curQrUrl); toast('✅ Link kopiert!'); }
+    navigator.clipboard.writeText(curQrUrl).then(()=>toast(t('toast_link_copied'))).catch(()=>{legacyCopy(curQrUrl);toast(t('toast_link_copied'));});
+  } else { legacyCopy(curQrUrl); toast(t('toast_link_copied')); }
 }
 
 function downloadQR(){
@@ -5287,7 +5953,7 @@ function toggleTheme(){
   document.getElementById('ti-sun').style.display=isDark?'none':'';
   document.querySelector('meta[name=theme-color]').content=isDark?'#0b0e14':'#f0f4f8';
   LS.set(LS.K.THEME, isDark?'dark':'light');
-  toast(isDark?'🌙 Dunkel Modus':'☀️ Hell Modus');
+  toast(isDark ? t('toast_dark_mode') : t('toast_light_mode'));
 }
 // ── PROJEKT INITIALISIERUNG ─────────────────────────────────────
 // State für Karten-Erstellungsmodus
@@ -5510,7 +6176,7 @@ function switchProject(id) {
   _renderSettingsProjList();
   _renderProjList();
   fitAll();
-  speak('Projekt: ' + proj.name + '.', true);
+  speak(t('speak_project', {name:proj.name}), true);
   toast('📁 ' + proj.name);
 }
 
@@ -5526,7 +6192,7 @@ function startNewProjMode() {
     _openProjStep2(e.latlng.lat, e.latlng.lng, map.getZoom());
   };
   map.once('dblclick', _projCreateDblHndl);
-  speak('Doppelklick auf die Karte, um den Fokuspunkt des neuen Projekts zu setzen.', true);
+  speak(t('speak_new_proj_dblclick'), true);
 }
 
 function _cancelProjCreateMode(showMsg) {
@@ -5534,7 +6200,7 @@ function _cancelProjCreateMode(showMsg) {
   document.body.classList.remove('proj-create-mode');
   document.getElementById('proj-create-hint')?.classList.remove('show');
   if (_projCreateDblHndl && map) { map.off('dblclick', _projCreateDblHndl); _projCreateDblHndl = null; }
-  if (showMsg !== false) speak('Abgebrochen.', true);
+  if (showMsg !== false) speak(t('speak_cancelled'), true);
 }
 
 function _openProjStep2(lat, lng, zoom) {
@@ -5558,7 +6224,7 @@ async function saveProjStep2(action) {
     return;
   }
   const name = document.getElementById('proj-s2-name')?.value.trim();
-  if (!name) { document.getElementById('proj-s2-name')?.focus(); toast('⚠️ Bitte Projektname eingeben'); return; }
+  if (!name) { document.getElementById('proj-s2-name')?.focus(); toast(t('toast_project_name_req')); return; }
   const ll = _projCreateTempLL;
   const proj = {
     id: 'proj_' + Date.now(), name,
@@ -5573,7 +6239,7 @@ async function saveProjStep2(action) {
   closeProjStep2();
   switchProject(proj.id);
   _renderSettingsProjList();
-  speak('Neues Projekt erstellt: ' + name + '.', false);
+  speak(t('speak_project_created', {name}), false);
   if (action === 'marker') {
     setTimeout(() => { if (ll) map.setView([ll.lat, ll.lng], ll.zoom || 15); toggleMarkerMode(); }, 400);
   } else if (action === 'gpx') {
@@ -5602,15 +6268,15 @@ function projSetCenterFromMap(id) {
   const c = map.getCenter();
   proj.centerLat = c.lat; proj.centerLng = c.lng; proj.zoom = map.getZoom();
   LS.set(LS.K.PROJECTS, _projects);
-  toast('📍 Fokus für "' + proj.name + '" gespeichert');
+  toast(t('toast_project_focus', {name:proj.name}));
 }
 
 // ── PROJEKT LÖSCHEN ──────────────────────────────────────────────────────────
 function deleteProject(id) {
-  if (_projects.length <= 1) { toast('⚠️ Mindestens ein Projekt erforderlich'); return; }
+  if (_projects.length <= 1) { toast(t('toast_project_min')); return; }
   const proj = _projects.find(p => p.id === id);
   if (!proj) return;
-  if (!confirm('Projekt "' + proj.name + '" löschen?\n\nStrecken und Marker werden dem ersten verbleibenden Projekt zugewiesen.')) return;
+  if (!confirm(t('proj_confirm_delete', {name:proj.name}))) return;
   const remaining  = _projects.filter(p => p.id !== id);
   const fallbackId = remaining[0].id;
   // Tracks re-zuweisen
@@ -5627,7 +6293,7 @@ function deleteProject(id) {
   LS.set(LS.K.PROJECTS, _projects);
   if (_activeProjectId === id) switchProject(fallbackId);
   else _renderSettingsProjList();
-  speak('Projekt gelöscht: ' + proj.name + '.', true);
+  speak(t('speak_project_deleted', {name:proj.name}), true);
 }
 
 // ── EINSTELLUNGS-KARTEN-LISTE (Card-Design mit Toggle-Switch) ────────────────
@@ -5636,43 +6302,43 @@ function _renderSettingsProjList() {
   if (!c) return;
   c.innerHTML = '';
   if (!_projects.length) {
-    c.innerHTML = '<div style="font-size:13px;color:var(--td);padding:6px 0">Keine Projekte vorhanden</div>';
+    c.innerHTML = '<div style="font-size:13px;color:var(--td);padding:6px 0">' + escHtml(t('proj_no_projects')) + '</div>';
     return;
   }
   _projects.forEach(p => {
     const isFocus   = p.id === _activeProjectId;
     const isEnabled = p.enabled !== false;
-    const trkN = trackStore.tracks.filter(t => t.projectId === p.id).length;
+    const trkN = trackStore.tracks.filter(tk => tk.projectId === p.id).length;
     const mkrN = (_cmMarkers||[]).filter(m => m.projectId === p.id).length;
     const statsStr = [
-      trkN ? trkN + ' Strecke' + (trkN !== 1 ? 'n' : '') : '',
-      mkrN ? mkrN + ' Marker' : ''
-    ].filter(Boolean).join(' · ') || 'Leer';
+      trkN ? t('proj_tracks_count', {n:trkN}) : '',
+      mkrN ? t('proj_marker_count', {n:mkrN}) : ''
+    ].filter(Boolean).join(' · ') || t('proj_empty');
 
     const card = document.createElement('div');
     card.className = 'proj-card' + (isFocus ? ' is-focus' : '');
     card.innerHTML =
       '<div class="proj-card-header">'
-        + '<label class="proj-sw" title="' + (isEnabled ? 'Deaktivieren' : 'Aktivieren') + '" onclick="event.stopPropagation()">'
+        + '<label class="proj-sw" title="' + (isEnabled ? escHtml(t('proj_disable')) : escHtml(t('proj_enable'))) + '" onclick="event.stopPropagation()">'
             + '<input type="checkbox"' + (isEnabled ? ' checked' : '') + ' onchange="toggleProjectEnabled(\'' + p.id + '\',this.checked);_renderSettingsProjList()">'
             + '<span class="proj-sw-track"></span>'
           + '</label>'
         + '<div class="proj-card-info"'
             + (isFocus ? '' : ' role="button" tabindex="0" onclick="switchProject(\'' + p.id + '\')"')
-            + ' aria-label="' + escHtml(p.name) + (isFocus ? ' (Fokus)' : '') + '">'
+            + ' aria-label="' + escHtml(p.name) + (isFocus ? ' (' + escHtml(t('proj_focus_badge')) + ')' : '') + '">'
             + '<div class="proj-card-name' + (isFocus ? ' is-focus' : '') + '">'
                 + (isFocus ? '⭐ ' : '') + escHtml(p.name)
               + '</div>'
             + '<div class="proj-card-stats">' + escHtml(statsStr)
-                + (isFocus ? ' · <span style="color:var(--ac);font-weight:700">Fokus</span>' : '')
+                + (isFocus ? ' · <span style="color:var(--ac);font-weight:700">' + escHtml(t('proj_focus_badge')) + '</span>' : '')
               + '</div>'
           + '</div>'
         + '<div class="proj-card-actions">'
             + '<button class="proj-card-act focus-btn' + (isFocus ? ' is-focus' : '') + '" '
                 + 'onclick="switchProject(\'' + p.id + '\')" '
-                + 'title="' + (isFocus ? 'Ist Fokus-Projekt' : 'Projekt auswählen & isolieren') + '" aria-label="Fokus">⭐</button>'
-            + '<button class="proj-card-act" onclick="exportProjectJson(\'' + p.id + '\')" title="Exportieren" aria-label="Exportieren">📤</button>'
-            + '<button class="proj-card-act del-btn" onclick="deleteProject(\'' + p.id + '\')" title="Löschen" aria-label="Löschen">🗑</button>'
+                + 'title="' + (isFocus ? escHtml(t('proj_is_focus')) : escHtml(t('proj_select'))) + '" aria-label="' + escHtml(t('proj_focus_badge')) + '">⭐</button>'
+            + '<button class="proj-card-act" onclick="exportProjectJson(\'' + p.id + '\')" title="' + escHtml(t('proj_export_btn')) + '" aria-label="' + escHtml(t('proj_export_btn')) + '">📤</button>'
+            + '<button class="proj-card-act del-btn" onclick="deleteProject(\'' + p.id + '\')" title="' + escHtml(t('proj_delete_btn')) + '" aria-label="' + escHtml(t('proj_delete_btn')) + '">🗑</button>'
           + '</div>'
       + '</div>';
     c.appendChild(card);
@@ -5708,8 +6374,8 @@ function _onGpsPos(pos) {
     fab.style.borderColor = 'var(--log)';
     fab.style.borderWidth = '2px';
     if (_gpsAutoFollow) map.flyTo([lat,lng],17,{animate:true,duration:1});
-    toast(`✅ Standort (±${Math.round(acc)}m)`);
-    speak(`GPS aktiv. Genauigkeit plus minus ${Math.round(acc)} Meter.`, false);
+    toast(t('toast_gps_active', {acc:Math.round(acc)}));
+    speak(t('speak_gps_active', {acc:Math.round(acc)}), false);
   }
 
   // Update user dot + accuracy circle
@@ -5739,9 +6405,9 @@ function _onGpsErr(err) {
   const fab = document.getElementById('gps-fab');
   fab.classList.remove('spin'); fab.style.borderColor=''; gpsOn=false;
   const msgs = {1:['Zugriff verweigert','Standortzugriff in Einstellungen erlauben.'],2:['Kein Signal','Ins Freie gehen oder WLAN aktivieren.'],3:['Zeitüberschreitung','GPS erneut versuchen.']};
-  const [t,m] = msgs[err.code] || ['GPS Fehler',err.message];
-  showGpsHint(t, m);
-  speak(`GPS Fehler: ${t}. ${m}`, true);
+  const [gpsErrTitle,gpsErrMsg] = msgs[err.code] || ['GPS Fehler',err.message];
+  showGpsHint(gpsErrTitle, gpsErrMsg);
+  speak(t('speak_gps_error', {msg:gpsErrTitle+'. '+gpsErrMsg}), true);
 }
 
 async function locateUser(){
@@ -5755,12 +6421,12 @@ async function locateUser(){
     if(userMkr){map.removeLayer(userMkr);userMkr=null}
     if(userAccCircle){map.removeLayer(userAccCircle);userAccCircle=null}
     gpsOn=false; _gpsAutoFollow=false; fab.classList.remove('spin'); fab.style.borderColor='';
-    toast('📍 GPS deaktiviert');
-    speak('GPS deaktiviert.', false);
+    toast(t('toast_gps_off'));
+    speak(t('speak_gps_disabled'), false);
     return;
   }
   _gpsAutoFollow = true;
-  fab.classList.add('spin'); toast('📡 GPS wird aktiviert…');
+  fab.classList.add('spin'); toast(t('toast_gps_activating'));
   gpsWatcher = navigator.geolocation.watchPosition(_onGpsPos, _onGpsErr,
     {enableHighAccuracy:true, timeout:20000, maximumAge:3000});
 }
@@ -5808,9 +6474,6 @@ let _a11y = {
   autoAnnounce: true, // Toast / Tab-Wechsel automatisch vorlesen
 };
 
-// App-Sprache für TTS und UI: 'de' | 'en' | 'fr' | 'es'
-let _appLang = 'de';
-
 /** Persistiert aktuelle A11Y-Einstellungen in localStorage */
 function _saveA11ySettings() {
   LS.set(LS.K.A11Y, _a11y);
@@ -5827,8 +6490,9 @@ function _loadA11ySettings() {
   }
   // Sprache aus Profil laden
   const prof = LS.get(LS.K.PROFILE, null);
-  if (prof && prof.lang && ['de','en','fr','es'].includes(prof.lang)) {
-    _appLang = prof.lang;
+  if (prof && prof.lang && ['de','en','fr','es','it'].includes(prof.lang)) {
+    // gmtw_lang_v1 hat Priorität (schneller Load), Profil nur als Fallback
+    if (!localStorage.getItem('gmtw_lang_v1')) _appLang = prof.lang;
   }
   // High-Contrast immer anwenden (auch ohne TTS)
   if (_a11y.hc) document.documentElement.setAttribute('data-a11y-hc','');
@@ -5901,11 +6565,11 @@ function _ttsFlush() {
   if (_ttsQueue.length === 0) {
     _ttsSpeaking = false; // ensure clean state
     clearInterval(_ttsKeepalive); _ttsKeepalive = null;
-    _updateTtsBar('Bereit');
+    _updateTtsBar(t('tts_ready'));
     return;
   }
   _ttsSpeaking = true;
-  _updateTtsBar('Liest vor…');
+  _updateTtsBar(t('tts_speaking'));
   // Chrome 15s-Timeout-Workaround: speechSynthesis jede 10s aufwecken
   if (!_ttsKeepalive) {
     _ttsKeepalive = setInterval(() => {
@@ -5917,7 +6581,7 @@ function _ttsFlush() {
   _ttsLastText = _nextText;
   const utt = new SpeechSynthesisUtterance(_nextText);
   // Sprache aus App-Einstellung
-  const _langMap = { de:'de-DE', en:'en-GB', fr:'fr-FR', es:'es-ES' };
+  const _langMap = { de:'de-DE', en:'en-GB', fr:'fr-FR', es:'es-ES', it:'it-IT' };
   utt.lang  = _langMap[_appLang] || 'de-DE';
   utt.rate  = _a11y.rate;
   utt.pitch = 1.0;
@@ -5935,7 +6599,7 @@ function _ttsFlush() {
     }
     console.warn('[TTS] error:', e.error);
     clearInterval(_ttsKeepalive); _ttsKeepalive = null;
-    _updateTtsBar('Fehler');
+    _updateTtsBar(t('tts_error'));
     setTimeout(_ttsFlush, 100); // retry on real errors
   };
   // Passende Stimme bevorzugen
@@ -5952,14 +6616,14 @@ function speakStop() {
   _ttsSpeaking = false;
   _ttsPaused   = false;
   clearInterval(_ttsKeepalive); _ttsKeepalive = null;
-  _updateTtsBar('Gestoppt');
-  setTimeout(() => _updateTtsBar('Bereit'), 1500);
+  _updateTtsBar(t('tts_stopped'));
+  setTimeout(() => _updateTtsBar(t('tts_ready')), 1500);
 }
 
 /** Liest Popup-Inhalt eines LOCS-Markers vor */
 function speakPopupContent(name, desc, cat) {
   if (!_a11y.enabled) {
-    toast('🔊 Vorlesefunktion in Einstellungen aktivieren');
+    toast(t('toast_tts_enable_hint'));
     return;
   }
   const parts = [cat, name, desc].filter(s => s && s.trim());
@@ -6010,21 +6674,30 @@ function _applyLangButtons() {
   });
 }
 
-/** Setzt die App-Sprache und speichert sie im Profil */
+/** Setzt die App-Sprache, persistiert sie und aktualisiert die gesamte UI */
 function setAppLang(lang) {
-  if (!['de','en','fr','es'].includes(lang)) return;
+  if (!['de','en','fr','es','it'].includes(lang)) return;
   _appLang = lang;
-  // In Profil speichern
+  // Schnell-Key für Seitenstart (kein Profil-Load nötig)
+  localStorage.setItem('gmtw_lang_v1', lang);
+  // Auch in Profil speichern (für Backup)
   const prof = LS.get(LS.K.PROFILE, {});
   prof.lang = lang;
   LS.set(LS.K.PROFILE, prof);
-  // UI-Buttons aktualisieren
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.lang === lang);
-  });
-  const names = { de:'Deutsch', en:'English', fr:'Français', es:'Español' };
-  toast('🌐 Sprache: ' + (names[lang] || lang));
-  speak('Sprache geändert.', true);
+  // Alle data-i18n-Elemente aktualisieren
+  _applyI18n();
+  _applyLangButtons();
+  // LOCS-Popups mit neuen Übersetzungen neu laden
+  if (typeof reloadLocsMarkers === 'function') reloadLocsMarkers();
+  // Burger-Menü neu rendern
+  if (document.getElementById('sheet')?.classList.contains('open')) buildList();
+  // Einstellungs-Panel neu rendern wenn offen
+  if (document.getElementById('settings-panel')?.classList.contains('open')) {
+    _renderSettingsProjList?.();
+  }
+  const names = { de:'Deutsch', en:'English', fr:'Français', es:'Español', it:'Italiano' };
+  toast('🌐 ' + (names[lang] || lang));
+  speak(t('speak_lang_changed'), true);
 }
 
 // ── ARIA Live-Regionen ──────────────────────────────────────────
@@ -6047,31 +6720,32 @@ function _ariaAnnounce(msg, priority = 'polite') {
 // ── Kartenüberblick vorlesen ────────────────────────────────────
 /** Liest den sichtbaren Karteninhalt vor: Tracks, Marker, Zoom */
 function speakMapOverview() {
-  if (!map) { speak('Karte noch nicht geladen.', true); return; }
+  if (!map) { speak(t('speak_map_not_loaded'), true); return; }
   const zoom  = map.getZoom();
   const ctr   = map.getCenter();
   const parts = [];
-  parts.push(`Karte, Zoom-Stufe ${zoom}.`);
+  parts.push(t('speak_map_zoom', {zoom}));
 
   // Sichtbare Strecken
-  const visTracks = trackStore.tracks.filter(t => t.gpxLayer && map.hasLayer(t.gpxLayer));
+  const visTracks = trackStore.tracks.filter(tk => tk.gpxLayer && map.hasLayer(tk.gpxLayer));
   if (visTracks.length === 0) {
-    parts.push('Keine Strecken geladen.');
+    parts.push(t('speak_no_tracks'));
   } else {
-    parts.push(`${visTracks.length} Strecke${visTracks.length>1?'n':''} sichtbar: ${visTracks.map(t=>t.name).join(', ')}.`);
+    const s = visTracks.length > 1 ? ((_appLang==='de')?'n':('s')) : '';
+    parts.push(t('speak_tracks_visible', {n:visTracks.length, s, names:visTracks.map(tk=>tk.name).join(', ')}));
   }
 
   // Eigene Marker
   const cmCount = Object.keys(_cmLeafletLayers || {}).length;
-  if (cmCount > 0) parts.push(`${cmCount} eigene Marker auf der Karte.`);
+  if (cmCount > 0) parts.push(t('speak_own_markers', {n:cmCount}));
 
   // GPS Position
   if (window._gpsMarker && window._gpsMarker.getLatLng) {
     const gpos = window._gpsMarker.getLatLng();
-    const dist = ctr.distanceTo(gpos);
-    parts.push(`GPS-Position ${Math.round(dist)} Meter vom Kartenmittelpunkt entfernt.`);
+    const dist = Math.round(ctr.distanceTo(gpos));
+    parts.push(t('speak_gps_dist', {dist}));
   } else {
-    parts.push('GPS nicht aktiv.');
+    parts.push(t('speak_gps_off_map'));
   }
 
   speak(parts.join(' '), true);
@@ -6112,11 +6786,11 @@ function speakNearestPoint() {
 
   let msg;
   if (!best) {
-    msg = 'Kein Punkt in der Nähe gefunden.';
+    msg = t('speak_nearest_none');
   } else {
     const dm = Math.round(best.d);
-    const unit = dm >= 1000 ? `${(dm/1000).toFixed(1)} Kilometer` : `${dm} Meter`;
-    msg = `Nächster Punkt: ${best.type} "${best.name}", ${unit} entfernt.`;
+    const dist = dm >= 1000 ? t('speak_dist_km', {n:(dm/1000).toFixed(1)}) : t('speak_dist_m', {n:dm});
+    msg = t('speak_nearest', {type:best.type, name:best.name, dist});
   }
   speak(msg, true);
   _ariaAnnounce(msg);
@@ -6180,7 +6854,7 @@ function _applyA11yUi() {
   const lbl  = document.getElementById('a11y-toggle-state');
   const stts = document.getElementById('sheet-tts-btn');
   if (btn)  btn.classList.toggle('on', _a11y.enabled);
-  if (lbl)  lbl.textContent = _a11y.enabled ? 'EIN — aktiv' : 'AUS';
+  if (lbl)  lbl.textContent = _a11y.enabled ? t('tts_on') : t('tts_off');
   if (stts) stts.classList.toggle('active', _a11y.enabled);
   // data-a11y-on steuert Sichtbarkeit von TTS Control Bar + Speak-FAB
   if (_a11y.enabled) document.documentElement.setAttribute('data-a11y-on','');
@@ -6197,16 +6871,16 @@ function onA11yToggle(val) {
     const btn = document.getElementById('a11y-big-toggle');
     const lbl = document.getElementById('a11y-toggle-state');
     if (btn)  btn.classList.add('on');
-    if (lbl)  lbl.textContent = 'EIN — aktiv';
+    if (lbl)  lbl.textContent = t('tts_on');
     if (stts) stts.classList.add('active');
-    _updateTtsBar('Bereit');
-    speak('Vorlesefunktion aktiviert.', true);
+    _updateTtsBar(t('tts_ready'));
+    speak(t('speak_tts_activated'), true);
   } else {
     document.documentElement.removeAttribute('data-a11y-on');
     const btn = document.getElementById('a11y-big-toggle');
     const lbl = document.getElementById('a11y-toggle-state');
     if (btn)  btn.classList.remove('on');
-    if (lbl)  lbl.textContent = 'AUS';
+    if (lbl)  lbl.textContent = t('tts_off');
     if (stts) stts.classList.remove('active');
     speakStop();
   }
@@ -6227,11 +6901,11 @@ function ttsTogglePause() {
   if (speechSynthesis.paused) {
     speechSynthesis.resume();
     _ttsPaused = false;
-    _updateTtsBar('Liest vor…');
+    _updateTtsBar(t('tts_speaking'));
   } else if (speechSynthesis.speaking) {
     speechSynthesis.pause();
     _ttsPaused = true;
-    _updateTtsBar('Pause');
+    _updateTtsBar(t('tts_paused'));
   } else {
     speakCurrentContext();
   }
@@ -6241,7 +6915,7 @@ function ttsTogglePause() {
 function onA11yRate(val) {
   _a11y.rate = parseFloat(val) || 1.0;
   _saveA11ySettings();
-  speak('Sprechrate ' + _a11y.rate.toFixed(1), false);
+  speak(t('speak_rate', {rate:_a11y.rate.toFixed(1)}), false);
 }
 function onA11yHc(val) {
   _a11y.hc = !!val;
@@ -6431,6 +7105,9 @@ async function importNewTracks(fileNames) {
 // ── DEEP LINK ──────────────────────────────────────────────────
 window.addEventListener('load', async ()=>{
   initTheme();
+  // i18n sofort anwenden (Sprache wurde bereits im Modul-Scope aus gmtw_lang_v1 gelesen)
+  _applyI18n();
+  _applyLangButtons();
   // Projekte initialisieren (vor Track-Restore, damit projectId-Migration möglich)
   _initProjects();
   // LOCS-Marker wurden im Modul-Scope bedingungslos zur Karte hinzugefügt.
@@ -6753,7 +7430,7 @@ function loadGpxXml(gpxStr, name, cat, existingId=null, sourceUrl=null, silent=f
     }
 
     if (!silent) {
-      toast(`✅ "${escHtml(name)}" · ${dist} km`);
+      toast(t('toast_gpx_loaded', {name: escHtml(name)}) + ' · ' + dist + ' km');
       switchGpxTab('tracks', null);
       // Zoom: nahe an Startpunkt (Zoom 17) + Popup öffnen
       if (track.startPt) {
@@ -6813,7 +7490,7 @@ function removeTrack(id) {
   renderTrackList();
   persistTracks();
   document.getElementById('elev-panel').style.display = 'none';
-  toast('🗑 Track entfernt');
+  toast(t('toast_track_deleted'));
 }
 
 function zoomTrack(id) {
@@ -9576,8 +10253,8 @@ function openSettings() {
   renderAllMarkersList();
   _loadProfileForm();
   _renderSettingsProjList();
-  speak('Einstellungen geöffnet. Profil, Allgemein, Strecken, Backup, Marker, QR-Scan, App.', false);
-  _ariaAnnounce('Einstellungen geöffnet');
+  speak(t('speak_settings_opened'), false);
+  _ariaAnnounce(t('settings_title'));
   setTimeout(()=>{ if(map) map.invalidateSize(); },300);
 }
 
@@ -9585,8 +10262,8 @@ function closeSettings() {
   document.getElementById('settings-panel').classList.remove('open');
   // Kamera freigeben wenn Settings geschlossen werden
   stopQrScanner();
-  speak('Einstellungen geschlossen.', false);
-  _ariaAnnounce('Einstellungen geschlossen');
+  speak(t('speak_settings_closed'), false);
+  _ariaAnnounce(t('speak_settings_closed'));
   setTimeout(()=>{ if(map) map.invalidateSize(); },300);
 }
 
@@ -9602,7 +10279,8 @@ const _SP_TAB_LABELS = {
 function switchSpTab(name, btn) {
   document.querySelectorAll('.sp-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.sp-content').forEach(c => c.classList.remove('on'));
-  btn.classList.add('active');
+  const activeBtn = btn || document.querySelector(`.sp-tab[data-t="${name}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
   const tab = document.getElementById('sp-tab-' + name);
   if (tab) tab.classList.add('on');
   // Tab-spezifische Initialisierung
@@ -9614,9 +10292,9 @@ function switchSpTab(name, btn) {
   if (name === 'app')     _initAppInstallTab();
   if (name === 'profile') { _loadProfileForm(); _applyLangButtons(); }
   // A11Y: Tab-Name vorlesen
-  const label = _SP_TAB_LABELS[name] || name;
-  speak(`Tab ${label} geöffnet.`, false);
-  _ariaAnnounce(`Tab ${label}`);
+  const label = document.querySelector(`.sp-tab[data-t="${name}"]`)?.textContent?.trim() || name;
+  speak(t('speak_tab_opened', {label}), false);
+  _ariaAnnounce(label);
 }
 
 // Emoji-Grid befüllen
@@ -9755,7 +10433,9 @@ function _loadProfileForm() {
   set('pf-input-seatclamp', p.seatClampColor);
   set('pf-input-special',   p.special);
   // Sprache aus gespeichertem Profil laden
-  if (p.lang && ['de','en','fr','es'].includes(p.lang)) _appLang = p.lang;
+  if (p.lang && ['de','en','fr','es','it'].includes(p.lang)) {
+    if (!localStorage.getItem('gmtw_lang_v1')) _appLang = p.lang;
+  }
   _refreshProfileDisplay(p);
   _renderAvatarPicker(p);
   _applyLangButtons();
@@ -9936,7 +10616,7 @@ async function requestPersistentStorage() {
   try {
     const granted = await navigator.storage.persist();
     if (granted) {
-      toast('🔒 Dauerhafter Speicher gewährt! Daten bleiben erhalten.');
+      toast(t('toast_storage_saved'));
     } else {
       toast('⚠️ Browser hat dauerhaften Speicher abgelehnt');
     }
@@ -10018,7 +10698,7 @@ async function exportFullBackup() {
         const writable = await fh.createWritable();
         await writable.write(json);
         await writable.close();
-        toast(`✅ Backup gespeichert (${kb} KB · ${mergedTracks.length} Tracks · ${markers.length} Marker)`);
+        toast(t('toast_backup_exported'));
         return;
       } catch(e) {
         if (e.name === 'AbortError') return;
@@ -10028,7 +10708,7 @@ async function exportFullBackup() {
 
     // Fallback: klassischer Blob-Download (iOS Safari, Firefox, PWA)
     dlFile(fname, json, 'application/json');
-    toast(`✅ Backup exportiert (${kb} KB · ${mergedTracks.length} Tracks · ${markers.length} Marker)`);
+    toast(t('toast_backup_exported'));
   } catch(e) {
     toast('❌ Export fehlgeschlagen: ' + e.message);
     console.error('exportFullBackup:', e);
@@ -10070,7 +10750,7 @@ async function importFullBackup(input) {
         `Fortfahren?`
       )) return;
 
-      toast('⏳ Importiere…');
+      toast('⏳…');
 
       // Tracks in IndexedDB (ohne nicht-serialisierbare Leaflet-Objekte)
       if (tracksN > 0) {
@@ -10133,8 +10813,7 @@ async function importFullBackup(input) {
         }
       }
 
-      const imported = `${tracksN} Strecken · ${markersN} Marker`;
-      toast(`✅ Backup v${version} importiert (${imported}) — Seite wird neu geladen…`);
+      toast(t('toast_backup_imported'));
       setTimeout(() => location.reload(), 1800);
 
     } catch(e) {
@@ -10216,13 +10895,13 @@ async function exportProjectJson(projectId) {
         const writable = await fh.createWritable();
         await writable.write(json);
         await writable.close();
-        toast(`✅ "${proj.name}" exportiert — ${tracksWithGpx} Strecken, ${projMarkers.length} Marker, ${kb} KB`);
+        toast(t('toast_project_exported'));
         return;
       } catch(e) { if (e.name === 'AbortError') return; }
     }
 
     dlFile(fname, json, 'application/json');
-    toast(`✅ "${proj.name}" exportiert — ${tracksWithGpx} Strecken, ${projMarkers.length} Marker, ${kb} KB`);
+    toast(t('toast_project_exported'));
   } catch(e) {
     toast('❌ Export fehlgeschlagen: ' + e.message);
     console.error('exportProjectJson:', e);
@@ -10391,9 +11070,8 @@ async function importProjectJson(input) {
   buildList();
   _renderSettingsProjList();
 
-  const msg = `✅ Projekt "${name}" importiert — ${importedTracks} Strecken, ${markersToImport.length} Marker`;
-  toast(msg);
-  speak(`Projekt ${name} importiert. ${importedTracks} Strecken geladen.`, true);
+  toast(t('toast_project_imported', {name}));
+  speak(t('speak_project_created', {name}), true);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -10585,7 +11263,7 @@ function openMdModal(editId, lat, lng) {
   // Sheet-Animation
   setTimeout(() => overlay.classList.add('show'), 10);
 
-  document.getElementById('md-title').textContent = editId ? 'Marker bearbeiten' : 'Marker erstellen';
+  document.getElementById('md-title').textContent = editId ? t('mm_title_edit') : t('mm_title_new');
   document.getElementById('md-edit-id').value = editId || '';
 
   if (editId) {
@@ -10778,7 +11456,7 @@ async function saveMdMarker() {
 async function deleteCmMarker(id) {
   const cm = _cmMarkers.find(m => m.id === id);
   if (!cm) return;
-  if (!confirm(`Marker "${cm.name}" wirklich löschen?`)) return;
+  if (!confirm(t('confirm_delete_marker'))) return;
 
   // Leaflet-Layer entfernen
   if (_cmLeafletLayers[id]) {
@@ -10789,7 +11467,7 @@ async function deleteCmMarker(id) {
   _cmMarkers = _cmMarkers.filter(m => m.id !== id);
   await _saveCustomMarkers();
   renderAllMarkersList();
-  toast('🗑 Marker gelöscht');
+  toast(t('toast_marker_deleted'));
 }
 
 // ── Einzelnen Custom-Marker ein-/ausblenden ──────────────────────────────────
@@ -10880,8 +11558,8 @@ function _renderOneCmMarker(cm) {
   const cl  = escHtml(catLabel);
   const mapsUrl = cm.gmapsUrl || _buildMapsLink(cm.lat, cm.lng);
   const isApple = /iphone|ipad|ipod|macintosh/i.test(navigator.userAgent) && 'ontouchend' in document;
-  const mapsLabel = isApple ? 'Apple Maps öffnen' : 'Google Maps öffnen';
-  const mapsLink = `<a href="${escHtml(mapsUrl)}" target="_blank" rel="noopener" style="color:var(--ac);font-size:11px;display:block;margin-top:6px">↗ ${mapsLabel}</a>`;
+  const mapsLabel = isApple ? t('popup_maps_apple') : t('popup_maps_google');
+  const mapsLink = `<a href="${escHtml(mapsUrl)}" target="_blank" rel="noopener" style="color:var(--ac);font-size:11px;display:block;margin-top:6px">↗ ${escHtml(mapsLabel)}</a>`;
 
   const popup = `<div style="background:var(--s1)">
     <div class="p-top">
@@ -10892,10 +11570,10 @@ function _renderOneCmMarker(cm) {
       ${mapsLink}
     </div>
     <div class="p-acts" style="flex-wrap:wrap;gap:6px">
-      <button class="pbtn nav" onclick="navTo(${cm.lat},${cm.lng},'${esc(cm.name)}')">Navigation</button>
-      <button class="pbtn shr" onclick="openCmShareQr('${cm.id}')">📤 Teilen</button>
-      <button class="pbtn shr" onclick="openMdModal('${cm.id}');map.closePopup()">✏ Bearbeiten</button>
-      <button class="pbtn" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)" onclick="deleteCmMarker('${cm.id}');map.closePopup()">🗑 Löschen</button>
+      <button class="pbtn nav" onclick="navTo(${cm.lat},${cm.lng},'${esc(cm.name)}')">${escHtml(t('popup_nav'))}</button>
+      <button class="pbtn shr" onclick="openCmShareQr('${cm.id}')">${escHtml(t('popup_share'))}</button>
+      <button class="pbtn shr" onclick="openMdModal('${cm.id}');map.closePopup()">${escHtml(t('popup_edit'))}</button>
+      <button class="pbtn" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)" onclick="deleteCmMarker('${cm.id}');map.closePopup()">${escHtml(t('popup_delete'))}</button>
     </div>
   </div>`;
 
@@ -11042,7 +11720,7 @@ function renderAllMarkersList() {
   const cmHdr = document.createElement('div');
   cmHdr.className = 'cm-section-hdr';
   cmHdr.style.marginTop = '12px';
-  cmHdr.innerHTML = `<span class="cm-section-title">Eigene Marker</span><span class="cm-section-count">${visCmAll.length}</span>`;
+  cmHdr.innerHTML = `<span class="cm-section-title">${escHtml(t('list_own_markers'))}</span><span class="cm-section-count">${visCmAll.length}</span>`;
   container.appendChild(cmHdr);
 
   if (!visCmAll.length) {
@@ -11095,7 +11773,7 @@ function exportMarkersJson() {
   const json  = JSON.stringify({ type: 'gmtw-markers', markers: _cmMarkers }, null, 2);
   const fname = `GMTW_Marker_${new Date().toISOString().slice(0,10)}.json`;
   dlFile(fname, json, 'application/json');
-  toast(`✅ ${_cmMarkers.length} Marker exportiert`);
+  toast(t('toast_markers_exported'));
 }
 
 // Marker aus JSON importieren (Merge)
@@ -11125,7 +11803,7 @@ function importMarkersJson(input) {
       // Karte neu rendern
       _cmMarkers.forEach(cm => _renderOneCmMarker(cm));
       renderAllMarkersList();
-      toast(`✅ ${added} Marker importiert`);
+      toast(t('toast_markers_imported'));
     } catch(e) {
       toast('❌ Import fehlgeschlagen: ' + e.message);
     }
@@ -13115,26 +13793,26 @@ function swPrefetchGpxTracks() {
       </svg>
     </button>
     <div style="display:flex;align-items:center;gap:8px;flex:1">
-      <span style="font-family:var(--fh);font-size:17px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--tx)">Einstellungen</span>
+      <span style="font-family:var(--fh);font-size:17px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--tx)" data-i18n="settings_title">Einstellungen</span>
     </div>
     <div class="logobadge" style="flex-shrink:0">MUNI</div>
   </div>
 
   <!-- Tabs -->
   <div class="sp-tabs">
-    <button class="sp-tab active" data-t="profile" onclick="switchSpTab('profile',this)">👤 Profil</button>
-    <button class="sp-tab" data-t="general" onclick="switchSpTab('general',this)">Allgemein</button>
-    <button class="sp-tab" data-t="tracks"  onclick="switchSpTab('tracks',this)">Strecken</button>
-    <button class="sp-tab" data-t="backup"  onclick="switchSpTab('backup',this)">Backup</button>
-    <button class="sp-tab" data-t="markers" onclick="switchSpTab('markers',this)">Marker</button>
-    <button class="sp-tab" data-t="qr"      onclick="switchSpTab('qr',this)">QR-Scan</button>
-    <button class="sp-tab" data-t="app"     onclick="switchSpTab('app',this)">📲 App</button>
+    <button class="sp-tab active" data-t="profile" onclick="switchSpTab('profile',this)"><span data-i18n="tab_profile">👤 Profil</span></button>
+    <button class="sp-tab" data-t="general" onclick="switchSpTab('general',this)"><span data-i18n="tab_general">Allgemein</span></button>
+    <button class="sp-tab" data-t="tracks"  onclick="switchSpTab('tracks',this)"><span data-i18n="tab_tracks">Strecken</span></button>
+    <button class="sp-tab" data-t="backup"  onclick="switchSpTab('backup',this)"><span data-i18n="tab_backup">Backup</span></button>
+    <button class="sp-tab" data-t="markers" onclick="switchSpTab('markers',this)"><span data-i18n="tab_markers">Marker</span></button>
+    <button class="sp-tab" data-t="qr"      onclick="switchSpTab('qr',this)"><span data-i18n="tab_qr">QR-Scan</span></button>
+    <button class="sp-tab" data-t="app"     onclick="switchSpTab('app',this)"><span data-i18n="tab_app">📲 App</span></button>
   </div>
 
   <!-- Tab: Allgemein -->
   <div class="sp-content" id="sp-tab-general">
     <div class="sp-section">
-      <div class="sp-label">GPS-Position Emoji</div>
+      <div class="sp-label" data-i18n="sg_gps_emoji">GPS-Position Emoji</div>
       <div class="sp-hint">Wird auf der Karte als dein Standort-Symbol angezeigt</div>
       <div id="emoji-grid" style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0">
         <!-- wird per JS befüllt -->
@@ -13146,32 +13824,31 @@ function swPrefetchGpxTracks() {
     </div>
     <div class="sp-section">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div class="sp-label" style="margin:0">📁 Projekt Übersicht</div>
+        <div class="sp-label" style="margin:0" data-i18n="sg_project_overview">📁 Projekt Übersicht</div>
         <label class="sp-btn sec" style="padding:5px 10px;font-size:12px;cursor:pointer;margin:0" title="Projekt-JSON importieren">
-          📥 Importieren
+          <span data-i18n="sg_import">📥 Importieren</span>
           <input type="file" accept=".json" style="display:none" onchange="importProjectJson(this);this.value=''">
         </label>
       </div>
       <div id="sp-proj-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
       <button class="sp-btn prim" onclick="startNewProjMode()" style="width:100%;justify-content:center;gap:6px">
-        <span style="font-size:16px">➕</span> Neues Projekt erstellen
+        <span style="font-size:16px">➕</span> <span data-i18n="sg_new_project">Neues Projekt erstellen</span>
       </button>
-      <p style="font-size:11px;color:var(--td);margin:8px 0 0;line-height:1.5">
-        Aktivierte Projekte zeigen ihre Strecken und Marker auf der Karte.
-        Der <strong>Fokus</strong> bestimmt, wohin der Übersicht-Button zoomt und welches Projekt neue Inhalte erhält.
+      <p style="font-size:11px;color:var(--td);margin:8px 0 0;line-height:1.5" data-i18n="sg_proj_hint">
+        Aktivierte Projekte zeigen ihre Strecken und Marker auf der Karte. Der Fokus bestimmt, wohin der Übersicht-Button zoomt und welches Projekt neue Inhalte erhält.
       </p>
     </div>
     <!-- Barrierefreiheit -->
     <div class="sp-section">
-      <div class="sp-label">♿ Barrierefreiheit &amp; Vorlesen</div>
-      <div class="sp-hint">Liest Karteninhalt, Toasts und Navigation laut vor — Steuerung über die Leiste am unteren Bildschirmrand</div>
+      <div class="sp-label" data-i18n="sg_a11y_title">♿ Barrierefreiheit &amp; Vorlesen</div>
+      <div class="sp-hint" data-i18n="sg_a11y_hint">Liest Karteninhalt, Toasts und Navigation laut vor — Steuerung über die Leiste am unteren Bildschirmrand</div>
 
       <!-- BIG TTS Toggle Button -->
       <button id="a11y-big-toggle" class="a11y-big-toggle" onclick="onA11yToggle(!_a11y.enabled)" aria-pressed="false">
         <span class="a11y-big-toggle-icon">🔊</span>
         <div class="a11y-big-toggle-text">
-          <span class="a11y-big-toggle-label">Vorlesefunktion</span>
-          <span id="a11y-toggle-state" class="a11y-big-toggle-state">AUS</span>
+          <span class="a11y-big-toggle-label" data-i18n="sg_tts_label">Vorlesefunktion</span>
+          <span id="a11y-toggle-state" class="a11y-big-toggle-state" data-i18n="tts_off">AUS</span>
         </div>
         <div class="a11y-big-toggle-switch"></div>
       </button>
@@ -13179,7 +13856,7 @@ function swPrefetchGpxTracks() {
       <!-- Sprechrate -->
       <div style="margin-top:14px">
         <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--td);margin-bottom:6px;font-weight:600">
-          <span>🎚 Sprechgeschwindigkeit</span>
+          <span data-i18n="sg_rate_label">🎚 Sprechgeschwindigkeit</span>
           <span id="a11y-rate-val" style="color:var(--tx);font-weight:800">1.0×</span>
         </div>
         <input type="range" id="a11y-rate" min="0.5" max="2" step="0.1" value="1.0"
@@ -13187,15 +13864,15 @@ function swPrefetchGpxTracks() {
           oninput="document.getElementById('a11y-rate-val').textContent=parseFloat(this.value).toFixed(1)+'×'"
           onchange="onA11yRate(this.value)">
         <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--td);margin-top:3px">
-          <span>Langsam</span><span>Schnell</span>
+          <span data-i18n="sg_rate_slow">Langsam</span><span data-i18n="sg_rate_fast">Schnell</span>
         </div>
       </div>
 
       <!-- Hoher Kontrast -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding:12px;background:var(--s2);border-radius:11px;border:1px solid var(--bd2)">
         <div>
-          <div style="font-size:13px;font-weight:700;color:var(--tx)">🌓 Hoher Kontrast</div>
-          <div style="font-size:11px;color:var(--td);margin-top:2px">Stärkere Kontraste für bessere Lesbarkeit</div>
+          <div style="font-size:13px;font-weight:700;color:var(--tx)" data-i18n="sg_hc_label">🌓 Hoher Kontrast</div>
+          <div style="font-size:11px;color:var(--td);margin-top:2px" data-i18n="sg_hc_desc">Stärkere Kontraste für bessere Lesbarkeit</div>
         </div>
         <label style="cursor:pointer;display:flex;align-items:center;gap:6px" aria-label="Hoher Kontrast">
           <input type="checkbox" id="a11y-hc" onchange="onA11yHc(this.checked)"
@@ -13205,15 +13882,11 @@ function swPrefetchGpxTracks() {
 
       <!-- Schnellzugriff Vorlesen-Buttons -->
       <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="sp-btn sec" onclick="speakMapOverview()" style="flex:1;justify-content:center">
-          📢 Karte [V]
-        </button>
-        <button class="sp-btn sec" onclick="speakNearestPoint()" style="flex:1;justify-content:center">
-          📍 Nächster [N]
-        </button>
+        <button class="sp-btn sec" onclick="speakMapOverview()" style="flex:1;justify-content:center" data-i18n="sg_map_btn">📢 Karte [V]</button>
+        <button class="sp-btn sec" onclick="speakNearestPoint()" style="flex:1;justify-content:center" data-i18n="sg_nearest_btn">📍 Nächster [N]</button>
       </div>
       <div style="margin-top:6px;font-size:10px;color:var(--td);line-height:1.7;padding:8px;background:var(--s2);border-radius:8px">
-        ⌨️ <b>V</b> = Karte · <b>N</b> = Nächster Punkt · <b>S</b> = Einstellungen · <b>Esc</b> = Schließen
+        <span data-i18n="sg_keyboard_hint">⌨️ V = Karte · N = Nächster Punkt · S = Einstellungen · Esc = Schließen</span>
       </div>
     </div>
 
@@ -13228,7 +13901,7 @@ function swPrefetchGpxTracks() {
   <div class="sp-content" id="sp-tab-backup">
     <!-- Export -->
     <div class="sp-section">
-      <div class="sp-label">📦 Vollständiges Backup exportieren</div>
+      <div class="sp-label" data-i18n="sb_full_export">📦 Vollständiges Backup exportieren</div>
       <div class="sp-hint">Sichert alle Daten vollständig als JSON-Datei</div>
       <div style="margin-top:8px;padding:8px 10px;background:var(--s3);border-radius:8px;font-size:11px;color:var(--td);line-height:1.8">
         ✅ GPX-Strecken &amp; Rennzeiten &nbsp;·&nbsp; ✅ Eigene Marker<br>
@@ -13242,7 +13915,7 @@ function swPrefetchGpxTracks() {
     </div>
     <!-- Import -->
     <div class="sp-section">
-      <div class="sp-label">⬆ Backup importieren</div>
+      <div class="sp-label" data-i18n="sb_full_import">⬆ Backup importieren</div>
       <div class="sp-hint">Wähle eine <code style="background:var(--s3);padding:1px 4px;border-radius:3px;font-family:monospace;font-size:11px">GMTW_Backup.json</code> — alle Daten werden ersetzt und die App neu geladen</div>
       <label style="display:flex;align-items:center;gap:10px;margin-top:10px;padding:14px 12px;background:var(--s2);border:2px dashed var(--bd2);border-radius:12px;cursor:pointer;font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:.4px;color:var(--ac);justify-content:center">
         📂 Backup-Datei auswählen
@@ -13251,7 +13924,7 @@ function swPrefetchGpxTracks() {
     </div>
     <!-- Nur Marker -->
     <div class="sp-section">
-      <div class="sp-label">📍 Nur eigene Marker ex-/importieren</div>
+      <div class="sp-label" data-i18n="sb_markers_title">📍 Nur eigene Marker ex-/importieren</div>
       <div class="sp-hint">Teile eigene Marker mit anderen GMTW-Nutzern</div>
       <div style="display:flex;gap:8px;margin-top:8px">
         <button class="sp-btn sec" style="flex:1;justify-content:center" onclick="exportMarkersJson()">⬇ Exportieren</button>
@@ -13263,7 +13936,7 @@ function swPrefetchGpxTracks() {
     </div>
     <!-- Alle Zeiten exportieren -->
     <div class="sp-section">
-      <div class="sp-label">📊 Alle Zeiten exportieren</div>
+      <div class="sp-label" data-i18n="sb_runs_export">📊 Alle Zeiten exportieren</div>
       <div class="sp-hint">Alle gefahrenen Rennen auf allen Strecken — inkl. Fahrer, Muni, Splits &amp; Signatur</div>
       <div style="display:flex;gap:8px;margin-top:8px">
         <button onclick="exportAllRunsJson()" class="sp-btn sec" style="flex:1;justify-content:center">⬇ JSON</button>
@@ -13275,10 +13948,10 @@ function swPrefetchGpxTracks() {
       <div class="sp-label">📁 Projekt Export / Import</div>
       <div class="sp-hint">Exportiert nur das aktive Projekt (Strecken, Marker, Bewertungen)</div>
       <button class="sp-btn sec" onclick="exportProjectJson()" style="width:100%;justify-content:center;margin-top:8px">
-        📤 Aktives Projekt exportieren
+        <span data-i18n="sb_project_export">📤 Aktives Projekt exportieren</span>
       </button>
       <label class="sp-btn sec" style="width:100%;justify-content:center;margin-top:8px;cursor:pointer">
-        📥 Projekt importieren
+        <span data-i18n="sb_project_import">📥 Projekt importieren</span>
         <input type="file" accept=".json,application/json" style="display:none" onchange="importProjectJson(this)">
       </label>
     </div>
@@ -13308,7 +13981,7 @@ function swPrefetchGpxTracks() {
 
     <!-- Geräteinformationen -->
     <div class="sp-section">
-      <div class="sp-label">📱 Gerät &amp; Browser</div>
+      <div class="sp-label" data-i18n="sa_device_title">📱 Gerät &amp; Browser</div>
       <div id="ai-device-info" class="ai-device-info">Wird erkannt…</div>
 
       <!-- Schritt-für-Schritt Anleitung -->
@@ -13316,14 +13989,12 @@ function swPrefetchGpxTracks() {
       <div id="ai-steps-box" class="ai-steps-box">Wird geladen…</div>
 
       <!-- Install-Button -->
-      <button id="ai-install-btn" class="sp-btn prim" style="width:100%;margin-top:12px;justify-content:center" onclick="openInstallGuide()">
-        📲 App installieren
-      </button>
+      <button id="ai-install-btn" class="sp-btn prim" style="width:100%;margin-top:12px;justify-content:center" onclick="openInstallGuide()" data-i18n="sa_install_title">📲 App installieren</button>
     </div>
 
     <!-- Cache &amp; Offline-Status -->
     <div class="sp-section">
-      <div class="sp-label">💾 Offline-Cache</div>
+      <div class="sp-label" data-i18n="sa_cache_title">💾 Offline-Cache</div>
       <div style="font-size:11px;color:var(--td);margin-bottom:8px;line-height:1.6">
         Je mehr Tiles gecacht, desto besser funktioniert die App ohne Internet.
       </div>
@@ -13340,7 +14011,7 @@ function swPrefetchGpxTracks() {
         Zoome auf das Trail-Gebiet und tippe dann den Button unten. Die aktuell sichtbaren Karten-Tiles werden lokal gespeichert.
       </div>
       <button class="sp-btn prim" onclick="cacheCurrentMapArea()" style="width:100%;margin-top:8px;justify-content:center;background:var(--acd)">
-        🗺️ Sichtbaren Kartenbereich cachen
+        <span data-i18n="sa_cache_btn">🗺️ Sichtbaren Kartenbereich cachen</span>
       </button>
       <button class="sp-btn sec" onclick="swPrefetchGpxTracks();toast('⏳ GPX-Strecken werden gecacht…')" style="width:100%;margin-top:6px;justify-content:center">
         📥 Alle GPX-Strecken jetzt cachen
@@ -13438,13 +14109,14 @@ function swPrefetchGpxTracks() {
 
     <!-- App-Sprache -->
     <div class="sp-section">
-      <div class="sp-label">🌐 App-Sprache / Language</div>
-      <div class="sp-hint">Bestimmt die Sprache der Vorlesefunktion (TTS) und zukünftiger Übersetzungen</div>
+      <div class="sp-label" data-i18n="sp_lang_label">🌐 App-Sprache / Language</div>
+      <div class="sp-hint" data-i18n="sp_lang_hint">Alle Menüs und Texte werden übersetzt</div>
       <div class="lang-grid">
         <button class="lang-btn active" data-lang="de" onclick="setAppLang('de')">🇩🇪 Deutsch</button>
         <button class="lang-btn" data-lang="en" onclick="setAppLang('en')">🇬🇧 English</button>
         <button class="lang-btn" data-lang="fr" onclick="setAppLang('fr')">🇫🇷 Français</button>
         <button class="lang-btn" data-lang="es" onclick="setAppLang('es')">🇪🇸 Español</button>
+        <button class="lang-btn" data-lang="it" onclick="setAppLang('it')">🇮🇹 Italiano</button>
       </div>
     </div>
 
@@ -13707,7 +14379,7 @@ function swPrefetchGpxTracks() {
 
     <div class="md-field">
       <label class="md-label">Name <span style="color:var(--exp)">*</span></label>
-      <input class="md-input" id="md-name" type="text" placeholder="z.B. Geheimtipp Abfahrt" maxlength="60">
+      <input class="md-input" id="md-name" type="text" placeholder="z.B. Geheimtipp Abfahrt" maxlength="60" data-i18n-ph="mm_name_ph">
     </div>
     <div class="md-field">
       <label class="md-label">Kategorie</label>
@@ -13720,7 +14392,7 @@ function swPrefetchGpxTracks() {
     </div>
     <div class="md-field">
       <label class="md-label">Beschreibung</label>
-      <textarea class="md-input" id="md-desc" rows="2" placeholder="Optionale Beschreibung…" maxlength="300" style="resize:none"></textarea>
+      <textarea class="md-input" id="md-desc" rows="2" placeholder="Optionale Beschreibung…" maxlength="300" style="resize:none" data-i18n-ph="mm_desc_ph"></textarea>
     </div>
 
     <!-- Maps-Link (auto-generiert) -->
@@ -13761,8 +14433,8 @@ function swPrefetchGpxTracks() {
     <input type="hidden" id="md-lng">
     <input type="hidden" id="md-edit-id">
     <div class="md-acts">
-      <button class="md-btn sec" onclick="closeMdModal()">Abbrechen</button>
-      <button class="md-btn prim" onclick="saveMdMarker()">Marker speichern</button>
+      <button class="md-btn sec" onclick="closeMdModal()" data-i18n="mm_cancel">Abbrechen</button>
+      <button class="md-btn prim" onclick="saveMdMarker()" data-i18n="mm_save">Speichern</button>
     </div>
   </div>
 </div>
