@@ -6,6 +6,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="GMTW Trail Map">
+    <meta name="description" content="Offline-fähige Trail-Karte für das German Muni Trail Weekend 2026 – GPS-Navigation, Rennzeitmessung und Streckenaufnahme.">
+    <meta property="og:title" content="GMTW · Trail Map">
+    <meta property="og:description" content="Offline-fähige Trail-Karte für das German Muni Trail Weekend 2026.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="icons/icon-512x512.png">
     <meta name="theme-color" content="#0b0e14">
     <meta name="msapplication-TileColor" content="#0b0e14">
     <meta name="msapplication-TileImage" content="icons/icon-144x144.png">
@@ -33,13 +38,21 @@
       integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"
       crossorigin="anonymous"></script>
     <!-- localforage 1.10.0 — IndexedDB-Wrapper (GPX-Caching, kein Quota-Limit) -->
-    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"
+      integrity="sha384-MTDrIlFOzEqpmOxY6UIA/1Zkh0a64UlmJ6R0UrZXqXCPx99siPGi8EmtQjIeCcTH"
+      crossorigin="anonymous"></script>
     <!-- Turf.js 7 — Geo-Berechnungen (Distanz, Sektoren, Geofencing) -->
-    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"
+      integrity="sha384-h3w0B8Lv6f1GBZkVHDjoqjS6RJG3EpyUJ2o4pkLu7SWbofW9JXJO4jPq53kY+Iml"
+      crossorigin="anonymous"></script>
     <!-- jsQR 1.4.0 — QR-Code-Lesebibliothek (kein Tracking, rein lokal) -->
-    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"
+      integrity="sha384-9Q0jWoineiIq95JeIyBsNV90KKLfDsbkj29k/YFxf76a2JwkHDYkMuSbNGN6XJfV"
+      crossorigin="anonymous"></script>
     <!-- pako 2.1.0 — DEFLATE/INFLATE Komprimierung für QR-Track-Transfer (kein Tracking) -->
-    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"
+      integrity="sha384-rNlaE5fs9dGIjmxWDALQh/RBAaGRYT5ChrzHo6tRfgrZ36iRFAiquP5g41Jsv+0j"
+      crossorigin="anonymous"></script>
     <!-- leaflet-gpx 1.7.0 — inline (kein CDN, kein SRI-Risiko) -->
     <script>
 /**
@@ -4264,6 +4277,7 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
 <div id="rec-bar">
   <div class="rec-dot"></div>
   <span class="rec-bar-txt" id="rec-bar-txt">00:00:00</span>
+  <button id="rec-center-btn" onclick="_gpsAutoFollow=true;toast('📍 Karte folgt GPS')" style="background:none;border:none;color:#fff;font-size:15px;cursor:pointer;padding:2px 6px;margin-left:4px;opacity:.8" title="Karte auf GPS zentrieren">📍</button>
 </div>
 
 <!-- GPX PANEL -->
@@ -4354,6 +4368,10 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
     <div class="gpx-section" style="text-align:center;padding-bottom:0;border-bottom:none">
       <div class="rec-timer" id="rec-timer">00:00:00</div>
       <div class="rec-status" id="rec-status-txt" style="color:var(--tm)">Bereit</div>
+      <div id="rec-gps-signal" style="display:none;text-align:center;font-size:11px;font-weight:700;letter-spacing:.5px;margin:6px auto 0;padding:4px 12px;border-radius:6px;max-width:220px">
+        <span id="rec-gps-icon">🔍</span>
+        <span id="rec-gps-text">GPS wird gesucht…</span>
+      </div>
     </div>
     <div class="rec-stats">
       <div class="rec-stat"><div class="rec-stat-val" id="rec-dist">0.0</div><div class="rec-stat-lbl">km</div></div>
@@ -4414,8 +4432,8 @@ if(typeof window!=='undefined'){window.qrcode=qrcode;}
 <div id="trk-qrm" style="position:fixed;top:50%;left:50%;z-index:1100;transform:translate(-50%,-50%) scale(.88);background:var(--s1);border:1px solid var(--bd2);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.8);width:92%;max-width:360px;padding:20px;text-align:center;opacity:0;visibility:hidden;transition:all .25s cubic-bezier(.32,.72,0,1)">
   <div style="font-family:var(--fh);font-size:17px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--tx);margin-bottom:2px" id="trk-qr-nm">Track</div>
   <div style="font-size:11px;color:var(--td);margin-bottom:12px" id="trk-qr-hint">GPX laden oder QR scannen</div>
-  <div style="width:228px;height:228px;margin:0 auto 10px;background:#fff;border-radius:12px;padding:8px;display:flex;align-items:center;justify-content:center">
-    <canvas id="trk-qr-canvas" width="212" height="212" style="display:block;border-radius:6px;image-rendering:pixelated;image-rendering:crisp-edges" aria-label="Track QR Code"></canvas>
+  <div style="width:316px;height:316px;margin:0 auto 10px;background:#fff;border-radius:12px;padding:8px;display:flex;align-items:center;justify-content:center">
+    <canvas id="trk-qr-canvas" width="300" height="300" style="display:block;border-radius:6px;image-rendering:pixelated;image-rendering:crisp-edges" aria-label="Track QR Code"></canvas>
   </div>
   <!-- Chunk-Navigation (nur bei Multi-QR sichtbar) -->
   <div id="trk-qr-chunk-nav" style="display:none;margin-bottom:10px">
@@ -4464,8 +4482,13 @@ function escHtml(s){
   if(s==null)return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
-// Alias für Legacy-Code & onclick-Strings
-function esc(s){ return String(s||'').replace(/'/g,"\\'"); }
+// Sichere Escape-Funktion für onclick/title-Attribute:
+// 1) JS-String-Escape (Backslash, Single-Quote, Newlines)
+// 2) HTML-Attribut-Escape (&, ", <, >) gegen Attribut-Ausbruch
+function esc(s){
+  return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').replace(/\r/g,'\\r')
+    .replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
 function escXml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // ── LOKALSTORAGE: sicheres Lesen/Schreiben ─────────────────────
@@ -7792,7 +7815,7 @@ let _qrChunks  = [];  // Sender: aktuelle Chunks
 let _qrChunkIdx = 0;  // Sender: Index des angezeigten Chunks
 
 // ── Konstanten ─────────────────────────────────────────────────
-const _QR_CHUNK_SIZE = 1100; // chars/Chunk → QR-Version ~25–28, sicher scannbar
+const _QR_CHUNK_SIZE = 700;  // chars/Chunk → QR-Version ~22, ~2.9px/Modul bei 300px Canvas
 const _QR_MAX_PTS    = 1000; // Max Punkte nach RDP-Vereinfachung
 
 // ── GPX-Punkte parsen ──────────────────────────────────────────
@@ -8045,7 +8068,7 @@ async function _buildTrackQrChunks(track, gpxStr) {
 function _drawQrChunk(idx) {
   _qrChunkIdx = idx;
   const canvas = document.getElementById('trk-qr-canvas');
-  drawQR(canvas, _qrChunks[idx], 212, '#0b0e14', '#ffffff');
+  drawQR(canvas, _qrChunks[idx], 300, '#0b0e14', '#ffffff');
   // Counter
   const ctr = document.getElementById('trk-qr-chunk-counter');
   if (ctr) ctr.textContent = `${idx + 1} / ${_qrChunks.length}`;
@@ -8167,7 +8190,7 @@ function openTrackQR(trackId) {
       document.getElementById('trk-qr-info').innerHTML =
         `<strong>${escHtml(t.name)}</strong><br>${escHtml(catLabel)} · ${t.stats.dist} km`
         + ` · <span style="color:var(--ac)">🌐 Online-Link</span>`;
-      drawQR(document.getElementById('trk-qr-canvas'), t.sourceUrl, 212);
+      drawQR(document.getElementById('trk-qr-canvas'), t.sourceUrl, 300);
       _openTrkQrModal(gpxStr, t);
       return;
     }
@@ -8276,7 +8299,10 @@ const recorder={
   points:[],watchId:null,
   elapsed:0,_segStart:null,
   _timerInt:null,_persistInt:null,_lastPos:null,_lastTime:null,
-  totalDist:0,previewLine:null,MIN_SPEED:0.5
+  totalDist:0,previewLine:null,_previewCasing:null,
+  MIN_SPEED:0.5,
+  _gpsState:'idle',_lastGpsTime:null,_gpsCheckInt:null,_gpsAcqTimeout:null,
+  _dragHandler:null
 };
 
 // ── Aufnahme: Robustheitssystem ─────────────────────────────────
@@ -8323,6 +8349,113 @@ function _recHandleGpsError(err) {
   }, 2000 * _recGpsErrors);
 }
 
+// ── Adaptiver Accuracy-Filter ───────────────────────────────────
+// Anfangs tolerant (GPS braucht Aufwaermzeit), verschaerft sich mit mehr Punkten
+function _recAccThreshold(){
+  const n=recorder.points.length;
+  if(n===0) return 200;
+  if(n<5)   return 150;
+  if(n<15)  return 100;
+  return 50;
+}
+
+// ── Ausreisser-Erkennung und Duplikat-Filter ────────────────────
+// Keine Glaettung: Echte GPS-Koordinaten werden 1:1 gespeichert,
+// damit Serpentinen, Spitzkehren und enge Kurven exakt abgebildet werden.
+// Saubere Linie entsteht ausschliesslich durch Entfernen von:
+// - GPS-Spruengen (Ausreisser > 50 km/h)
+// - Stillstand-Jitter (Duplikate < 1.5m)
+// - Schlechten Fixes (Accuracy-Filter)
+
+// Ausreisser-Erkennung: Prueft ob ein neuer Punkt physikalisch plausibel ist
+// Maximale Geschwindigkeit: 50 km/h = 13.9 m/s (grosszuegig fuer Mountainbike/Downhill)
+const _REC_MAX_SPEED_MS = 13.9;
+// Minimale Distanz: Punkte unter 1.5m Abstand werden als Duplikate verworfen
+const _REC_MIN_DIST_M = 1.5;
+
+function _recIsOutlier(lat, lng, timestamp) {
+  if (!recorder._lastPos || !recorder._lastTime) return false;
+  const dist = haversine(recorder._lastPos.lat, recorder._lastPos.lng, lat, lng);
+  const dt = (timestamp - recorder._lastTime) / 1000;
+  // Zeitdelta < 0.5s ignorieren (doppelte Callbacks)
+  if (dt < 0.5) return true;
+  // Geschwindigkeitspruefung: unrealistisch schnelle Spruenge
+  if (dt > 0 && dist / dt > _REC_MAX_SPEED_MS) return true;
+  return false;
+}
+
+function _recIsDuplicate(lat, lng) {
+  if (!recorder._lastPos) return false;
+  return haversine(recorder._lastPos.lat, recorder._lastPos.lng, lat, lng) < _REC_MIN_DIST_M;
+}
+
+// ── Post-Processing: Sturz-Zigzag entfernen ────────────────────
+// Laeuft NUR beim Speichern/Exportieren, NICHT waehrend der Aufnahme.
+// Erkennt kurze Hin-und-Her-Bewegungen (Sturz, Umfaller) anhand von:
+//   - Hoher Sinuositaet (Weglaenge >> Luftlinie) in einem Fenster
+//   - Geringer Gesamtverschiebung (Person bleibt quasi an einer Stelle)
+// Serpentinen/Spitzkehren bleiben erhalten, weil sie trotz scharfer
+// Kurven eine hohe Gesamtverschiebung haben (Fortbewegung auf dem Trail).
+function _recCleanupTrack(points){
+  if(points.length<6) return points;
+  const WIN=7;               // Fenstergroesse (ungerade fuer symmetrie)
+  const SINUOSITY_THRESH=3;  // Weglaenge/Luftlinie Grenzwert
+  const MAX_DISPLACE_M=8;    // Max Luftlinie Start→Ende im Fenster
+  const MAX_WINDOW_SEC=30;   // Nur kurze Episoden (Sturz)
+  const remove=new Uint8Array(points.length);
+
+  for(let i=0;i<=points.length-WIN;i++){
+    // Gesamte Weglaenge im Fenster
+    let pathLen=0;
+    for(let j=i;j<i+WIN-1;j++){
+      pathLen+=haversine(points[j].lat,points[j].lng,points[j+1].lat,points[j+1].lng);
+    }
+    // Luftlinie Start→Ende
+    const displace=haversine(points[i].lat,points[i].lng,
+                              points[i+WIN-1].lat,points[i+WIN-1].lng);
+    // Zeitspanne
+    const t0=new Date(points[i].time).getTime();
+    const t1=new Date(points[i+WIN-1].time).getTime();
+    const dtSec=(t1-t0)/1000;
+    // Sinuositaet (Schutz vor Division durch 0)
+    const sinuosity=displace>0.5 ? pathLen/displace : (pathLen>2?999:1);
+
+    if(sinuosity>SINUOSITY_THRESH && displace<MAX_DISPLACE_M && dtSec<MAX_WINDOW_SEC && pathLen>3){
+      // Innere Punkte des Fensters markieren (Start+Ende behalten)
+      for(let j=i+1;j<i+WIN-1;j++) remove[j]=1;
+    }
+  }
+  return points.filter((_,i)=>!remove[i]);
+}
+
+// ── GPS-Signal-Anzeige ──────────────────────────────────────────
+// Aktualisiert die visuelle Anzeige der GPS-Signalqualitaet
+// accuracy: -1 = acquiring, -2 = lost, >0 = actual accuracy in meters
+function _recUpdateGpsSignal(accuracy){
+  const iconEl=document.getElementById('rec-gps-icon');
+  const textEl=document.getElementById('rec-gps-text');
+  const sigEl =document.getElementById('rec-gps-signal');
+  if(!sigEl||!iconEl||!textEl) return;
+
+  let state,icon,text,bg;
+  if(accuracy===-1){
+    state='acquiring'; icon='🔍'; text='GPS wird gesucht…'; bg='rgba(245,158,11,.15)';
+  } else if(accuracy===-2){
+    state='lost'; icon='❌'; text='GPS-Signal verloren'; bg='rgba(239,68,68,.15)';
+  } else if(accuracy>100){
+    state='weak'; icon='📡'; text=`GPS schwach (±${Math.round(accuracy)}m)`; bg='rgba(245,158,11,.15)';
+  } else if(accuracy>50){
+    state='moderate'; icon='📡'; text=`GPS mäßig (±${Math.round(accuracy)}m)`; bg='rgba(34,197,94,.1)';
+  } else {
+    state='good'; icon='✅'; text=`GPS gut (±${Math.round(accuracy)}m)`; bg='rgba(34,197,94,.15)';
+  }
+  recorder._gpsState=state;
+  iconEl.textContent=icon;
+  textEl.textContent=text;
+  sigEl.style.background=bg;
+  sigEl.style.display='';
+}
+
 // Sichtbarkeitswechsel (Bildschirm aus/an)
 document.addEventListener('visibilitychange', async () => {
   if (!recorder.isRecording) return;
@@ -8332,6 +8465,8 @@ document.addEventListener('visibilitychange', async () => {
     // Zurück aus Hintergrund: Wake Lock ggf. neu anfordern
     persistRecorder();
     if (!_recWakeLock) await _recAcquireWakeLock();
+    // GPS-Signal-Anzeige: Status auf "Suche" setzen bis neuer Fix kommt
+    _recUpdateGpsSignal(-1);
     // GPS-Watch neu starten (kann im Hintergrund abgebrochen worden sein)
     if (recorder.watchId !== null) {
       navigator.geolocation.clearWatch(recorder.watchId);
@@ -8377,6 +8512,7 @@ async function recStart(){
   recorder.isRecording=true; recorder.isPaused=false;
   recorder.points=[];        recorder.elapsed=0;     recorder.totalDist=0;
   recorder._lastPos=null;    recorder._lastTime=null; recorder._segStart=Date.now();
+  recorder._gpsState='acquiring'; recorder._lastGpsTime=null;
   _recGpsErrors = 0;
 
   recUpdateUI();
@@ -8385,8 +8521,20 @@ async function recStart(){
   speak(`Aufnahme gestartet. Fahrer: ${riderName||'unbekannt'}. Muni: ${muniName||'unbekannt'}.`, true);
   document.getElementById('rec-bar').classList.add('show');
 
+  // GPS-Signal-Anzeige einblenden (Zustand: Suche)
+  _recUpdateGpsSignal(-1);
+  const sigEl=document.getElementById('rec-gps-signal');
+  if(sigEl) sigEl.style.display='';
+
+  // Allgemeinen GPS-Watcher stoppen (Recorder-Watcher speist _onGpsPos stattdessen)
+  if(gpsWatcher!==null){navigator.geolocation.clearWatch(gpsWatcher);gpsWatcher=null;}
+  _gpsAutoFollow = true;
+
+  // Preview-Linie: Weisses Casing + rote Hauptlinie fuer gute Sichtbarkeit
+  if(recorder._previewCasing){map.removeLayer(recorder._previewCasing);recorder._previewCasing=null;}
   if(recorder.previewLine){map.removeLayer(recorder.previewLine);recorder.previewLine=null;}
-  recorder.previewLine=L.polyline([],{color:'#ef4444',weight:3,opacity:.85,dashArray:'6 4'}).addTo(map);
+  recorder._previewCasing=L.polyline([],{color:'#ffffff',weight:8,opacity:0.5,lineCap:'round',lineJoin:'round'}).addTo(map);
+  recorder.previewLine=L.polyline([],{color:'#ef4444',weight:5,opacity:0.9,lineCap:'round',lineJoin:'round'}).addTo(map);
 
   // GPS-Watch starten
   recorder.watchId=navigator.geolocation.watchPosition(
@@ -8399,15 +8547,60 @@ async function recStart(){
   recorder._timerInt   = setInterval(recTickDisplay, 1000);
   recorder._persistInt = setInterval(persistRecorder, 5000);
 
+  // GPS-Verlust-Erkennung: alle 5s pruefen ob Signal noch da
+  recorder._gpsCheckInt = setInterval(()=>{
+    if(recorder._lastGpsTime && Date.now()-recorder._lastGpsTime>15000){
+      _recUpdateGpsSignal(-2);
+    }
+  }, 5000);
+
+  // GPS-Acquisition-Feedback: nach 10s ohne Punkte warnen
+  recorder._gpsAcqTimeout = setTimeout(()=>{
+    if(recorder.isRecording && recorder.points.length===0){
+      toast('📡 GPS-Signal wird gesucht… Bitte im Freien warten.');
+      speak('GPS Signal wird gesucht. Bitte warten.', false);
+    }
+  }, 10000);
+
+  // Karten-Folgemodus: bei Drag abschalten
+  recorder._dragHandler = function(){ if(recorder.isRecording) _gpsAutoFollow=false; };
+  map.on('dragstart', recorder._dragHandler);
+
   // Screen Wake Lock (verhindert Displayabschaltung während Aufnahme)
   await _recAcquireWakeLock();
 }
 
 function recOnPosition(pos){
+  // GPS-Position IMMER auf Karte zeigen (blauer Punkt + Karten-Follow)
+  _onGpsPos(pos);
+  recorder._lastGpsTime=Date.now();
+
   if(!recorder.isRecording||recorder.isPaused)return;
   const{latitude:lat,longitude:lng,altitude:ele,speed,accuracy}=pos.coords;
-  if(accuracy>50)return; // Schlechte Genauigkeit ignorieren
-  const pt={lat,lng,ele:ele||0,time:new Date(pos.timestamp).toISOString(),speed:speed||0};
+
+  // GPS-Signal-Anzeige aktualisieren
+  _recUpdateGpsSignal(accuracy);
+
+  // 1. Adaptiver Accuracy-Filter: anfangs toleranter, verschaerft sich mit mehr Punkten
+  if(accuracy>_recAccThreshold())return;
+
+  // 2. Ausreisser-Erkennung: physikalisch unplausible GPS-Spruenge verwerfen
+  if(_recIsOutlier(lat, lng, pos.timestamp)) return;
+
+  // 3. Deduplizierung: Punkte unter Mindestabstand verwerfen (Stillstand-Jitter)
+  if(recorder.points.length > 0 && _recIsDuplicate(lat, lng)) return;
+
+  // 4. Echte GPS-Position speichern — KEINE Glaettung, damit Serpentinen/Spitzkehren
+  //    exakt abgebildet werden. Saubere Linie entsteht durch Ausreisser- und Duplikat-Filter.
+  const pt = {
+    lat, lng,
+    ele:      ele || 0,
+    time:     new Date(pos.timestamp).toISOString(),
+    speed:    speed || 0,
+    accuracy: Math.round(accuracy)
+  };
+
+  // 5. Distanzberechnung zum vorherigen Punkt
   if(recorder._lastPos){
     const dist=haversine(recorder._lastPos.lat,recorder._lastPos.lng,lat,lng);
     const dt=(pos.timestamp-recorder._lastTime)/1000;
@@ -8415,11 +8608,23 @@ function recOnPosition(pos){
     const moving=(speed!==null&&speed>recorder.MIN_SPEED)||(spd>recorder.MIN_SPEED);
     if(moving)recorder.totalDist+=dist;
   }
+
+  // 6. State aktualisieren
   recorder._lastPos={lat,lng};recorder._lastTime=pos.timestamp;
   recorder.points.push(pt);
-  recorder.previewLine.addLatLng([lat,lng]);
-  document.getElementById('rec-pts').textContent=recorder.points.length;
-  document.getElementById('rec-dist').textContent=(recorder.totalDist/1000).toFixed(2);
+
+  // 7. Preview-Linien auf Karte aktualisieren
+  if(recorder._previewCasing) recorder._previewCasing.addLatLng([lat,lng]);
+  if(recorder.previewLine) recorder.previewLine.addLatLng([lat,lng]);
+
+  // 8. UI aktualisieren
+  const elPts=document.getElementById('rec-pts'); if(elPts) elPts.textContent=recorder.points.length;
+  const elDist=document.getElementById('rec-dist'); if(elDist) elDist.textContent=(recorder.totalDist/1000).toFixed(2);
+
+  // 9. Erster aufgezeichneter Punkt: Acquisition-Timeout aufloesen
+  if(recorder.points.length===1 && recorder._gpsAcqTimeout){
+    clearTimeout(recorder._gpsAcqTimeout); recorder._gpsAcqTimeout=null;
+  }
 }
 
 function recPause(){
@@ -8442,7 +8647,20 @@ function recStop(){
   if(recorder.watchId!==null){navigator.geolocation.clearWatch(recorder.watchId);recorder.watchId=null;}
   clearInterval(recorder._timerInt);   recorder._timerInt=null;
   clearInterval(recorder._persistInt); recorder._persistInt=null;
+  clearInterval(recorder._gpsCheckInt); recorder._gpsCheckInt=null;
+  if(recorder._gpsAcqTimeout){clearTimeout(recorder._gpsAcqTimeout);recorder._gpsAcqTimeout=null;}
+  if(recorder._dragHandler){map.off('dragstart',recorder._dragHandler);recorder._dragHandler=null;}
   _recReleaseWakeLock();
+
+  // GPS-Signal-Anzeige ausblenden
+  recorder._gpsState='idle';
+  const sigEl=document.getElementById('rec-gps-signal'); if(sigEl) sigEl.style.display='none';
+
+  // Allgemeinen GPS-Watcher wieder starten, damit User seinen Standort weiterhin sieht
+  if(gpsOn || userMkr){
+    gpsWatcher=navigator.geolocation.watchPosition(_onGpsPos,_onGpsErr,
+      {enableHighAccuracy:true,timeout:20000,maximumAge:3000});
+  }
 
   document.getElementById('rec-bar').classList.remove('show');
   document.getElementById('rec-status-txt').textContent=`Beendet · ${recorder.points.length} Punkte`;
@@ -8480,11 +8698,22 @@ function recReset(){
   if(recorder.watchId!==null){navigator.geolocation.clearWatch(recorder.watchId);recorder.watchId=null;}
   clearInterval(recorder._timerInt);   recorder._timerInt=null;
   clearInterval(recorder._persistInt); recorder._persistInt=null;
+  clearInterval(recorder._gpsCheckInt); recorder._gpsCheckInt=null;
+  if(recorder._gpsAcqTimeout){clearTimeout(recorder._gpsAcqTimeout);recorder._gpsAcqTimeout=null;}
+  if(recorder._dragHandler){map.off('dragstart',recorder._dragHandler);recorder._dragHandler=null;}
   _recReleaseWakeLock();
   _recGpsErrors = 0;
+  if(recorder._previewCasing){map.removeLayer(recorder._previewCasing);recorder._previewCasing=null;}
   if(recorder.previewLine){map.removeLayer(recorder.previewLine);recorder.previewLine=null;}
-  recorder.isRecording=false;recorder.isPaused=false;
+  recorder.isRecording=false;recorder.isPaused=false;recorder._gpsState='idle';
   recorder.points=[];recorder.elapsed=0;recorder.totalDist=0;recorder._segStart=null;recorder._lastPos=null;
+  // GPS-Signal-Anzeige ausblenden
+  const sigEl=document.getElementById('rec-gps-signal'); if(sigEl) sigEl.style.display='none';
+  // Allgemeinen GPS-Watcher wieder starten falls noetig
+  if((gpsOn||userMkr)&&gpsWatcher===null){
+    gpsWatcher=navigator.geolocation.watchPosition(_onGpsPos,_onGpsErr,
+      {enableHighAccuracy:true,timeout:20000,maximumAge:3000});
+  }
   document.getElementById('rec-bar').classList.remove('show');
   document.getElementById('rec-save-section').style.display='none';
   document.getElementById('rec-name-inp').value='';
@@ -8517,28 +8746,51 @@ function recTickDisplay(){
   const totalSec=Math.floor(display/1000);
   const hh=Math.floor(totalSec/3600),mm=Math.floor((totalSec%3600)/60),ss=totalSec%60;
   const str=`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
-  document.getElementById('rec-timer').textContent=str;
-  document.getElementById('rec-bar-txt').textContent=str;
+  const elTimer=document.getElementById('rec-timer'); if(elTimer) elTimer.textContent=str;
+  const elBar=document.getElementById('rec-bar-txt'); if(elBar) elBar.textContent=str;
   if(recorder.points.length>0){
     const last=recorder.points[recorder.points.length-1];
-    document.getElementById('rec-speed').textContent=((last.speed||0)*3.6).toFixed(1);
+    const elSpd=document.getElementById('rec-speed'); if(elSpd) elSpd.textContent=((last.speed||0)*3.6).toFixed(1);
   }
 }
 
 // ── AUFNAHME SPEICHERN ─────────────────────────────────────────
 function recBuildGpxString(name, notes){
-  const pts=recorder.points.map(p=>`    <trkpt lat="${p.lat.toFixed(7)}" lon="${p.lng.toFixed(7)}">\n      <ele>${(p.ele||0).toFixed(1)}</ele>\n      <time>${p.time}</time>\n    </trkpt>`).join('\n');
+  // Post-Processing: Sturz-Zigzag entfernen, echte Kurven behalten
+  const cleanPts=_recCleanupTrack(recorder.points);
+  const pts=cleanPts.map(p=>{
+    const lines = [
+      `    <trkpt lat="${p.lat.toFixed(7)}" lon="${p.lng.toFixed(7)}">`,
+      `      <ele>${(p.ele||0).toFixed(1)}</ele>`,
+      `      <time>${p.time}</time>`
+    ];
+    // Speed und Accuracy als GPX-Extensions speichern
+    if(p.speed>0 || p.accuracy>0){
+      lines.push(`      <extensions>`);
+      if(p.speed>0)    lines.push(`        <gmtw:speed>${p.speed.toFixed(2)}</gmtw:speed>`);
+      if(p.accuracy>0) lines.push(`        <gmtw:accuracy>${p.accuracy}</gmtw:accuracy>`);
+      lines.push(`      </extensions>`);
+    }
+    lines.push(`    </trkpt>`);
+    return lines.join('\n');
+  }).join('\n');
   const prof   = LS.get(LS.K.PROFILE, {});
   const rider  = [prof.name, prof.muniName].filter(Boolean).join(' · ');
   const km     = (recorder.totalDist/1000).toFixed(2);
   const notesStr = notes ? `\n${escXml(notes)}` : '';
   const descStr  = `Aufgezeichnet mit GMTW Trail Map · ${km} km${rider?' · '+escXml(rider):''}${notesStr}`;
   return `<?xml version="1.0" encoding="UTF-8"?>
-<gpx version="1.1" creator="GMTW Trail Map" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx version="1.1" creator="GMTW Trail Map"
+     xmlns="http://www.topografix.com/GPX/1/1"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:gmtw="https://munimap.github.io/gpx/ext/1"
+     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
   <metadata><name>${escXml(name)}</name><time>${new Date().toISOString()}</time></metadata>
   <trk><name>${escXml(name)}</name>
     <desc>${descStr}</desc>
-    <trkseg>\n${pts}\n    </trkseg>
+    <trkseg>
+${pts}
+    </trkseg>
   </trk>
 </gpx>`;
 }
@@ -8551,9 +8803,13 @@ function recAddToMap(){
   const cat     = document.getElementById('rec-save-cat').value;
   const notesEl = document.getElementById('rec-notes-inp');
   const notes   = notesEl ? notesEl.value.trim() : '';
+  const rawCount = recorder.points.length;
   const gpxStr  = recBuildGpxString(name, notes);
+  const cleanCount = _recCleanupTrack(recorder.points).length;
+  if(rawCount-cleanCount>0) toast(`🧹 ${rawCount-cleanCount} Zigzag-Punkte bereinigt`);
   loadGpxFromString(gpxStr, name, cat);
-  // Preview-Linie entfernen (wird durch GPX-Layer ersetzt)
+  // Preview-Linien entfernen (wird durch GPX-Layer ersetzt)
+  if(recorder._previewCasing){map.removeLayer(recorder._previewCasing);recorder._previewCasing=null;}
   if(recorder.previewLine){map.removeLayer(recorder.previewLine);recorder.previewLine=null;}
   // Recorder zurücksetzen
   recorder.points=[];recorder.elapsed=0;recorder.totalDist=0;recorder._segStart=null;
@@ -8584,7 +8840,8 @@ function recExportGpx(){
 function recExportJson(){
   if(!recorder.points.length){toast('⚠️ Keine Punkte zum Speichern');return;}
   const name=document.getElementById('rec-name-inp').value.trim()||'GMTW_Track';
-  dlFile(name+'.json',JSON.stringify({name,creator:'GMTW Trail Map',created:new Date().toISOString(),stats:{points:recorder.points.length,distanceKm:(recorder.totalDist/1000).toFixed(3),elapsedMs:recorder.elapsed},points:recorder.points},null,2),'application/json');
+  const cleanPts=_recCleanupTrack(recorder.points);
+  dlFile(name+'.json',JSON.stringify({name,creator:'GMTW Trail Map',created:new Date().toISOString(),stats:{points:cleanPts.length,distanceKm:(recorder.totalDist/1000).toFixed(3),elapsedMs:recorder.elapsed},points:cleanPts},null,2),'application/json');
   toast('⬇ JSON gespeichert!');
 }
 
@@ -8661,32 +8918,68 @@ function dlFile(filename,content,mime){
 // ── LOKALSTORAGE: RECORDER PERSISTENZ ─────────────────────────
 function persistRecorder(){
   if(recorder.points.length>0){
-    LS.set(LS.K.REC,{points:recorder.points,totalDist:recorder.totalDist,elapsed:recorder.elapsed,savedAt:Date.now()});
+    try {
+      const data = {
+        points:    recorder.points,
+        totalDist: recorder.totalDist,
+        elapsed:   recorder.elapsed,
+        savedAt:   Date.now(),
+        version:   2 // Versionierung fuer Vorwaertskompatibilitaet
+      };
+      LS.set(LS.K.REC, data);
+      // Zusaetzlich in IndexedDB speichern als Fallback (localStorage hat 5MB Limit)
+      if(window.localforage && recorder.points.length > 200){
+        localforage.setItem('gmtw_rec_backup_v2', data).catch(()=>{});
+      }
+    } catch(e) {
+      console.warn('[Rec] Persistenz-Fehler:', e);
+    }
   }
 }
 
-function restoreRecorder(){
-  const saved=LS.get(LS.K.REC);
-  if(!saved||!saved.points||!saved.points.length)return;
-  const ageMins=Math.round((Date.now()-saved.savedAt)/60000);
+async function restoreRecorder(){
+  // Primaer: localStorage, Fallback: IndexedDB-Backup
+  let saved = LS.get(LS.K.REC);
+  if((!saved||!saved.points||!saved.points.length) && window.localforage){
+    try { saved = await localforage.getItem('gmtw_rec_backup_v2'); } catch(e){}
+  }
+  if(!saved||!saved.points||!saved.points.length) return;
+
+  // Punkte validieren: nur Punkte mit gueltigem lat/lng behalten
+  const validPts = saved.points.filter(p =>
+    p && typeof p.lat==='number' && typeof p.lng==='number' &&
+    isFinite(p.lat) && isFinite(p.lng) &&
+    p.lat >= -90 && p.lat <= 90 && p.lng >= -180 && p.lng <= 180
+  );
+  if(!validPts.length) { LS.del(LS.K.REC); return; }
+
+  const ageMins=Math.round((Date.now()-(saved.savedAt||Date.now()))/60000);
   const ageTxt=ageMins<60?`${ageMins} Min`:`${Math.round(ageMins/60)} Std`;
   setTimeout(()=>{
-    if(confirm(`📍 Unterbrochene Aufnahme gefunden!\n${saved.points.length} Punkte · ${(saved.totalDist/1000).toFixed(2)} km · vor ${ageTxt}\n\nWiederherstellen?`)){
-      recorder.points=saved.points;
-      recorder.totalDist=saved.totalDist;
-      recorder.elapsed=saved.elapsed;
-      recorder._lastPos=saved.points.length>0?{lat:saved.points[saved.points.length-1].lat,lng:saved.points[saved.points.length-1].lng}:null;
-      if(recorder.previewLine)map.removeLayer(recorder.previewLine);
-      recorder.previewLine=L.polyline(saved.points.map(p=>[p.lat,p.lng]),{color:'#ef4444',weight:3,opacity:.85,dashArray:'6 4'}).addTo(map);
-      document.getElementById('rec-pts').textContent=saved.points.length;
-      document.getElementById('rec-dist').textContent=(saved.totalDist/1000).toFixed(2);
+    if(confirm(`📍 Unterbrochene Aufnahme gefunden!\n${validPts.length} Punkte · ${(saved.totalDist/1000).toFixed(2)} km · vor ${ageTxt}\n\nWiederherstellen?`)){
+      recorder.points=validPts;
+      recorder.totalDist=saved.totalDist||0;
+      recorder.elapsed=saved.elapsed||0;
+      const lastPt=validPts[validPts.length-1];
+      recorder._lastPos={lat:lastPt.lat,lng:lastPt.lng};
+      // Preview-Linien mit Casing wiederherstellen
+      if(recorder._previewCasing){map.removeLayer(recorder._previewCasing);recorder._previewCasing=null;}
+      if(recorder.previewLine){map.removeLayer(recorder.previewLine);recorder.previewLine=null;}
+      const coords=validPts.map(p=>[p.lat,p.lng]);
+      recorder._previewCasing=L.polyline(coords,{color:'#ffffff',weight:8,opacity:0.5,lineCap:'round',lineJoin:'round'}).addTo(map);
+      recorder.previewLine=L.polyline(coords,{color:'#ef4444',weight:5,opacity:0.9,lineCap:'round',lineJoin:'round'}).addTo(map);
+      // Auf letzten Punkt zoomen
+      if(lastPt) map.flyTo([lastPt.lat,lastPt.lng],16,{animate:true,duration:1});
+      const elPts=document.getElementById('rec-pts'); if(elPts) elPts.textContent=validPts.length;
+      const elDist=document.getElementById('rec-dist'); if(elDist) elDist.textContent=(saved.totalDist/1000).toFixed(2);
       document.getElementById('rec-save-section').style.display='';
-      document.getElementById('rec-status-txt').textContent=`Wiederhergestellt · ${saved.points.length} Punkte`;
+      document.getElementById('rec-status-txt').textContent=`Wiederhergestellt · ${validPts.length} Punkte`;
       document.getElementById('rec-status-txt').style.color='var(--ac)';
-      toast(`✅ ${saved.points.length} Punkte wiederhergestellt`);
+      toast(`✅ ${validPts.length} Punkte wiederhergestellt`);
       openGpxPanel('rec');
     } else {
       LS.del(LS.K.REC);
+      if(window.localforage) localforage.removeItem('gmtw_rec_backup_v2').catch(()=>{});
     }
   },1800);
 }
@@ -8751,7 +9044,7 @@ function _buildStartPinIcon(track) {
   const h   = Math.round(32 * sc);
   const fs  = Math.round(13 * sc);
   const brd = Math.max(1.5, Math.round(25 * sc) / 10); // 2.5px bei 100%
-  const html = `<div class="start-pin" style="width:${w}px;height:${h}px;background:${track.color};border-width:${brd}px" title="Start: ${esc(track.name)}">` +
+  const html = `<div class="start-pin" style="width:${w}px;height:${h}px;background:${track.color};border-width:${brd}px" title="Start: ${escHtml(track.name)}">` +
                `<span class="start-pin-flag" style="font-size:${fs}px">▶</span></div>`;
   return L.divIcon({ className:'', html, iconSize:[w, h], iconAnchor:[Math.round(w/2), h] });
 }
@@ -8763,7 +9056,7 @@ function _buildFinishPinIcon(track) {
   const h   = Math.round(32 * sc);
   const fs  = Math.round(13 * sc);
   const brd = Math.max(1.5, Math.round(25 * sc) / 10);
-  const html = `<div class="finish-pin" style="width:${w}px;height:${h}px;border-color:${track.color};border-width:${brd}px" title="Ziel: ${esc(track.name)}">` +
+  const html = `<div class="finish-pin" style="width:${w}px;height:${h}px;border-color:${track.color};border-width:${brd}px" title="Ziel: ${escHtml(track.name)}">` +
                `<span class="finish-pin-flag" style="font-size:${fs}px">🏁</span></div>`;
   return L.divIcon({ className:'', html, iconSize:[w, h], iconAnchor:[Math.round(w/2), h] });
 }
@@ -9361,6 +9654,10 @@ function _onBtLocationUpdate(e) {
 }
 
 // ── CRYPTOGRAPHIC HMAC-SHA256 RESULT SIGNING ───────────────────
+// HINWEIS: Client-Side-Only Signierung — dient als Tamper-Detection,
+// NICHT als echte Anti-Cheat-Sicherheit. Der Schlüssel ist im Quellcode
+// einsehbar und kann von technisch versierten Nutzern reproduziert werden.
+// Für echte Fälschungssicherheit wäre eine Server-Side-Validierung nötig.
 async function _signRaceResult(run) {
   if (!window.crypto || !crypto.subtle) return 'unsigned';
   try {

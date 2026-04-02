@@ -292,7 +292,7 @@ async function cacheFirstWithNetworkFallback(req, cacheName, maxEntries) {
     // Hintergrund-Aktualisierung (nicht blockierend)
     fetch(req).then(fresh => {
       if (fresh && fresh.ok) cache.put(req, fresh.clone());
-    }).catch(() => {});
+    }).catch(e => console.warn('SW bg-revalidate:', e.message || e));
     return cached;
   }
 
@@ -338,7 +338,7 @@ async function staleWhileRevalidateTile(req) {
             if (++_tileInserts % TRIM_EVERY === 0) trimCache(TILE_CACHE, MAX_TILE_CACHE);
           }
         })
-        .catch(() => {})
+        .catch(e => console.warn('SW tile-prefetch:', e.message || e))
         .finally(() => _bgFetching.delete(req.url));
     }
     return cached;
@@ -376,7 +376,7 @@ async function staleWhileRevalidate(req, cacheName, maxEntries) {
       }
       return fresh;
     })
-    .catch(() => null);
+    .catch(e => { console.warn('SW font-revalidate:', e.message || e); return null; });
 
   return cached || fetchPromise;
 }
